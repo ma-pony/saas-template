@@ -34,8 +34,10 @@ export const AdminMobileNav = ({ user }: AdminMobileNavProps) => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger render={<Button variant='ghost' size='icon' />}>
-        <Menu className='size-5' />
+      <SheetTrigger asChild>
+        <Button variant='ghost' size='icon'>
+          <Menu className='size-5' />
+        </Button>
       </SheetTrigger>
       <SheetPopup side='left'>
         <SheetHeader>
@@ -51,10 +53,12 @@ export const AdminMobileNav = ({ user }: AdminMobileNavProps) => {
                   key={item.href}
                   variant={isActive ? 'secondary' : 'ghost'}
                   className={cn('w-full justify-start gap-2')}
-                  render={<Link href={item.href} onClick={() => setOpen(false)} />}
+                  asChild
                 >
-                  <item.icon className='size-4' />
-                  {item.label}
+                  <Link href={item.href} onClick={() => setOpen(false)}>
+                    <item.icon className='size-4' />
+                    {item.label}
+                  </Link>
                 </Button>
               )
             })}

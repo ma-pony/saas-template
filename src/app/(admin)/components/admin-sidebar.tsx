@@ -36,10 +36,12 @@ export const AdminSidebar = ({ user }: AdminSidebarProps) => {
               key={item.href}
               variant={isActive ? 'secondary' : 'ghost'}
               className={cn('w-full justify-start gap-2')}
-              render={<Link href={item.href} />}
+              asChild
             >
-              <item.icon className='size-4' />
-              {item.label}
+              <Link href={item.href}>
+                <item.icon className='size-4' />
+                {item.label}
+              </Link>
             </Button>
           )
         })}

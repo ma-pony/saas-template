@@ -119,7 +119,7 @@ function AutocompleteInput({
               sizeValue === 'sm' ? 'end-0' : 'end-0.5'
             )}
             data-slot='autocomplete-trigger'
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen(!open)}
           >
             <ChevronsUpDownIcon />
           </button>
@@ -320,14 +320,14 @@ function AutocompleteCollection({ className, ...props }: React.ComponentProps<'d
 }
 
 function AutocompleteTrigger({ className, onClick, ...props }: React.ComponentProps<'button'>) {
-  const { setOpen } = React.useContext(AutocompleteContext)
+  const { open, setOpen } = React.useContext(AutocompleteContext)
   return (
     <button
       type='button'
       className={className}
       data-slot='autocomplete-trigger'
       onClick={(e) => {
-        setOpen((v: boolean) => !v)
+        setOpen(!open)
         onClick?.(e)
       }}
       {...props}

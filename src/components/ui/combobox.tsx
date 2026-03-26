@@ -88,7 +88,7 @@ function ComboboxInput({
   onChange?: React.ChangeEventHandler<HTMLInputElement>
   [key: string]: unknown
 }) {
-  const { multiple, setOpen } = React.useContext(ComboboxContext)
+  const { multiple, open, setOpen } = React.useContext(ComboboxContext)
   const sizeValue = (size ?? 'default') as 'sm' | 'default' | 'lg' | number
 
   // multiple mode - render a plain input within chips
@@ -151,7 +151,7 @@ function ComboboxInput({
               sizeValue === 'sm' ? 'end-0' : 'end-0.5'
             )}
             data-slot='combobox-trigger'
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen(!open)}
           >
             <ChevronsUpDownIcon />
           </button>

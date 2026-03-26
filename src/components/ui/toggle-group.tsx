@@ -33,8 +33,8 @@ function ToggleGroup({
       data-size={size}
       data-slot='toggle-group'
       data-variant={variant}
+      {...(props as any)}
       type={type}
-      {...props}
     >
       <ToggleGroupContext.Provider value={{ size, variant }}>
         {children}

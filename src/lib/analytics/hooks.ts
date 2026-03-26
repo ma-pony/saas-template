@@ -1,5 +1,6 @@
 import { AnalyticsEvents, trackEvent } from './events'
-import type { AnalyticsEventName, AnalyticsEventProperties } from './types'
+import type { AnalyticsEventName } from './events'
+import type { AnalyticsEventProperties } from './types'
 
 export interface UseAnalyticsReturn {
   trackEvent: (name: AnalyticsEventName, properties?: AnalyticsEventProperties) => void

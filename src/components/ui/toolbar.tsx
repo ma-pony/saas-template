@@ -36,14 +36,15 @@ function ToolbarInput({ className, ...props }: React.ComponentProps<'input'>) {
 
 function ToolbarGroup({
   className,
+  type = 'multiple',
   ...props
 }: React.ComponentProps<typeof ToolbarPrimitive.ToggleGroup>) {
   return (
     <ToolbarPrimitive.ToggleGroup
       className={cn('flex items-center gap-1', className)}
       data-slot='toolbar-group'
-      type='multiple'
-      {...props}
+      {...(props as any)}
+      type={type}
     />
   )
 }

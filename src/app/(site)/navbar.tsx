@@ -180,22 +180,17 @@ export default function Navbar() {
                 Blog
               </Link>
 
-              <Button
-                variant='link'
-                className='w-full justify-start'
-                render={(props) => (
-                  <a
-                    {...props}
-                    href='https://bags.fm/4jzHA1TJqSCNDrmGrtHX46um1363XGu6HpUHWyn4BAGS'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    aria-label='Support dev'
-                    onClick={toggleMenu}
-                  >
-                    Support Dev
-                  </a>
-                )}
-              />
+              <Button variant='link' className='w-full justify-start' asChild>
+                <a
+                  href='https://bags.fm/4jzHA1TJqSCNDrmGrtHX46um1363XGu6HpUHWyn4BAGS'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label='Support dev'
+                  onClick={toggleMenu}
+                >
+                  Support Dev
+                </a>
+              </Button>
 
               <a
                 href={`https://github.com/${repo}`}

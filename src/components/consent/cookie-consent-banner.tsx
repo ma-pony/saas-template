@@ -23,8 +23,7 @@ export function CookieConsentBanner({ locale, countryCode }: CookieConsentBanner
   const [marketingEnabled, setMarketingEnabled] = useState(false)
 
   // EU locale detection: fr is often EU, also check countryCode
-  const isEUUser =
-    (countryCode && EU_COUNTRIES.has(countryCode)) || locale === 'fr' || locale === 'de'
+  const isEUUser = (countryCode && EU_COUNTRIES.has(countryCode)) || locale === 'fr'
 
   useEffect(() => {
     loadFromCookie()

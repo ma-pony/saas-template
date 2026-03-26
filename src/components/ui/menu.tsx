@@ -223,7 +223,6 @@ function MenuSubPopup({
   className,
   sideOffset = -1,
   alignOffset = -5,
-  align = 'start',
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
   return (

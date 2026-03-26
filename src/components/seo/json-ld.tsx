@@ -97,7 +97,7 @@ type SoftwareApplicationJsonLdProps = {
  * />
  */
 const SoftwareApplicationJsonLd = (props: SoftwareApplicationJsonLdProps) => (
-  <JsonLd data={getSoftwareApplicationSchema(props)} />
+  <JsonLd data={getSoftwareApplicationSchema()} />
 )
 
 export {

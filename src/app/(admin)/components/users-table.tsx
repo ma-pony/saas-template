@@ -1,5 +1,4 @@
 import { Suspense } from 'react'
-import Link from 'next/link'
 import {
   Table,
   TableHeader,
@@ -110,16 +109,11 @@ export const UsersTable = ({ users, total: _total, page, pageCount, query }: Use
                   <PaginationPrevious
                     href={page > 1 ? buildPageUrl(page - 1, query) : undefined}
                     aria-disabled={page <= 1}
-                    render={page > 1 ? <Link href={buildPageUrl(page - 1, query)} /> : <span />}
                   />
                 </PaginationItem>
                 {Array.from({ length: pageCount }, (_, i) => i + 1).map((p) => (
                   <PaginationItem key={p}>
-                    <PaginationLink
-                      href={buildPageUrl(p, query)}
-                      isActive={p === page}
-                      render={<Link href={buildPageUrl(p, query)} />}
-                    >
+                    <PaginationLink href={buildPageUrl(p, query)} isActive={p === page}>
                       {p}
                     </PaginationLink>
                   </PaginationItem>
@@ -128,9 +122,6 @@ export const UsersTable = ({ users, total: _total, page, pageCount, query }: Use
                   <PaginationNext
                     href={page < pageCount ? buildPageUrl(page + 1, query) : undefined}
                     aria-disabled={page >= pageCount}
-                    render={
-                      page < pageCount ? <Link href={buildPageUrl(page + 1, query)} /> : <span />
-                    }
                   />
                 </PaginationItem>
               </PaginationContent>
