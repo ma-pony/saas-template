@@ -2,17 +2,22 @@
 
 ## 组织哲学
 
-按职责分层：`app/` 负责路由和页面，`lib/` 负责业务逻辑和服务，`components/` 负责 UI，`database/` 负责数据层。路由组（`(auth)` / `(main)` / `(site)`）用括号语法，不影响 URL，仅做逻辑分组。
+按职责分层：`app/` 负责路由和页面，`lib/` 负责业务逻辑和服务，`components/` 负责 UI，`database/` 负责数据层。路由组（`(auth)` / `(main)` / `(site)`）用括号语法，不影响 URL，仅做逻辑分组。`admin/` 是实际路径段（URL 为 `/admin`）。
 
 ## 目录模式
 
 ### 页面路由（`src/app/[locale]/`）
-国际化路由的根节点，所有页面都在此目录下，分三个路由组：
+国际化路由的根节点，locale 感知的页面在此目录下，分两个路由组：
 - `(auth)`：登录、注册、验证等认证流程页面
 - `(main)`：Dashboard、设置等登录后才能访问的页面
-- `(site)`：营销/落地页等公开页面
 
-API 路由在 `src/app/api/`，不在 `[locale]` 下。
+非 locale 路由：
+- `src/app/(site)/`：营销页和博客（不在 `[locale]` 下）
+- `src/app/admin/`：管理后台（实际路径段 `/admin`，受角色权限保护）
+- `src/app/api/`：API 路由
+
+共享组件目录（仅组件，非页面）：
+- `src/app/(auth)/`：认证表单和背景组件，被 `[locale]/(auth)/` 页面导入复用
 
 ### 服务层（`src/lib/`）
 按功能域划分的业务逻辑：
@@ -22,7 +27,7 @@ API 路由在 `src/app/api/`，不在 `[locale]` 下。
 - `utils/`：通用工具函数，`css.ts` 导出 `cn()`
 
 ### UI 组件（`src/components/`）
-- `ui/`：无业务逻辑的基础 UI 组件（当前基于 BaseUI，规划迁移至 Shadcn UI）
+- `ui/`：无业务逻辑的基础 UI 组件（Shadcn UI / Radix UI）
 - `emails/`：React Email 邮件模板，仅用于邮件渲染
 
 ### 数据层（`src/database/`）
@@ -34,7 +39,7 @@ API 路由在 `src/app/api/`，不在 `[locale]` 下。
 - 支付方案配置、品牌配置、Feature Flags 也放此目录
 
 ### 国际化（`src/messages/`）
-每个语言一个 JSON 文件（`en.json` / `es.json` / `fr.json`），翻译 key 按页面/功能模块分组。
+每个语言一个 JSON 文件（`en.json` / `es.json` / `fr.json` / `zh.json`），翻译 key 按页面/功能模块分组。locale 配置在 `src/lib/i18n/config.ts`。
 
 ## 命名规范
 

@@ -40,5 +40,10 @@ export const isStripeConfigured = Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WE
 /** Check if Polar is configured (@polar-sh/better-auth) */
 export const isPolarConfigured = Boolean(env.POLAR_ACCESS_TOKEN)
 
+/** Check if LemonSqueezy is configured */
+export const isLemonSqueezyConfigured = Boolean(
+  env.LEMONSQUEEZY_API_KEY && env.LEMONSQUEEZY_WEBHOOK_SECRET
+)
+
 /** Check if any billing provider is configured */
-export const hasBillingProvider = isStripeConfigured || isPolarConfigured
+export const hasBillingProvider = isStripeConfigured || isPolarConfigured || isLemonSqueezyConfigured

@@ -27,7 +27,7 @@
 通过 `@t3-oss/env-nextjs` 在 `src/config/env.ts` 集中验证。服务端变量放 `server` 对象，客户端变量放 `client` 对象（必须 `NEXT_PUBLIC_` 前缀）。新增变量必须在此文件登记。
 
 ### 国际化
-`next-intl`，支持 `en` / `es` / `fr`（计划扩展 `zh`）。服务端组件用 `getTranslations`，客户端组件用 `useTranslations`。翻译文件在 `src/messages/*.json`。
+`next-intl`，支持 `en` / `es` / `fr` / `zh`。服务端组件用 `getTranslations`，客户端组件用 `useTranslations`。翻译文件在 `src/messages/*.json`，locale 配置在 `src/lib/i18n/config.ts`。
 
 ## 开发规范
 
@@ -63,7 +63,8 @@ bun run migrate:local     # 本地运行迁移
 - **级联删除**：所有关联表从 `user` 级联删除，保持数据一致性
 - **`$onUpdate` 模式**：`updatedAt` 字段用 Drizzle 的 `$onUpdate` 自动更新，无需手动维护
 - **provider 列**：支付相关表都有 `provider` 字段，支持多提供商共存和历史数据追踪
-- **premiumPurchase 隔离**：`premiumPurchase` 表是模板自身的销售流程，与应用订阅系统完全隔离
+- **Analytics 适配器**：`src/lib/analytics/` 使用适配器模式支持 Plausible / Umami / Google Analytics
+- **后台任务框架**：`src/lib/jobs/` 支持 node-cron（本地）和 vercel-cron（生产），执行日志持久化到数据库
 
 ---
 _记录标准和模式，而非所有依赖项_

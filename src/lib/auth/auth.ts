@@ -26,10 +26,10 @@ export const auth = betterAuth({
   advanced: {
     cookiePrefix: APP_COOKIE_NAME, // Change this to your cookie prefix
     crossSubDomainCookies: {
-      enabled: !isProd,
-      domain: '.your-domain.com', // TODO: Change this to your domain, if you are using a custom domain
+      enabled: isProd,
+      domain: '.your-domain.com', // TODO: Change this to your domain
     },
-    useSecureCookies: !isProd,
+    useSecureCookies: isProd,
   },
 
   session: {

@@ -177,7 +177,7 @@ function VerificationForm({ isProduction }: { isProduction: boolean }) {
                   sessionStorage.removeItem('inviteRedirectUrl')
                   sessionStorage.removeItem('isInviteFlow')
                 }
-                router.push('/signup')
+                router.push('/register')
               }}
               className='font-medium text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'
             >

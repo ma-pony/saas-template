@@ -21,16 +21,6 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Cache translation JSON files at CDN
-        source: '/messages/:locale.json',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=3600, stale-while-revalidate=86400',
-          },
-        ],
-      },
-      {
         // Add Vary: Accept-Language for internationalized pages
         source: '/:locale(en|es|fr|zh)/:path*',
         headers: [
@@ -48,9 +38,10 @@ export default withNextIntl(withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: 'quibi-tt',
+  // TODO: Replace with your Sentry organization and project
+  org: 'your-sentry-org',
 
-  project: 'elixir',
+  project: 'your-sentry-project',
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,

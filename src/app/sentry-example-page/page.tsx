@@ -53,7 +53,7 @@ export default function Page() {
           <a
             target='_blank'
             rel='noopener'
-            href='https://quibi-tt.sentry.io/issues/?project=6663191'
+            href='https://your-org.sentry.io/issues/'
           >
             Issues Page
           </a>

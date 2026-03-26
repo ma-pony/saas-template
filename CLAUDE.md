@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-ShipFree is a Next.js SaaS boilerplate (free ShipFast alternative) using Bun runtime, PostgreSQL, Drizzle ORM, Better-Auth, and TailwindCSS 4.
+A generic Next.js SaaS boilerplate/template using Bun runtime, PostgreSQL, Drizzle ORM, Better-Auth, Shadcn UI, and TailwindCSS 4.
 
 ## Commands
 
@@ -24,18 +24,20 @@ ShipFree is a Next.js SaaS boilerplate (free ShipFast alternative) using Bun run
 
 ### Route Structure
 
-All pages live under `src/app/[locale]/` with three route groups (don't affect URLs):
+Locale-aware pages live under `src/app/[locale]/` with two route groups:
 - `(auth)` — login, register, verify, etc.
 - `(main)` — dashboard, settings, authenticated pages
-- `(site)` — marketing/landing pages
 
-API routes are at `src/app/api/` (not under `[locale]`).
+Non-locale routes:
+- `src/app/(site)/` — marketing/landing pages + blog (not under `[locale]`)
+- `src/app/admin/` — admin dashboard (actual path segment `/admin`, not a route group)
+- `src/app/api/` — API routes
+
+Shared components live in `src/app/(auth)/` (forms, backgrounds) — these are NOT pages, only reusable components imported by `[locale]/(auth)/` pages.
 
 ### Payment Adapter Pattern (`src/lib/payments/`)
 
 Strategy pattern: a `PaymentAdapter` interface (`types.ts`) with methods like `createCheckout`, `createCustomer`, `processWebhook`. A singleton factory in `service.ts` selects the adapter based on `env.PAYMENT_PROVIDER` (Stripe, Polar, or LemonSqueezy). Client-side hooks in `hooks.ts` use TanStack Query against `/api/payments/*` endpoints. Swapping providers requires only env var changes.
-
-The `premiumPurchase` table in the schema is isolated — it's for the template's own one-time purchase flow (selling the boilerplate itself), separate from the app's subscription payment system.
 
 ### Email Provider Pattern (`src/lib/messaging/email/`)
 
@@ -51,9 +53,29 @@ PostgreSQL via `postgres-js` driver + Drizzle ORM. Schema in `schema.ts` uses te
 
 ### Internationalization
 
-`next-intl` with locales: `en`, `es`, `fr`. Translation files in `src/messages/*.json`.
+`next-intl` with locales: `en`, `es`, `fr`, `zh`. Translation files in `src/messages/*.json`. Locale config in `src/lib/i18n/config.ts`.
 - Server components: `getTranslations` from `next-intl/server`
 - Client components: `useTranslations` from `next-intl`
+
+### Analytics (`src/lib/analytics/`)
+
+Adapter pattern supporting Plausible, Umami, and Google Analytics. Provider selected via `NEXT_PUBLIC_ANALYTICS_PROVIDER` env var. Client-side hooks in `hooks.ts`, script injection via `AnalyticsScript` component in root layout. Consent-aware — respects cookie consent before loading.
+
+### Background Jobs (`src/lib/jobs/`)
+
+Cron job framework with two providers: `node-cron` (local) and `vercel-cron` (production). Jobs defined in `src/app/api/jobs/`. Execution logs stored in `job_execution_logs` table. Config: `CRON_PROVIDER`, `CRON_SECRET`, `JOB_LOG_RETENTION_DAYS`.
+
+### SEO & GEO (`src/lib/seo.ts`, `src/components/geo/`)
+
+JSON-LD structured data (FAQ, Product, Website, Breadcrumb schemas), Open Graph metadata, `sitemap.xml`, `robots.txt`, `llms.txt` for AI crawlers. GEO components for AI engine optimization. Brand config in `src/config/brand.ts`.
+
+### Blog (`src/app/(site)/blog/`)
+
+MDX-based blog with categories, tags, RSS feed. Content in `content/blog/`. Uses `gray-matter` + `next-mdx-remote`. Not under `[locale]` (English-only).
+
+### Admin Dashboard (`src/app/admin/`)
+
+Role-based admin panel at `/admin`. Requires `role: 'admin'` in user table. Features: user management, stats overview. Protected by session check in layout.
 
 ### Environment Variables
 

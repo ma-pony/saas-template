@@ -8,11 +8,8 @@ import { getBaseUrl } from '../utils'
  *
  * Core authentication client with email OTP and organization support.
  *
- * For billing operations, use the useBilling() hook from '@/lib/billing/client'.
- * The billing client plugin is configured separately to maintain proper TypeScript types.
- *
- * @see lib/billing/client.ts for billing configuration
- * @see lib/billing/hooks.ts for billing React hooks
+ * For billing operations, see the payment hooks in '@/lib/payments/hooks'.
+ * @see lib/payments/ for payment adapter configuration
  */
 export const client = createAuthClient({
   baseURL: getBaseUrl(),

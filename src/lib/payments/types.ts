@@ -1,7 +1,7 @@
 /**
  * Payment System Types
  *
- * Unified types for the payment system following Supastarter's architecture.
+ * Unified types for the payment system using the adapter/strategy pattern.
  * All payment providers implement the same interface for consistency.
  */
 
