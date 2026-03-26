@@ -17,7 +17,7 @@ function detectLocaleFromAcceptLanguage(acceptLanguage: string | null): Supporte
     .split(',')
     .map((lang) => {
       const [locale, q] = lang.trim().split(';q=')
-      return { locale: locale.trim().split('-')[0].toLowerCase(), q: q ? parseFloat(q) : 1.0 }
+      return { locale: locale.trim().split('-')[0].toLowerCase(), q: q ? Number.parseFloat(q) : 1.0 }
     })
     .sort((a, b) => b.q - a.q)
 
