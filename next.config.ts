@@ -11,6 +11,13 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // next-intl 3.x sets experimental.turbo.resolveAlias which Next.js 16 ignores.
+  // Manually set the turbopack alias so next-intl/config resolves correctly.
+  turbopack: {
+    resolveAlias: {
+      'next-intl/config': './src/i18n/request.ts',
+    },
+  },
   async headers() {
     return [
       {
