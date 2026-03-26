@@ -1,6 +1,8 @@
 import { getAdminStats } from './actions/stats'
 import { StatsCards } from './components/stats-cards'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminOverviewPage() {
   const stats = await getAdminStats()
 

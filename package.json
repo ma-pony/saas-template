@@ -61,6 +61,7 @@
     "cmdk": "^1.1.1",
     "dodopayments": "^2.14.0",
     "drizzle-orm": "^0.45.1",
+    "geist": "^1.7.0",
     "gray-matter": "^4.0.3",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.562.0",

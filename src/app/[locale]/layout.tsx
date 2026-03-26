@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono, Bricolage_Grotesque } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
+import localFont from 'next/font/local'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -13,19 +15,13 @@ import { CookieConsentBanner } from '@/components/consent/cookie-consent-banner'
 import { AnalyticsScript } from '@/components/analytics/analytics-script'
 import { AnalyticsProvider } from '@/components/analytics/analytics-provider'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
+const geistSans = GeistSans
+const geistMono = GeistMono
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
-
-const bricolageGrotesque = Bricolage_Grotesque({
+const bricolageGrotesque = localFont({
+  src: '../../../public/fonts/BricolageGrotesque-Variable.woff2',
   variable: '--font-bricolage-grotesque',
-  subsets: ['latin'],
+  weight: '200 800',
 })
 
 export const metadata: Metadata = {

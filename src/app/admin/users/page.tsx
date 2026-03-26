@@ -1,6 +1,8 @@
 import { getUsers } from '../actions/users'
 import { UsersTable } from '../components/users-table'
 
+export const dynamic = 'force-dynamic'
+
 interface UsersPageProps {
   searchParams: Promise<{ page?: string; q?: string }>
 }
