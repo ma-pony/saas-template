@@ -1,5 +1,13 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { CreditCard, Settings, User } from 'lucide-react'
+import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
+
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'Dashboard',
+  noindex: true,
+  nofollow: true,
+})
 
 export default function DashboardPage() {
   return (

@@ -88,7 +88,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
 
     const { data, error } = await createCheckout(
       storeId,
-      Number.parseInt(price.productId),
+      Number.parseInt(price.productId, 10),
       newCheckout
     )
 

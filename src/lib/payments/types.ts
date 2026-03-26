@@ -86,6 +86,10 @@ export interface CheckoutOptions {
   trialDays?: number
   userId: string
   email?: string
+  /** ISO 3166-1 alpha-2 country code for regional payment method adaptation */
+  country?: string
+  /** Preferred currency code (adapter may ignore unsupported currencies) */
+  currency?: string
 }
 
 /**

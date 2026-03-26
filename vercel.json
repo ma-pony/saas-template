@@ -8,5 +8,30 @@
       "source": "/docs/:match*",
       "destination": "https://revoks.mintlify.dev/docs/:match*"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(en|es|fr|zh)(.*)",
+      "headers": [
+        {
+          "key": "Vary",
+          "value": "Accept-Language"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=60, stale-while-revalidate=3600"
+        }
+      ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/jobs/cleanup-logs",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/jobs/example-stats",
+      "schedule": "0 3 * * *"
+    }
   ]
 }

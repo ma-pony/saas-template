@@ -17,7 +17,7 @@ import type {
   WebhookResult,
 } from '../types'
 import type { PaymentProvider, PlanName } from '@/config/payments'
-import { getPriceConfig, paymentConfig } from '@/config/payments'
+import { getPriceConfig, paymentConfig, getRegionalPaymentMethods } from '@/config/payments'
 import { env } from '@/config/env'
 
 export class StripeAdapter implements PaymentAdapter {
@@ -33,7 +33,7 @@ export class StripeAdapter implements PaymentAdapter {
   }
 
   async createCheckout(options: CheckoutOptions): Promise<CheckoutResult> {
-    const { plan, successUrl, cancelUrl, trialDays, userId, email } = options
+    const { plan, successUrl, cancelUrl, trialDays, userId, email, country } = options
 
     // Get price configuration for this plan
     const prices = getPriceConfig(plan, 'stripe')
@@ -51,10 +51,27 @@ export class StripeAdapter implements PaymentAdapter {
     // Create or get customer
     const customer = await this.createCustomer(userId, email)
 
+    // Build payment method types: start with card, add regional methods
+    const basePaymentMethods: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = ['card']
+    const regionalMethods = getRegionalPaymentMethods(country)
+
+    // Map regional method strings to Stripe's supported payment method types
+    const stripePaymentMethods: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = [
+      ...basePaymentMethods,
+    ]
+
+    for (const method of regionalMethods) {
+      try {
+        stripePaymentMethods.push(method as Stripe.Checkout.SessionCreateParams.PaymentMethodType)
+      } catch {
+        // Skip unsupported methods silently
+      }
+    }
+
     // Build checkout session parameters
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customer.providerCustomerId,
-      payment_method_types: ['card'],
+      payment_method_types: stripePaymentMethods,
       line_items: [
         {
           price: price.productId,
@@ -68,6 +85,7 @@ export class StripeAdapter implements PaymentAdapter {
         userId,
         plan,
         provider: 'stripe',
+        ...(country && { country }),
       },
       allow_promotion_codes: true,
     }

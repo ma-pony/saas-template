@@ -1,0 +1,338 @@
+{
+  "common": {
+    "button": {
+      "tryDemo": "体验演示",
+      "cloneRepo": "克隆仓库",
+      "getStarted": "立即开始",
+      "signIn": "登录",
+      "signUp": "注册",
+      "createAccount": "创建账号",
+      "creatingAccount": "创建中...",
+      "signingIn": "登录中...",
+      "verifyEmail": "验证邮箱",
+      "verifying": "验证中...",
+      "resend": "重新发送",
+      "sendResetLink": "发送重置链接",
+      "sending": "发送中...",
+      "backToSignup": "返回注册",
+      "learnMore": "了解更多"
+    },
+    "error": {
+      "emailRequired": "邮箱不能为空。",
+      "emailInvalid": "请输入有效的邮箱地址。",
+      "passwordRequired": "密码不能为空。",
+      "passwordEmpty": "密码不能为空白。",
+      "passwordMinLength": "密码长度至少为8个字符。",
+      "nameRequired": "姓名不能为空。",
+      "invalidCredentials": "邮箱或密码无效",
+      "emailSignInDisabled": "邮箱登录当前已禁用。",
+      "invalidEmailOrPassword": "邮箱或密码无效，请重试。",
+      "noAccountFound": "该邮箱未注册账号，请先注册。",
+      "enterEmailAndPassword": "请输入邮箱和密码。",
+      "emailPasswordDisabled": "邮箱密码登录已禁用。",
+      "failedToCreateSession": "创建会话失败，请稍后重试。",
+      "tooManyAttempts": "登录尝试次数过多，请稍后重试或重置密码。",
+      "accountLocked": "您的账号已因安全原因被锁定，请重置密码。",
+      "networkError": "网络错误，请检查您的网络连接并重试。",
+      "rateLimitExceeded": "请求过于频繁，请稍后再试。"
+    },
+    "label": {
+      "email": "邮箱",
+      "password": "密码",
+      "fullName": "全名",
+      "orContinueWith": "或通过以下方式继续"
+    },
+    "placeholder": {
+      "email": "请输入您的邮箱",
+      "password": "请输入您的密码",
+      "name": "请输入您的姓名"
+    }
+  },
+  "site": {
+    "navbar": {
+      "features": "功能特性",
+      "pricing": "定价",
+      "wallOfLove": "用户评价",
+      "faq": "常见问题",
+      "docs": "文档",
+      "toggleMenu": "切换菜单",
+      "supportDev": "支持开发者"
+    },
+    "hero": {
+      "title": "生产就绪的 Next.js 模板，助您快速盈利",
+      "description": "从想法到收入，创纪录的速度实现。这个现代化模板为您节省数周的配置时间，让您专注于真正能赚钱的功能开发。",
+      "builtWithBest": "基于最佳工具构建"
+    },
+    "features": {
+      "sectionLabel": "功能特性",
+      "title": "快速上线所需的一切",
+      "subtitle": "生产就绪的功能，为您节省数周的配置时间",
+      "items": {
+        "authentication": {
+          "title": "身份认证",
+          "description": "基于 Better Auth 的内置认证系统。社交登录、邮箱验证和会话管理开箱即用。"
+        },
+        "payments": {
+          "title": "支付系统",
+          "description": "集成 Stripe 和 Polar。订阅、一次性付款和 Webhook 已配置完成。"
+        },
+        "database": {
+          "title": "数据库",
+          "description": "Drizzle ORM 配合 PostgreSQL。迁移、关联和类型安全查询开箱即用。"
+        },
+        "uiComponents": {
+          "title": "UI 组件",
+          "description": "基于 Base UI 构建的精美无障碍组件。深色模式、动画效果和响应式设计。"
+        },
+        "analytics": {
+          "title": "数据分析",
+          "description": "集成 PostHog 数据分析。开箱即用地追踪用户行为、转化率和产品洞察。"
+        },
+        "emails": {
+          "title": "邮件服务",
+          "description": "使用 Resend 发送邮件。事务性邮件、模板和投递追踪已配置完成。"
+        },
+        "typescript": {
+          "title": "TypeScript",
+          "description": "完全类型安全。整个技术栈的全面类型保障，零运行时开销。"
+        },
+        "rateLimiting": {
+          "title": "速率限制",
+          "description": "使用 Upstash 进行速率限制。自动保护您的 API 端点，防止滥用。"
+        },
+        "vercelAI": {
+          "title": "Vercel AI SDK",
+          "description": "使用 Vercel AI SDK 构建 AI 驱动的应用。集成 OpenAI、Anthropic 等更多服务。"
+        },
+        "i18n": {
+          "title": "国际化",
+          "description": "基于 next-intl 的多语言支持。翻译您的应用，触达全球用户。"
+        },
+        "aiTools": {
+          "title": "AI 工具集成",
+          "description": "集成 Cursor、Windsurf、Claude Code 和 GitHub Copilot 等 AI 工具，提升开发效率。"
+        },
+        "andMore": {
+          "title": "更多功能",
+          "description": "还有更多生产就绪的功能和集成，助您更快上线。"
+        }
+      }
+    },
+    "pricing": {
+      "sectionLabel": "定价",
+      "title": "为赢家而生的工具",
+      "subtitle": "更快上线，更早盈利，告别繁琐配置",
+      "including": "包含",
+      "mostPopular": "最受欢迎",
+      "openSource": "开源，永久免费",
+      "payOnce": "一次付费，无限项目！",
+      "pricingUSD": "以美元结算",
+      "community": {
+        "name": "社区版",
+        "price": "$0",
+        "description": "适合学习者、早期建设者和热爱实验的独立开发者。",
+        "features": {
+          "fullBoilerplate": "完整 Next.js 模板",
+          "authPaymentsUI": "认证、支付和 UI 预配置",
+          "builtInSEO": "内置 SEO",
+          "transactionEmails": "Resend 事务邮件",
+          "payments": "支持 Stripe / Lemon Squeezy / Polar",
+          "hoursSaved": "节省 100+ 小时开发时间",
+          "mitLicense": "MIT 开源许可",
+          "communityReleases": "社区版本和修复"
+        }
+      },
+      "premium": {
+        "name": "专业版",
+        "originalPrice": "$150",
+        "price": "$90",
+        "description": "为准备发布真实产品并盈利的创始人和建设者而生。",
+        "features": {
+          "everythingInFree": "包含免费版所有功能",
+          "i18n": "国际化支持",
+          "rbac": "基于角色的访问控制和邀请系统",
+          "advancedSEO": "高级 SEO 和博客系统",
+          "playwright": "Playwright 测试和 CI 工作流",
+          "analytics": "PostHog 分析钩子",
+          "proUIKit": "专业 UI 套件",
+          "privateDiscord": "私密 Discord 社区",
+          "prioritySupport": "优先支持"
+        }
+      }
+    },
+    "testimonials": {
+      "sectionLabel": "用户评价",
+      "title": "受开发者信赖",
+      "subtitle": "听听建设者们对我们平台的评价"
+    },
+    "faq": {
+      "sectionLabel": "常见问题",
+      "title": "常见问题解答",
+      "contactUs": "还有其他问题？",
+      "contactLink": "通过邮件联系我们",
+      "items": {
+        "freeVersion": {
+          "question": "免费版包含什么？",
+          "answer": "包含您构建所需的一切：完整的 Next.js 模板，含认证、支付、UI、SEO 和事务邮件。永久免费，MIT 许可。"
+        },
+        "proVersion": {
+          "question": "专业版有什么？",
+          "answer": "专业版新增一键部署、CLI 工具、高级认证（角色和邀请）、自动化邮件、分析钩子、终身更新和优先支持——专为想快速上线的创始人打造。"
+        },
+        "loseAccess": {
+          "question": "不升级会失去免费版访问权吗？",
+          "answer": "不会。免费版保持开源并始终可用。专业版只是为您节省时间和配置痛苦。"
+        },
+        "oneTimePayment": {
+          "question": "真的是一次性付款吗？",
+          "answer": "是的。$90 终身访问。没有订阅，没有续费，永远不会。"
+        },
+        "commercial": {
+          "question": "可以用于商业产品吗？",
+          "answer": "可以——免费版和专业版都可用于构建和销售您自己的项目。"
+        },
+        "bugs": {
+          "question": "发现 bug 或问题怎么办？",
+          "answer": "在 GitHub 上提 Issue 或在 Discord 中告知我们——我们修复 bug 很快，专业版用户获得优先修复和更新。"
+        },
+        "upgrade": {
+          "question": "之后可以升级吗？",
+          "answer": "当然可以。您可以从免费版开始，当您准备好升级到专业版时，您的配置保持兼容。"
+        },
+        "updates": {
+          "question": "多久发布更新？",
+          "answer": "Bug 修复和小更新定期发布；专业版用户可提前访问新模板和功能。"
+        },
+        "support": {
+          "question": "专业版包含什么支持？",
+          "answer": "私密 Discord、优先回复和终身更新。您再也不用独自摸索。"
+        }
+      }
+    },
+    "cta": {
+      "sectionLabel": "立即开始",
+      "title": "您的下一个产品今晚就可以上线。",
+      "subtitle": "专注于增长，让技术栈来处理繁重的工作"
+    },
+    "footer": {
+      "links": {
+        "heading": "链接",
+        "pricing": "定价",
+        "docs": "文档",
+        "changelog": "更新日志",
+        "demo": "演示",
+        "support": "支持"
+      },
+      "legal": {
+        "heading": "法律条款",
+        "terms": "服务条款",
+        "privacy": "隐私政策",
+        "licenses": "许可证"
+      },
+      "featuredOn": {
+        "heading": "推荐平台"
+      },
+      "community": {
+        "heading": "社区"
+      },
+      "tagline": "将想法转化为产品，快速实现",
+      "copyright": "版权所有 © {year} -"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "登录",
+      "subtitle": "请输入您的信息",
+      "forgotPassword": "忘记密码？",
+      "noAccount": "还没有账号？",
+      "signUpLink": "注册",
+      "agreeTerms": "登录即表示您同意我们的",
+      "termsLink": "服务条款",
+      "andText": "和",
+      "privacyLink": "隐私政策",
+      "resetPassword": {
+        "title": "重置密码",
+        "description": "输入您的邮箱地址，如果账号存在，我们将发送重置密码链接。",
+        "resetStatus": {
+          "success": "密码重置链接已发送到您的邮箱",
+          "emailRequired": "请输入您的邮箱地址",
+          "emailInvalid": "请输入有效的邮箱地址",
+          "noAccountFound": "该邮箱地址未找到关联账号"
+        }
+      }
+    },
+    "register": {
+      "title": "创建账号",
+      "subtitle": "请输入您的信息",
+      "alreadyHaveAccount": "已有账号？",
+      "signInLink": "登录",
+      "agreeTerms": "创建账号即表示您同意我们的",
+      "termsLink": "服务条款",
+      "andText": "和",
+      "privacyLink": "隐私政策"
+    },
+    "verify": {
+      "title": "验证您的邮箱",
+      "titleVerified": "邮箱已验证！",
+      "subtitle": "验证码已发送至 {email}",
+      "subtitleVerified": "您的邮箱已验证成功，正在跳转到控制台...",
+      "enterCode": "请输入 6 位验证码以验证您的账号。",
+      "didntReceive": "没有收到验证码？",
+      "resendIn": "重新发送",
+      "seconds": "{count}秒"
+    },
+    "resetPassword": {
+      "title": "重置密码",
+      "subtitle": "在下方输入您的新密码。",
+      "newPassword": "新密码",
+      "confirmPassword": "确认密码",
+      "submitButton": "重置密码",
+      "submitting": "重置中...",
+      "backToLogin": "返回登录"
+    }
+  },
+  "dashboard": {
+    "header": {
+      "title": "控制台",
+      "welcome": "欢迎来到您的控制台"
+    },
+    "billing": {
+      "title": "账单演示",
+      "description": "探索与 better-auth 支付插件的账单系统集成。"
+    },
+    "profile": {
+      "title": "个人资料",
+      "description": "管理您的账号设置。"
+    },
+    "settings": {
+      "title": "设置",
+      "description": "配置您的偏好。"
+    }
+  },
+  "consent": {
+    "banner": {
+      "title": "我们使用 Cookie",
+      "description": "我们使用 Cookie 来改善您的体验。点击「全部接受」即表示您同意我们使用 Cookie。",
+      "acceptAll": "全部接受",
+      "necessaryOnly": "仅必要",
+      "customize": "自定义设置",
+      "close": "关闭",
+      "preferences": {
+        "title": "Cookie 偏好设置",
+        "necessary": {
+          "title": "必要",
+          "description": "网站正常运行所必需。"
+        },
+        "analytics": {
+          "title": "分析",
+          "description": "帮助我们了解您如何使用我们的网站。"
+        },
+        "marketing": {
+          "title": "营销",
+          "description": "用于向您展示相关广告和内容。"
+        },
+        "save": "保存偏好"
+      }
+    }
+  }
+}

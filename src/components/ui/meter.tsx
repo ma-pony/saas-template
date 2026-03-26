@@ -1,60 +1,89 @@
 'use client'
 
-import { Meter as MeterPrimitive } from '@base-ui/react/meter'
-
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-function Meter({ className, children, ...props }: MeterPrimitive.Root.Props) {
+const MeterContext = React.createContext<{
+  value: number
+  min: number
+  max: number
+}>({
+  value: 0,
+  min: 0,
+  max: 100,
+})
+
+function Meter({
+  className,
+  children,
+  value = 0,
+  min = 0,
+  max = 100,
+  ...props
+}: React.ComponentProps<'div'> & {
+  value?: number
+  min?: number
+  max?: number
+}) {
   return (
-    <MeterPrimitive.Root className={cn('flex w-full flex-col gap-2', className)} {...props}>
-      {children ? (
-        children
-      ) : (
-        <MeterTrack>
-          <MeterIndicator />
-        </MeterTrack>
-      )}
-    </MeterPrimitive.Root>
+    <MeterContext.Provider value={{ value, min, max }}>
+      <div
+        className={cn('flex w-full flex-col gap-2', className)}
+        role='meter'
+        aria-valuenow={value}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        data-slot='meter'
+        {...props}
+      >
+        {children ?? (
+          <MeterTrack>
+            <MeterIndicator />
+          </MeterTrack>
+        )}
+      </div>
+    </MeterContext.Provider>
   )
 }
 
-function MeterLabel({ className, ...props }: MeterPrimitive.Label.Props) {
+function MeterLabel({ className, ...props }: React.ComponentProps<'span'>) {
   return (
-    <MeterPrimitive.Label
-      className={cn('font-medium text-sm', className)}
-      data-slot='meter-label'
-      {...props}
-    />
+    <span className={cn('font-medium text-sm', className)} data-slot='meter-label' {...props} />
   )
 }
 
-function MeterTrack({ className, ...props }: MeterPrimitive.Track.Props) {
+function MeterTrack({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <MeterPrimitive.Track
-      className={cn('block h-2 w-full overflow-hidden bg-input', className)}
+    <div
+      className={cn('block h-2 w-full overflow-hidden rounded-full bg-input', className)}
       data-slot='meter-track'
       {...props}
     />
   )
 }
 
-function MeterIndicator({ className, ...props }: MeterPrimitive.Indicator.Props) {
+function MeterIndicator({ className, ...props }: React.ComponentProps<'div'>) {
+  const { value, min, max } = React.useContext(MeterContext)
+  const percentage = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100))
+
   return (
-    <MeterPrimitive.Indicator
-      className={cn('bg-primary transition-all duration-500', className)}
+    <div
+      className={cn('h-full bg-primary transition-all duration-500', className)}
       data-slot='meter-indicator'
+      style={{ width: `${percentage}%` }}
       {...props}
     />
   )
 }
 
-function MeterValue({ className, ...props }: MeterPrimitive.Value.Props) {
+function MeterValue({ className, children, ...props }: React.ComponentProps<'span'>) {
+  const { value, min, max } = React.useContext(MeterContext)
+  const percentage = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100))
+
   return (
-    <MeterPrimitive.Value
-      className={cn('text-sm tabular-nums', className)}
-      data-slot='meter-value'
-      {...props}
-    />
+    <span className={cn('text-sm tabular-nums', className)} data-slot='meter-value' {...props}>
+      {children ?? `${Math.round(percentage)}%`}
+    </span>
   )
 }
 

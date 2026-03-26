@@ -2,16 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { ArrowUpRight } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipCreateHandle,
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipPopup,
-} from '@/components/ui/tooltip'
-import { PremiumButton } from './pricing/premium-button'
-
-const tooltipHandle = TooltipCreateHandle<React.ComponentType>()
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 // Tooltip content components
 const BetterAuthContent = () => <span>Better Auth</span>
@@ -20,7 +11,7 @@ const TypeScriptContent = () => <span>TypeScript</span>
 const TanStackContent = () => <span>TanStack</span>
 const VercelContent = () => <span>Vercel AI SDK</span>
 const BunContent = () => <span>Bun</span>
-const BaseUIContent = () => <span>Base UI</span>
+const RadixUIContent = () => <span>Radix UI</span>
 
 export default function Hero() {
   return (
@@ -37,14 +28,15 @@ export default function Hero() {
               alt='Next.js'
               className='inline-block h-[0.9em] w-[0.9em] align-middle mx-1'
             />{' '}
-            Next.js boilerplate built to make $$$
+            Next.js boilerplate for your SaaS
           </h1>
           <p className='mx-auto mt-6 max-w-xl text-balance text-center text-muted-foreground md:max-w-2xl md:text-lg'>
-            Go from idea to income in record time. A modern boilerplate that saves you weeks of
-            setup so you can spend time building features that actually make money.{' '}
+            Launch your SaaS faster with a fully-featured boilerplate. Auth, payments, email, SEO,
+            and more — all pre-configured so you can focus on building your product.
           </p>
           <div className='mx-auto mt-10 flex items-center justify-center gap-4'>
-            <PremiumButton className='text-white' />
+            {/* TODO: Replace with your primary CTA (e.g., link to sign up or pricing) */}
+            <Button className='h-12! px-8 text-base font-semibold text-white'>Get Started</Button>
             <Button variant='outline' className='font-semibold h-12! px-8 text-base'>
               Try demo
               <ArrowUpRight className='h-8 w-8' />
@@ -63,103 +55,104 @@ export default function Hero() {
             </h2>
             <div className='flex items-center justify-center gap-1 sm:gap-5 md:gap-6 flex-wrap'>
               {/* Vercel AI SDK */}
-              <TooltipTrigger
-                handle={tooltipHandle}
-                payload={VercelContent}
-                className='flex items-center justify-center h-12 w-12 cursor-pointer'
-              >
-                <img
-                  src='/stack-icons/vercel.svg'
-                  alt='Vercel AI SDK'
-                  className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100 brightness-0'
-                />
-              </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger className='flex items-center justify-center h-12 w-12 cursor-pointer'>
+                  <img
+                    src='/stack-icons/vercel.svg'
+                    alt='Vercel AI SDK'
+                    className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100 brightness-0'
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <VercelContent />
+                </TooltipContent>
+              </Tooltip>
 
               {/* Tailwind CSS */}
-              <TooltipTrigger
-                handle={tooltipHandle}
-                payload={TailwindCSSContent}
-                className='flex items-center justify-center h-12 w-12 cursor-pointer'
-              >
-                <img
-                  src='/stack-icons/tailwindcss.svg'
-                  alt='Tailwind CSS'
-                  className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
-                />
-              </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger className='flex items-center justify-center h-12 w-12 cursor-pointer'>
+                  <img
+                    src='/stack-icons/tailwindcss.svg'
+                    alt='Tailwind CSS'
+                    className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <TailwindCSSContent />
+                </TooltipContent>
+              </Tooltip>
 
               {/* TypeScript */}
-              <TooltipTrigger
-                handle={tooltipHandle}
-                payload={TypeScriptContent}
-                className='flex items-center justify-center h-12 w-12 cursor-pointer'
-              >
-                <img
-                  src='/stack-icons/typescript.svg'
-                  alt='TypeScript'
-                  className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
-                />
-              </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger className='flex items-center justify-center h-12 w-12 cursor-pointer'>
+                  <img
+                    src='/stack-icons/typescript.svg'
+                    alt='TypeScript'
+                    className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <TypeScriptContent />
+                </TooltipContent>
+              </Tooltip>
 
               {/* Better Auth */}
-              <TooltipTrigger
-                handle={tooltipHandle}
-                payload={BetterAuthContent}
-                className='flex items-center justify-center h-12 w-12 cursor-pointer'
-              >
-                <img
-                  src='/stack-icons/better-auth.svg'
-                  alt='Better Auth'
-                  className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
-                />
-              </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger className='flex items-center justify-center h-12 w-12 cursor-pointer'>
+                  <img
+                    src='/stack-icons/better-auth.svg'
+                    alt='Better Auth'
+                    className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <BetterAuthContent />
+                </TooltipContent>
+              </Tooltip>
 
               {/* TanStack */}
-              <TooltipTrigger
-                handle={tooltipHandle}
-                payload={TanStackContent}
-                className='flex items-center justify-center h-12 w-12 cursor-pointer'
-              >
-                <img
-                  src='/stack-icons/tanstack.svg'
-                  alt='TanStack'
-                  className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
-                />
-              </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger className='flex items-center justify-center h-12 w-12 cursor-pointer'>
+                  <img
+                    src='/stack-icons/tanstack.svg'
+                    alt='TanStack'
+                    className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <TanStackContent />
+                </TooltipContent>
+              </Tooltip>
 
-              {/* Base UI */}
-              <TooltipTrigger
-                handle={tooltipHandle}
-                payload={BaseUIContent}
-                className='flex items-center justify-center h-12 w-12 cursor-pointer'
-              >
-                <img
-                  src='/stack-icons/base-ui.svg'
-                  alt='Base UI'
-                  className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
-                />
-              </TooltipTrigger>
+              {/* Radix UI */}
+              <Tooltip>
+                <TooltipTrigger className='flex items-center justify-center h-12 w-12 cursor-pointer'>
+                  <img
+                    src='/stack-icons/radix-ui.svg'
+                    alt='Radix UI'
+                    className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <RadixUIContent />
+                </TooltipContent>
+              </Tooltip>
 
               {/* Bun */}
-              <TooltipTrigger
-                handle={tooltipHandle}
-                payload={BunContent}
-                className='flex items-center justify-center h-12 w-12 cursor-pointer'
-              >
-                <img
-                  src='/stack-icons/bun.svg'
-                  alt='Bun'
-                  className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
-                />
-              </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger className='flex items-center justify-center h-12 w-12 cursor-pointer'>
+                  <img
+                    src='/stack-icons/bun.svg'
+                    alt='Bun'
+                    className='h-12 w-12 opacity-70 transition-opacity duration-200 hover:opacity-100'
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <BunContent />
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
-
-          <Tooltip handle={tooltipHandle}>
-            {({ payload: Payload }) => (
-              <TooltipPopup>{Payload !== undefined && <Payload />}</TooltipPopup>
-            )}
-          </Tooltip>
         </TooltipProvider>
       </div>
     </main>

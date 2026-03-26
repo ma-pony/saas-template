@@ -1,15 +1,19 @@
 'use client'
 
-import { Accordion as AccordionPrimitive } from '@base-ui/react/accordion'
+import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { Plus, Minus } from 'lucide-react'
+import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-function Accordion(props: AccordionPrimitive.Root.Props) {
+function Accordion(props: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return <AccordionPrimitive.Root data-slot='accordion' {...props} />
 }
 
-function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
+function AccordionItem({
+  className,
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Item>) {
   return (
     <AccordionPrimitive.Item
       className={cn('border-b last:border-b-0', className)}
@@ -19,7 +23,11 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
   )
 }
 
-function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.Trigger.Props) {
+function AccordionTrigger({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
   return (
     <AccordionPrimitive.Header className='flex'>
       <AccordionPrimitive.Trigger
@@ -32,23 +40,27 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
       >
         {children}
         <div className='relative size-4 shrink-0 translate-y-0.5'>
-          <Plus className='pointer-events-none size-4 opacity-80 transition-opacity duration-200 ease-in-out group-data-[panel-open]:opacity-0' />
-          <Minus className='pointer-events-none size-4 opacity-0 absolute inset-0 transition-opacity duration-200 ease-in-out group-data-[panel-open]:opacity-80' />
+          <Plus className='pointer-events-none size-4 opacity-80 transition-opacity duration-200 ease-in-out group-data-[state=open]:opacity-0' />
+          <Minus className='pointer-events-none size-4 opacity-0 absolute inset-0 transition-opacity duration-200 ease-in-out group-data-[state=open]:opacity-80' />
         </div>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )
 }
 
-function AccordionPanel({ className, children, ...props }: AccordionPrimitive.Panel.Props) {
+function AccordionPanel({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Content>) {
   return (
-    <AccordionPrimitive.Panel
-      className='h-(--accordion-panel-height) overflow-hidden text-muted-foreground text-sm transition-[height] duration-200 ease-in-out data-ending-style:h-0 data-starting-style:h-0'
+    <AccordionPrimitive.Content
+      className='overflow-hidden text-muted-foreground text-sm data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up'
       data-slot='accordion-panel'
       {...props}
     >
       <div className={cn('pt-0 pb-4', className)}>{children}</div>
-    </AccordionPrimitive.Panel>
+    </AccordionPrimitive.Content>
   )
 }
 

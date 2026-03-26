@@ -1,6 +1,7 @@
 'use client'
 
-import { ScrollArea as ScrollAreaPrimitive } from '@base-ui/react/scroll-area'
+import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area'
+import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -10,18 +11,19 @@ function ScrollArea({
   scrollFade = false,
   scrollbarGutter = false,
   ...props
-}: ScrollAreaPrimitive.Root.Props & {
+}: React.ComponentProps<typeof ScrollAreaPrimitive.Root> & {
   scrollFade?: boolean
   scrollbarGutter?: boolean
 }) {
   return (
-    <ScrollAreaPrimitive.Root className={cn('size-full min-h-0', className)} {...props}>
+    <ScrollAreaPrimitive.Root
+      className={cn('size-full min-h-0 overflow-hidden', className)}
+      {...props}
+    >
       <ScrollAreaPrimitive.Viewport
         className={cn(
-          'h-full overscroll-contain rounded-[inherit] outline-none transition-shadows focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background',
-          scrollFade &&
-            'mask-t-from-[calc(100%-min(var(--fade-size),var(--scroll-area-overflow-y-start)))] mask-b-from-[calc(100%-min(var(--fade-size),var(--scroll-area-overflow-y-end)))] mask-l-from-[calc(100%-min(var(--fade-size),var(--scroll-area-overflow-x-start)))] mask-r-from-[calc(100%-min(var(--fade-size),var(--scroll-area-overflow-x-end)))] [--fade-size:1.5rem]',
-          scrollbarGutter && 'data-has-overflow-y:pe-2.5 data-has-overflow-x:pb-2.5'
+          'h-full w-full rounded-[inherit] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+          scrollbarGutter && 'pe-2.5'
         )}
         data-slot='scroll-area-viewport'
       >
@@ -38,11 +40,11 @@ function ScrollBar({
   className,
   orientation = 'vertical',
   ...props
-}: ScrollAreaPrimitive.Scrollbar.Props) {
+}: React.ComponentProps<typeof ScrollAreaPrimitive.Scrollbar>) {
   return (
     <ScrollAreaPrimitive.Scrollbar
       className={cn(
-        'm-1 flex opacity-0 transition-opacity delay-300 data-[orientation=horizontal]:h-1.5 data-[orientation=vertical]:w-1.5 data-[orientation=horizontal]:flex-col data-hovering:opacity-100 data-scrolling:opacity-100 data-hovering:delay-0 data-scrolling:delay-0 data-hovering:duration-100 data-scrolling:duration-100',
+        'm-1 flex opacity-0 transition-opacity delay-300 data-[orientation=horizontal]:h-1.5 data-[orientation=vertical]:w-1.5 data-[orientation=horizontal]:flex-col data-[state=visible]:opacity-100 data-[state=visible]:delay-0 data-[state=visible]:duration-100',
         className
       )}
       data-slot='scroll-area-scrollbar'

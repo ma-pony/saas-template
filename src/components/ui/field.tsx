@@ -1,35 +1,54 @@
 'use client'
 
-import { Field as FieldPrimitive } from '@base-ui/react/field'
+import * as React from 'react'
 
 import { cn } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
 
-function Field({ className, ...props }: FieldPrimitive.Root.Props) {
+// Context to share field id and validity state
+type FieldContextValue = {
+  id: string
+  invalid?: boolean
+}
+const FieldContext = React.createContext<FieldContextValue | null>(null)
+
+function useField() {
+  return React.useContext(FieldContext)
+}
+
+function Field({ className, id, ...props }: React.ComponentProps<'div'>) {
+  const generatedId = React.useId()
+  const fieldId = id ?? generatedId
+
   return (
-    <FieldPrimitive.Root
-      className={cn('flex flex-col items-start gap-2', className)}
-      data-slot='field'
-      {...props}
-    />
+    <FieldContext.Provider value={{ id: fieldId }}>
+      <div
+        className={cn('flex flex-col items-start gap-2', className)}
+        data-slot='field'
+        {...props}
+      />
+    </FieldContext.Provider>
   )
 }
 
-function FieldLabel({ className, ...props }: FieldPrimitive.Label.Props) {
+function FieldLabel({ className, htmlFor, ...props }: React.ComponentProps<typeof Label>) {
+  const ctx = useField()
   return (
-    <FieldPrimitive.Label
+    <Label
       className={cn(
         'inline-flex items-center gap-2 font-medium text-base/4.5 sm:text-sm/4',
         className
       )}
       data-slot='field-label'
+      htmlFor={htmlFor ?? ctx?.id}
       {...props}
     />
   )
 }
 
-function FieldDescription({ className, ...props }: FieldPrimitive.Description.Props) {
+function FieldDescription({ className, ...props }: React.ComponentProps<'p'>) {
   return (
-    <FieldPrimitive.Description
+    <p
       className={cn('text-muted-foreground text-xs', className)}
       data-slot='field-description'
       {...props}
@@ -37,17 +56,27 @@ function FieldDescription({ className, ...props }: FieldPrimitive.Description.Pr
   )
 }
 
-function FieldError({ className, ...props }: FieldPrimitive.Error.Props) {
+function FieldError({ className, children, ...props }: React.ComponentProps<'p'>) {
+  if (!children) return null
   return (
-    <FieldPrimitive.Error
+    <p
       className={cn('text-destructive-foreground text-xs', className)}
       data-slot='field-error'
       {...props}
-    />
+    >
+      {children}
+    </p>
   )
 }
 
-const FieldControl = FieldPrimitive.Control
-const FieldValidity = FieldPrimitive.Validity
+// FieldControl wraps a child and forwards the id from context
+function FieldControl({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
+}
+
+// FieldValidity is a no-op placeholder
+function FieldValidity({ children }: { children?: React.ReactNode }) {
+  return <>{children}</>
+}
 
 export { Field, FieldLabel, FieldDescription, FieldError, FieldControl, FieldValidity }

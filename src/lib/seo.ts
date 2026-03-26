@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getBaseUrl } from '@/lib/utils'
 import { getBrandConfig } from '@/config/branding'
+import { generateHreflangMetadata } from '@/lib/i18n/hreflang'
 
 /**
  * Site configuration for SEO
@@ -9,32 +10,39 @@ const brandConfig = getBrandConfig()
 
 export const siteConfig = {
   name: brandConfig.name,
+  // TODO: Replace with your product description
   description:
-    'ShipFree is a free open-source Next.js SaaS boilerplate alternative to ShipFast. Simplify and optimize your shipping process with modern web technologies.',
+    'A production-ready Next.js SaaS boilerplate with auth, payments, and everything you need to launch fast.',
   url: getBaseUrl(),
-  twitterHandle: '@codedoesdev',
-  creator: 'The Revoks Company',
+  // TODO: Replace with your Twitter/X handle
+  twitterHandle: '@yourhandle',
+  // TODO: Replace with your company name
+  creator: 'Your Company',
   keywords: [
-    'ShipFree',
-    'ShipFast alternative',
     'Next.js SaaS boilerplate',
-    'Open source boilerplate',
-    'SaaS template',
+    'Open source SaaS template',
+    'SaaS starter kit',
     'Next.js template',
-    'Shipping solution',
-    'E-commerce boilerplate',
-    'Stripe integration',
-    'LemonSqueezy integration',
-    'Supabase authentication',
     'Drizzle ORM',
-    'Mailgun',
+    'Better Auth',
     'TypeScript boilerplate',
     'React SaaS',
+    'Stripe integration',
+    'Polar payments',
+    'Resend email',
   ],
 } as const
 
 /**
  * Type for SEO metadata options
+ *
+ * @example
+ * // Marketing page
+ * generateMetadata({ title: 'Home', description: 'Welcome to our app', canonical: '/' })
+ *
+ * @example
+ * // Page with hreflang alternates
+ * generateMetadata({ title: 'Home', locale: 'en', alternateLocales: ['es', 'fr'] })
  */
 export type SEOOptions = {
   title?: string
@@ -51,6 +59,12 @@ export type SEOOptions = {
   canonical?: string
   isRootLayout?: boolean
   allowCanonicalQuery?: boolean
+  /** Current page locale, used for hreflang */
+  locale?: string
+  /** Other available locales for hreflang alternates */
+  alternateLocales?: string[]
+  /** Pathname without locale prefix for hreflang (e.g. '/pricing') */
+  pathname?: string
 }
 
 /**
@@ -122,8 +136,51 @@ const getTwitterCard = (options: SEOOptions) => {
 }
 
 /**
- * Generate comprehensive metadata for a page
- * This is the main function to use for generating SEO metadata
+ * Generate hreflang alternate language entries for international pages.
+ * Returns an object mapping locale codes to their absolute URLs.
+ *
+ * @example
+ * getAlternateLanguages({ locale: 'en', alternateLocales: ['es', 'fr'], canonical: '/' })
+ * // => { es: 'https://example.com/es/', fr: 'https://example.com/fr/' }
+ */
+const getAlternateLanguages = (options: SEOOptions): Record<string, string> | undefined => {
+  if (!options.alternateLocales?.length) return undefined
+  return Object.fromEntries(
+    options.alternateLocales.map((locale) => [
+      locale,
+      `${siteConfig.url}/${locale}${options.canonical || ''}`,
+    ])
+  )
+}
+
+/**
+ * Generate comprehensive metadata for a page.
+ * This is the main function to use for generating SEO metadata.
+ *
+ * @example
+ * // Marketing page
+ * export const metadata: Metadata = generateMetadata({
+ *   title: 'Home',
+ *   description: 'Welcome to My SaaS App',
+ *   canonical: '/',
+ * })
+ *
+ * @example
+ * // Auth page (noindex)
+ * export const metadata: Metadata = generateMetadata({
+ *   title: 'Login',
+ *   noindex: true,
+ *   nofollow: true,
+ * })
+ *
+ * @example
+ * // Internationalized page with hreflang
+ * export const metadata: Metadata = generateMetadata({
+ *   title: 'Home',
+ *   canonical: '/',
+ *   locale: 'en',
+ *   alternateLocales: ['es', 'fr'],
+ * })
  */
 export const generateMetadata = (options: SEOOptions = {}): Metadata => {
   const description = options.description || siteConfig.description
@@ -135,6 +192,12 @@ export const generateMetadata = (options: SEOOptions = {}): Metadata => {
   const canonicalUrl = normalizedCanonicalPath
     ? getAbsoluteUrl(normalizedCanonicalPath)
     : siteConfig.url
+
+  const alternateLanguages = getAlternateLanguages(options)
+
+  // Generate hreflang if locale and pathname are provided (i18n approach)
+  const hreflangAlternates =
+    options.locale && options.pathname ? generateHreflangMetadata(options.pathname) : null
 
   // For root layout, use absolute and template
   // For child pages, just use string title (template will be applied automatically)
@@ -157,6 +220,8 @@ export const generateMetadata = (options: SEOOptions = {}): Metadata => {
     metadataBase: new URL(siteConfig.url),
     alternates: {
       canonical: canonicalUrl,
+      ...(alternateLanguages && { languages: alternateLanguages }),
+      ...(hreflangAlternates || {}),
     },
     openGraph: getOpenGraph({
       ...options,
@@ -197,7 +262,8 @@ export const getOrganizationSchema = () => {
     description: siteConfig.description,
     url: siteConfig.url,
     logo: getAbsoluteUrl('/logo.png'),
-    sameAs: ['https://github.com/revokslab', 'https://x.com/codedoesdev'],
+    // TODO: Replace with your organization's social/web profiles
+    sameAs: ['https://github.com/your-org', 'https://x.com/yourhandle'],
   }
 }
 
@@ -272,6 +338,88 @@ export const getArticleSchema = (options: {
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': getAbsoluteUrl(options.url),
+    },
+  }
+}
+
+/**
+ * Generate JSON-LD structured data for FAQ pages (FAQPage schema).
+ * Improves search result visibility with rich snippets.
+ *
+ * @param questions - Array of question/answer pairs
+ *
+ * @example
+ * getFAQSchema([
+ *   { question: 'What is this app?', answer: 'A Next.js SaaS boilerplate.' },
+ * ])
+ */
+export const getFAQSchema = (questions: Array<{ question: string; answer: string }>) => {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: questions.map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  }
+}
+
+/**
+ * Alias for getFAQSchema — generates JSON-LD structured data for FAQ page.
+ */
+export const getFAQPageSchema = getFAQSchema
+
+/**
+ * Generate JSON-LD structured data for SaaS/software applications using brand config.
+ * Uses GeoConfig if available for richer schema data.
+ */
+export const getSoftwareApplicationSchema = () => {
+  const brand = getBrandConfig()
+  const geo = brand.geo
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: brand.name,
+    description: geo?.aiDescription || siteConfig.description,
+    applicationCategory: geo?.softwareCategory || 'WebApplication',
+    operatingSystem: geo?.operatingSystem || 'Any',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+    },
+    url: siteConfig.url,
+    ...(brand.supportEmail && { email: brand.supportEmail }),
+  }
+}
+
+/**
+ * Generate JSON-LD structured data for product
+ */
+export const getProductSchema = (
+  options: { price?: string; currency?: string; availability?: string } = {}
+) => {
+  const brand = getBrandConfig()
+  const geo = brand.geo
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: brand.name,
+    description: geo?.aiDescription || siteConfig.description,
+    url: siteConfig.url,
+    brand: {
+      '@type': 'Brand',
+      name: brand.name,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: options.price || '0',
+      priceCurrency: options.currency || 'USD',
+      availability: options.availability || 'https://schema.org/InStock',
     },
   }
 }

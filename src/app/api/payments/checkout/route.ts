@@ -5,6 +5,10 @@ import { z } from 'zod'
 import { auth } from '@/lib/auth'
 import { getPaymentAdapter } from '@/lib/payments/service'
 import { getAvailablePlans } from '@/config/payments'
+import { createRateLimiter } from '@/lib/rate-limit'
+
+// Rate limit: 10 checkout requests per minute per IP
+const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 10 })
 
 const checkoutSchema = z.object({
   plan: z.enum(getAvailablePlans() as [string, ...string[]]),
@@ -13,9 +17,13 @@ const checkoutSchema = z.object({
 })
 
 export async function POST(req: Request) {
+  const limitResult = await rateLimiter(req)
+  if (limitResult instanceof NextResponse) return limitResult
+
   try {
+    const requestHeaders = await headers()
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: requestHeaders,
     })
 
     if (!session) {
@@ -32,12 +40,17 @@ export async function POST(req: Request) {
     const { plan, successUrl, cancelUrl } = result.data
     const adapter = getPaymentAdapter()
 
+    // Extract country from geo headers written by middleware
+    const country =
+      requestHeaders.get('x-vercel-ip-country') ?? requestHeaders.get('cf-ipcountry') ?? undefined
+
     const checkoutSession = await adapter.createCheckout({
       plan: plan as any,
       userId: session.user.id,
       email: session.user.email,
       successUrl,
       cancelUrl,
+      country,
     })
 
     return NextResponse.json(checkoutSession)

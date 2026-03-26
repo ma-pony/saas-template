@@ -1,10 +1,11 @@
 'use client'
 
-import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar'
+import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
+import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-function Toolbar({ className, ...props }: ToolbarPrimitive.Root.Props) {
+function Toolbar({ className, ...props }: React.ComponentProps<typeof ToolbarPrimitive.Root>) {
   return (
     <ToolbarPrimitive.Root
       className={cn(
@@ -17,29 +18,40 @@ function Toolbar({ className, ...props }: ToolbarPrimitive.Root.Props) {
   )
 }
 
-function ToolbarButton({ className, ...props }: ToolbarPrimitive.Button.Props) {
+function ToolbarButton({
+  className,
+  ...props
+}: React.ComponentProps<typeof ToolbarPrimitive.Button>) {
   return <ToolbarPrimitive.Button className={cn(className)} data-slot='toolbar-button' {...props} />
 }
 
-function ToolbarLink({ className, ...props }: ToolbarPrimitive.Link.Props) {
+function ToolbarLink({ className, ...props }: React.ComponentProps<typeof ToolbarPrimitive.Link>) {
   return <ToolbarPrimitive.Link className={cn(className)} data-slot='toolbar-link' {...props} />
 }
 
-function ToolbarInput({ className, ...props }: ToolbarPrimitive.Input.Props) {
-  return <ToolbarPrimitive.Input className={cn(className)} data-slot='toolbar-input' {...props} />
+// Toolbar.Input doesn't exist in Radix - use a plain input wrapper
+function ToolbarInput({ className, ...props }: React.ComponentProps<'input'>) {
+  return <input className={cn(className)} data-slot='toolbar-input' {...props} />
 }
 
-function ToolbarGroup({ className, ...props }: ToolbarPrimitive.Group.Props) {
+function ToolbarGroup({
+  className,
+  ...props
+}: React.ComponentProps<typeof ToolbarPrimitive.ToggleGroup>) {
   return (
-    <ToolbarPrimitive.Group
+    <ToolbarPrimitive.ToggleGroup
       className={cn('flex items-center gap-1', className)}
       data-slot='toolbar-group'
+      type='multiple'
       {...props}
     />
   )
 }
 
-function ToolbarSeparator({ className, ...props }: ToolbarPrimitive.Separator.Props) {
+function ToolbarSeparator({
+  className,
+  ...props
+}: React.ComponentProps<typeof ToolbarPrimitive.Separator>) {
   return (
     <ToolbarPrimitive.Separator
       className={cn(

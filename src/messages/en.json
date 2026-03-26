@@ -1,0 +1,338 @@
+{
+  "common": {
+    "button": {
+      "tryDemo": "Try demo",
+      "cloneRepo": "Clone repo",
+      "getStarted": "Get started",
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "createAccount": "Create account",
+      "creatingAccount": "Creating account...",
+      "signingIn": "Signing in...",
+      "verifyEmail": "Verify Email",
+      "verifying": "Verifying...",
+      "resend": "Resend",
+      "sendResetLink": "Send Reset Link",
+      "sending": "Sending...",
+      "backToSignup": "Back to signup",
+      "learnMore": "Learn more"
+    },
+    "error": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Please enter a valid email address.",
+      "passwordRequired": "Password is required.",
+      "passwordEmpty": "Password cannot be empty.",
+      "passwordMinLength": "Password must be at least 8 characters long.",
+      "nameRequired": "Name is required.",
+      "invalidCredentials": "Invalid email or password",
+      "emailSignInDisabled": "Email sign in is currently disabled.",
+      "invalidEmailOrPassword": "Invalid email or password. Please try again.",
+      "noAccountFound": "No account found with this email. Please sign up first.",
+      "enterEmailAndPassword": "Please enter both email and password.",
+      "emailPasswordDisabled": "Email and password login is disabled.",
+      "failedToCreateSession": "Failed to create session. Please try again later.",
+      "tooManyAttempts": "Too many login attempts. Please try again later or reset your password.",
+      "accountLocked": "Your account has been locked for security. Please reset your password.",
+      "networkError": "Network error. Please check your connection and try again.",
+      "rateLimitExceeded": "Too many requests. Please wait a moment before trying again."
+    },
+    "label": {
+      "email": "Email",
+      "password": "Password",
+      "fullName": "Full name",
+      "orContinueWith": "Or continue with"
+    },
+    "placeholder": {
+      "email": "Enter your email",
+      "password": "Enter your password",
+      "name": "Enter your name"
+    }
+  },
+  "site": {
+    "navbar": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "wallOfLove": "Wall of love",
+      "faq": "FAQ",
+      "docs": "Docs",
+      "toggleMenu": "Toggle menu",
+      "supportDev": "Support Dev"
+    },
+    "hero": {
+      "title": "A production-ready Next.js boilerplate built to make $$$",
+      "description": "Go from idea to income in record time. A modern boilerplate that saves you weeks of setup so you can spend time building features that actually make money.",
+      "builtWithBest": "BUILT WITH THE BEST TOOLS"
+    },
+    "features": {
+      "sectionLabel": "FEATURES",
+      "title": "Everything you need to ship fast",
+      "subtitle": "Production-ready features that save you weeks of setup time",
+      "items": {
+        "authentication": {
+          "title": "Authentication",
+          "description": "Built-in auth with Better Auth. Social logins, email verification, and session management ready to go."
+        },
+        "payments": {
+          "title": "Payments",
+          "description": "Stripe and Polar integrations. Subscriptions, one-time payments, and webhooks configured."
+        },
+        "database": {
+          "title": "Database",
+          "description": "Drizzle ORM with PostgreSQL. Migrations, relations, and type-safe queries out of the box."
+        },
+        "uiComponents": {
+          "title": "UI Components",
+          "description": "Beautiful, accessible components built with Base UI. Dark mode, animations, and responsive design."
+        },
+        "analytics": {
+          "title": "Analytics",
+          "description": "Analytics with PostHog. Track user behavior, conversions, and product insights out of the box."
+        },
+        "emails": {
+          "title": "Emails",
+          "description": "Emails with Resend. Transactional emails, templates, and delivery tracking configured."
+        },
+        "typescript": {
+          "title": "TypeScript",
+          "description": "TypeScript typesafe. Full type safety across your entire stack with zero runtime overhead."
+        },
+        "rateLimiting": {
+          "title": "Rate Limiting",
+          "description": "Rate limiting with Upstash. Protect your API endpoints and prevent abuse automatically."
+        },
+        "vercelAI": {
+          "title": "Vercel AI SDK",
+          "description": "Build AI-powered applications with Vercel AI SDK. Integrate with OpenAI, Anthropic, and more."
+        },
+        "i18n": {
+          "title": "Internationalization",
+          "description": "Multi-language support with next-intl. Translate your app and reach global audiences."
+        },
+        "aiTools": {
+          "title": "AI Tools",
+          "description": "Integrating in AI tools like Cursor, Windsurf, Claude Code, and GitHub Copilot for enhanced development."
+        },
+        "andMore": {
+          "title": "And More",
+          "description": "Plus many more production-ready features and integrations to help you ship faster."
+        }
+      }
+    },
+    "pricing": {
+      "sectionLabel": "Pricing",
+      "title": "Built for builders who play to win",
+      "subtitle": "Launch faster, sell sooner, and grow without fighting setup pain",
+      "including": "INCLUDING",
+      "mostPopular": "Most popular",
+      "openSource": "Open source. Free forever",
+      "payOnce": "Pay once. Build unlimited projects!",
+      "pricingUSD": "Billed in USD",
+      "community": {
+        "name": "Community",
+        "price": "$0",
+        "description": "For learners, early builders & indie devs who love to experiment.",
+        "features": {
+          "fullBoilerplate": "Full Next.js boilerplate",
+          "authPaymentsUI": "Auth, payments & UI prewired",
+          "builtInSEO": "Built-in SEO",
+          "transactionEmails": "Resend transaction emails",
+          "payments": "Payments via Stripe / Lemon Squeezy / Polar",
+          "hoursSaved": "Up to 100+ hours saved",
+          "mitLicense": "MIT open-source license",
+          "communityReleases": "Community Releases & fixes"
+        }
+      },
+      "premium": {
+        "name": "Premium",
+        "originalPrice": "$150",
+        "price": "$90",
+        "description": "For founders & builders ready to ship real products and make money.",
+        "features": {
+          "everythingInFree": "Everything in free",
+          "i18n": "Internationalization",
+          "rbac": "Role-based access & invite system",
+          "advancedSEO": "Advanced SEO & Blog",
+          "playwright": "Playwright and CI workflow",
+          "analytics": "Analytics hooks ready for Posthog",
+          "proUIKit": "Pro UI kit",
+          "privateDiscord": "Private Discord Community",
+          "prioritySupport": "Priority support"
+        }
+      }
+    },
+    "testimonials": {
+      "sectionLabel": "TESTIMONIALS",
+      "title": "Trusted by developers",
+      "subtitle": "See what builders are saying about our platform"
+    },
+    "faq": {
+      "sectionLabel": "FAQ",
+      "title": "Frequently Asked Questions",
+      "contactUs": "Have another question?",
+      "contactLink": "Contact us by email",
+      "items": {
+        "freeVersion": {
+          "question": "What's included in the free version?",
+          "answer": "Everything you need to build: a full Next.js boilerplate with auth, payments, UI, SEO, and transactional emails. It's free forever under the MIT license."
+        },
+        "proVersion": {
+          "question": "What's in the pro version?",
+          "answer": "Pro adds one-click deploys, a CLI tool, advanced auth (roles & invites), automated emails, analytics hooks, lifetime updates, and priority support — built for founders who want to launch fast."
+        },
+        "loseAccess": {
+          "question": "Do I lose access to the free version if I don't upgrade?",
+          "answer": "Nope. The free version stays open source and always available. Pro just saves you time and setup pain."
+        },
+        "oneTimePayment": {
+          "question": "Is it really a one-time payment?",
+          "answer": "Yep. $90 lifetime access. No subscriptions, no renewal fees, ever."
+        },
+        "commercial": {
+          "question": "Can I use it for commercial products?",
+          "answer": "Yes — both free and pro can be used to build and sell your own projects."
+        },
+        "bugs": {
+          "question": "What if I find a bug or issue?",
+          "answer": "Open an issue on GitHub or drop it in the Discord — we fix bugs fast, and pro users get priority patches + updates."
+        },
+        "upgrade": {
+          "question": "Can I upgrade later?",
+          "answer": "Absolutely. You can start free, and when you're ready to go pro, your setup stays compatible."
+        },
+        "updates": {
+          "question": "How often do you ship updates?",
+          "answer": "Bug fixes and small updates drop regularly; pro users get early access to new templates and features."
+        },
+        "support": {
+          "question": "What support does pro include?",
+          "answer": "Private Discord, priority replies, and lifetime updates. You'll never be stuck figuring things out alone."
+        }
+      }
+    },
+    "cta": {
+      "sectionLabel": "GET STARTED",
+      "title": "Your next product could be live by tonight.",
+      "subtitle": "Focus on growth while the stack takes care of the heavy lifting"
+    },
+    "footer": {
+      "links": {
+        "heading": "Links",
+        "pricing": "Pricing",
+        "docs": "Docs",
+        "changelog": "Changelog",
+        "demo": "Demo",
+        "support": "Support"
+      },
+      "legal": {
+        "heading": "Legal",
+        "terms": "Terms of services",
+        "privacy": "Privacy policy",
+        "licenses": "Licenses"
+      },
+      "featuredOn": {
+        "heading": "Featured On"
+      },
+      "community": {
+        "heading": "Community"
+      },
+      "tagline": "Turn ideas into products, fast",
+      "copyright": "Copyright © {year} -"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your details",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "agreeTerms": "By signing in, you agree to our",
+      "termsLink": "Terms of Service",
+      "andText": "and",
+      "privacyLink": "Privacy Policy",
+      "resetPassword": {
+        "title": "Reset Password",
+        "description": "Enter your email address and we'll send you a link to reset your password if your account exists.",
+        "resetStatus": {
+          "success": "Password reset link sent to your email",
+          "emailRequired": "Please enter your email address",
+          "emailInvalid": "Please enter a valid email address",
+          "noAccountFound": "No account found with this email address"
+        }
+      }
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Enter your details",
+      "alreadyHaveAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "agreeTerms": "By creating an account, you agree to our",
+      "termsLink": "Terms of Service",
+      "andText": "and",
+      "privacyLink": "Privacy Policy"
+    },
+    "verify": {
+      "title": "Verify Your Email",
+      "titleVerified": "Email Verified!",
+      "subtitle": "A verification code has been sent to {email}",
+      "subtitleVerified": "Your email has been verified. Redirecting to dashboard...",
+      "enterCode": "Enter the 6-digit code to verify your account.",
+      "didntReceive": "Didn't receive a code?",
+      "resendIn": "Resend in",
+      "seconds": "{count}s"
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your new password below.",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submitButton": "Reset Password",
+      "submitting": "Resetting...",
+      "backToLogin": "Back to login"
+    }
+  },
+  "dashboard": {
+    "header": {
+      "title": "Dashboard",
+      "welcome": "Welcome to your dashboard"
+    },
+    "billing": {
+      "title": "Billing Demo",
+      "description": "Explore the billing system integration with better-auth payment plugins."
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "Manage your account settings."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Configure your preferences."
+    }
+  },
+  "consent": {
+    "banner": {
+      "title": "We use cookies",
+      "description": "We use cookies to improve your experience. By clicking 'Accept All', you consent to our use of cookies.",
+      "acceptAll": "Accept All",
+      "necessaryOnly": "Necessary Only",
+      "customize": "Customize",
+      "close": "Close",
+      "preferences": {
+        "title": "Cookie Preferences",
+        "necessary": {
+          "title": "Necessary",
+          "description": "Required for the site to function properly."
+        },
+        "analytics": {
+          "title": "Analytics",
+          "description": "Help us understand how you use our site."
+        },
+        "marketing": {
+          "title": "Marketing",
+          "description": "Used to show you relevant ads and content."
+        },
+        "save": "Save Preferences"
+      }
+    }
+  }
+}

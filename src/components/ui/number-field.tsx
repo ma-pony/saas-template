@@ -1,6 +1,5 @@
 'use client'
 
-import { NumberField as NumberFieldPrimitive } from '@base-ui/react/number-field'
 import { MinusIcon, PlusIcon } from 'lucide-react'
 import * as React from 'react'
 
@@ -9,35 +8,77 @@ import { Label } from '@/components/ui/label'
 
 const NumberFieldContext = React.createContext<{
   fieldId: string
+  min?: number
+  max?: number
+  step?: number
+  value: number | undefined
+  setValue: (value: number | undefined) => void
+  disabled?: boolean
 } | null>(null)
+
+function useNumberFieldContext() {
+  const ctx = React.useContext(NumberFieldContext)
+  if (!ctx) throw new Error('NumberField sub-components must be used within NumberField')
+  return ctx
+}
 
 function NumberField({
   id,
   className,
   size = 'default',
+  min,
+  max,
+  step = 1,
+  value: valueProp,
+  defaultValue,
+  onValueChange,
+  disabled,
+  children,
   ...props
-}: NumberFieldPrimitive.Root.Props & {
+}: React.ComponentProps<'div'> & {
   size?: 'sm' | 'default' | 'lg'
+  min?: number
+  max?: number
+  step?: number
+  value?: number
+  defaultValue?: number
+  onValueChange?: (value: number | undefined) => void
+  disabled?: boolean
 }) {
   const generatedId = React.useId()
   const fieldId = id ?? generatedId
 
+  const [internalValue, setInternalValue] = React.useState<number | undefined>(
+    valueProp ?? defaultValue
+  )
+  const value = valueProp !== undefined ? valueProp : internalValue
+
+  const setValue = React.useCallback(
+    (newValue: number | undefined) => {
+      setInternalValue(newValue)
+      onValueChange?.(newValue)
+    },
+    [onValueChange]
+  )
+
   return (
-    <NumberFieldContext.Provider value={{ fieldId }}>
-      <NumberFieldPrimitive.Root
+    <NumberFieldContext.Provider value={{ fieldId, min, max, step, value, setValue, disabled }}>
+      <div
         className={cn('flex w-full flex-col items-start gap-2', className)}
         data-size={size}
         data-slot='number-field'
         id={fieldId}
         {...props}
-      />
+      >
+        {children}
+      </div>
     </NumberFieldContext.Provider>
   )
 }
 
-function NumberFieldGroup({ className, ...props }: NumberFieldPrimitive.Group.Props) {
+function NumberFieldGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <NumberFieldPrimitive.Group
+    <div
       className={cn(
         "relative flex w-full justify-between rounded-lg border border-input bg-background bg-clip-padding text-base shadow-xs ring-ring/24 transition-shadow before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] not-data-disabled:not-focus-within:not-aria-invalid:before:shadow-[0_1px_--theme(--color-black/4%)] focus-within:border-ring focus-within:ring-[3px] has-aria-invalid:border-destructive/36 focus-within:has-aria-invalid:border-destructive/64 focus-within:has-aria-invalid:ring-destructive/48 data-disabled:pointer-events-none data-disabled:opacity-64 sm:text-sm dark:bg-input/32 dark:not-in-data-[slot=group]:bg-clip-border dark:has-aria-invalid:ring-destructive/24 dark:not-data-disabled:not-focus-within:not-aria-invalid:before:shadow-[0_-1px_--theme(--color-white/8%)] [&_svg:not([class*='size-'])]:size-4.5 sm:[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 [[data-disabled],:focus-within,[aria-invalid]]:shadow-none",
         className
@@ -48,44 +89,89 @@ function NumberFieldGroup({ className, ...props }: NumberFieldPrimitive.Group.Pr
   )
 }
 
-function NumberFieldDecrement({ className, ...props }: NumberFieldPrimitive.Decrement.Props) {
+function NumberFieldDecrement({ className, onClick, ...props }: React.ComponentProps<'button'>) {
+  const { min, step, value, setValue, disabled } = useNumberFieldContext()
+
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      const next = (value ?? 0) - (step ?? 1)
+      if (min === undefined || next >= min) {
+        setValue(next)
+      }
+      onClick?.(e)
+    },
+    [value, step, min, setValue, onClick]
+  )
+
   return (
-    <NumberFieldPrimitive.Decrement
+    <button
+      type='button'
       className={cn(
-        'relative flex shrink-0 cursor-pointer items-center justify-center rounded-s-[calc(var(--radius-lg)-1px)] in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] px-[calc(--spacing(3)-1px)] transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 hover:bg-accent',
+        'relative flex shrink-0 cursor-pointer items-center justify-center rounded-s-[calc(var(--radius-lg)-1px)] in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] px-[calc(--spacing(3)-1px)] transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 hover:bg-accent disabled:pointer-events-none disabled:opacity-64',
         className
       )}
       data-slot='number-field-decrement'
+      disabled={disabled || (min !== undefined && (value ?? 0) <= min)}
+      onClick={handleClick}
       {...props}
     >
       <MinusIcon />
-    </NumberFieldPrimitive.Decrement>
+    </button>
   )
 }
 
-function NumberFieldIncrement({ className, ...props }: NumberFieldPrimitive.Increment.Props) {
+function NumberFieldIncrement({ className, onClick, ...props }: React.ComponentProps<'button'>) {
+  const { max, step, value, setValue, disabled } = useNumberFieldContext()
+
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      const next = (value ?? 0) + (step ?? 1)
+      if (max === undefined || next <= max) {
+        setValue(next)
+      }
+      onClick?.(e)
+    },
+    [value, step, max, setValue, onClick]
+  )
+
   return (
-    <NumberFieldPrimitive.Increment
+    <button
+      type='button'
       className={cn(
-        'relative flex shrink-0 cursor-pointer items-center justify-center rounded-e-[calc(var(--radius-lg)-1px)] in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] px-[calc(--spacing(3)-1px)] transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 hover:bg-accent',
+        'relative flex shrink-0 cursor-pointer items-center justify-center rounded-e-[calc(var(--radius-lg)-1px)] in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] px-[calc(--spacing(3)-1px)] transition-colors pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11 hover:bg-accent disabled:pointer-events-none disabled:opacity-64',
         className
       )}
       data-slot='number-field-increment'
+      disabled={disabled || (max !== undefined && (value ?? 0) >= max)}
+      onClick={handleClick}
       {...props}
     >
       <PlusIcon />
-    </NumberFieldPrimitive.Increment>
+    </button>
   )
 }
 
-function NumberFieldInput({ className, ...props }: NumberFieldPrimitive.Input.Props) {
+function NumberFieldInput({ className, onChange, ...props }: React.ComponentProps<'input'>) {
+  const { fieldId, min, max, value, setValue, disabled } = useNumberFieldContext()
+
   return (
-    <NumberFieldPrimitive.Input
+    <input
+      id={fieldId}
+      type='number'
       className={cn(
-        'h-8.5 in-data-[size=lg]:h-9.5 in-data-[size=sm]:h-7.5 w-full min-w-0 grow bg-transparent in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] px-[calc(--spacing(3)-1px)] text-center tabular-nums in-data-[size=lg]:leading-9.5 in-data-[size=sm]:leading-7.5 leading-8.5 outline-none sm:h-7.5 sm:in-data-[size=lg]:h-8.5 sm:in-data-[size=sm]:h-6.5 sm:in-data-[size=lg]:leading-8.5 sm:in-data-[size=sm]:leading-8.5 sm:leading-7.5',
+        'h-8.5 in-data-[size=lg]:h-9.5 in-data-[size=sm]:h-7.5 w-full min-w-0 grow bg-transparent in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] px-[calc(--spacing(3)-1px)] text-center tabular-nums in-data-[size=lg]:leading-9.5 in-data-[size=sm]:leading-7.5 leading-8.5 outline-none sm:h-7.5 sm:in-data-[size=lg]:h-8.5 sm:in-data-[size=sm]:h-6.5 sm:in-data-[size=lg]:leading-8.5 sm:in-data-[size=sm]:leading-8.5 sm:leading-7.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
         className
       )}
       data-slot='number-field-input'
+      disabled={disabled}
+      min={min}
+      max={max}
+      value={value ?? ''}
+      onChange={(e) => {
+        const num = e.target.value === '' ? undefined : Number(e.target.value)
+        setValue(num)
+        onChange?.(e)
+      }}
       {...props}
     />
   )
@@ -95,7 +181,7 @@ function NumberFieldScrubArea({
   className,
   label,
   ...props
-}: NumberFieldPrimitive.ScrubArea.Props & {
+}: React.ComponentProps<'div'> & {
   label: string
 }) {
   const context = React.useContext(NumberFieldContext)
@@ -107,7 +193,7 @@ function NumberFieldScrubArea({
   }
 
   return (
-    <NumberFieldPrimitive.ScrubArea
+    <div
       className={cn('flex cursor-ew-resize', className)}
       data-slot='number-field-scrub-area'
       {...props}
@@ -115,10 +201,10 @@ function NumberFieldScrubArea({
       <Label className='cursor-ew-resize' htmlFor={context.fieldId}>
         {label}
       </Label>
-      <NumberFieldPrimitive.ScrubAreaCursor className='drop-shadow-[0_1px_1px_#0008] filter'>
+      <span className='drop-shadow-[0_1px_1px_#0008] filter'>
         <CursorGrowIcon />
-      </NumberFieldPrimitive.ScrubAreaCursor>
-    </NumberFieldPrimitive.ScrubArea>
+      </span>
+    </div>
   )
 }
 

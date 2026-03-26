@@ -1,5 +1,14 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, text, timestamp, boolean, index, decimal } from 'drizzle-orm/pg-core'
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  index,
+  decimal,
+  integer,
+  jsonb,
+} from 'drizzle-orm/pg-core'
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
@@ -7,6 +16,7 @@ export const user = pgTable('user', {
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   image: text('image'),
+  role: text('role').notNull().default('user'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -163,24 +173,28 @@ export const payment = pgTable(
   ]
 )
 
-export const premiumPurchase = pgTable(
-  'premium_purchase',
+// Background Jobs / Cron - execution log table
+// Independent system table, no foreign keys to user table
+export const jobExecutionLogs = pgTable(
+  'job_execution_logs',
   {
-    id: text('id').primaryKey(),
-    stripeSessionId: text('stripe_session_id').notNull().unique(),
-    stripeCustomerEmail: text('stripe_customer_email'),
-    githubEmail: text('github_email'),
-    githubUsername: text('github_username'),
-    twitterHandle: text('twitter_handle'),
-    amountPaid: decimal('amount_paid', { precision: 10, scale: 2 }),
-    currency: text('currency'),
+    id: text('id').primaryKey(), // nanoid generated
+    jobName: text('job_name').notNull(),
+    status: text('status')
+      .notNull()
+      .$type<'pending' | 'running' | 'success' | 'failed' | 'timeout'>(),
+    startedAt: timestamp('started_at').defaultNow().notNull(),
+    finishedAt: timestamp('finished_at'),
+    durationMs: integer('duration_ms'),
+    errorMessage: text('error_message'), // max 2000 chars
+    metadata: jsonb('metadata'), // stage durations, stack trace, etc.
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at')
-      .defaultNow()
-      .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
   },
-  (table) => [index('premium_purchase_stripe_sessionId_idx').on(table.stripeSessionId)]
+  (table) => [
+    index('job_execution_logs_job_name_idx').on(table.jobName),
+    index('job_execution_logs_started_at_idx').on(table.startedAt),
+    index('job_execution_logs_status_idx').on(table.status),
+  ]
 )
 
 export const userRelations = relations(user, ({ many }) => ({

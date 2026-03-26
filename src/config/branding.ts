@@ -6,6 +6,20 @@ export interface ThemeColors {
   backgroundColor?: string
 }
 
+export interface GeoConfig {
+  aiDescription: string
+  primaryKeywords: string[]
+  socialLinks?: {
+    github?: string
+    twitter?: string
+    discord?: string
+    website?: string
+  }
+  softwareCategory?: string
+  pricingType?: string
+  operatingSystem?: string
+}
+
 export interface BrandConfig {
   name: string
   logoUrl?: string
@@ -16,17 +30,20 @@ export interface BrandConfig {
   termsUrl?: string
   privacyUrl?: string
   theme?: ThemeColors
+  geo?: GeoConfig
 }
 
 /**
  * Default brand configuration values
  */
 const defaultConfig: BrandConfig = {
-  name: 'ShipFree',
+  // TODO: Replace 'My SaaS App' with your product name
+  name: 'My SaaS App',
   logoUrl: undefined,
   faviconUrl: '/favicon/favicon.ico',
   customCssUrl: undefined,
-  supportEmail: 'hi@revoks.dev',
+  // TODO: Replace with your support email address
+  supportEmail: 'support@example.com',
   documentationUrl: undefined,
   termsUrl: undefined,
   privacyUrl: undefined,
@@ -36,6 +53,19 @@ const defaultConfig: BrandConfig = {
     accentColor: '#9d54ff',
     accentHoverColor: '#a66fff',
     backgroundColor: '#0c0c0c',
+  },
+  geo: {
+    // TODO: Replace with your product's AI description and keywords
+    aiDescription: 'A production-ready Next.js SaaS boilerplate with auth, payments, and email.',
+    primaryKeywords: ['Next.js boilerplate', 'SaaS template', 'open source'],
+    socialLinks: {
+      github: undefined,
+      twitter: undefined,
+      discord: undefined,
+    },
+    softwareCategory: 'DeveloperApplication',
+    pricingType: 'Free',
+    operatingSystem: 'Any',
   },
 }
 
@@ -60,6 +90,7 @@ export const getBrandConfig = (): BrandConfig => {
     termsUrl: defaultConfig.termsUrl,
     privacyUrl: defaultConfig.privacyUrl,
     theme: getThemeColors(),
+    geo: defaultConfig.geo,
   }
 }
 

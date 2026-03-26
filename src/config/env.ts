@@ -69,15 +69,19 @@ export const env = createEnv({
     FACEBOOK_CLIENT_ID: z.string().optional(),
     FACEBOOK_CLIENT_SECRET: z.string().optional(),
 
-    // Premium Template Purchase (completely separate from template's payment system)
-    // Can be removed if not needed - see README for removal instructions
-    PREMIUM_PURCHASE_STRIPE_SECRET_KEY: z.string().optional(),
-    PREMIUM_PURCHASE_STRIPE_PRICE_ID: z.string().optional(),
-    PREMIUM_PURCHASE_STRIPE_WEBHOOK_SECRET: z.string().optional(),
+    // Background Jobs / Cron
+    // CRON_PROVIDER: set to 'node-cron' for local/self-hosted, 'vercel' for Vercel deployment
+    // If not set, auto-detected: uses 'vercel' when VERCEL env var is present, else 'node-cron'
+    CRON_PROVIDER: z.enum(['node-cron', 'vercel']).optional(),
+    // CRON_SECRET: Bearer token for HTTP job trigger endpoint. Recommended min 32 chars in production
+    CRON_SECRET: z.string().optional(),
+    // JOB_LOG_RETENTION_DAYS: how many days to retain job execution logs (default: 30)
+    JOB_LOG_RETENTION_DAYS: z.coerce.number().default(30),
   },
 
   client: {
     NEXT_PUBLIC_APP_URL: z.string().default('http://localhost:3000'),
+    NEXT_PUBLIC_ALLOW_ROBOTS: z.string().optional().default('true'),
     // Lemon Squeezy product IDs (public)
     NEXT_PUBLIC_LEMONSQUEEZY_PRODUCT_STARTER_MONTHLY: z.string().optional(),
     NEXT_PUBLIC_LEMONSQUEEZY_PRODUCT_PRO_MONTHLY: z.string().optional(),
@@ -96,9 +100,16 @@ export const env = createEnv({
     NEXT_PUBLIC_POLAR_PRODUCT_PRO_MONTHLY: z.string().optional(),
     NEXT_PUBLIC_POLAR_PRODUCT_ENTERPRISE_MONTHLY: z.string().optional(),
 
-    // Premium Template Purchase (public)
-    NEXT_PUBLIC_PREMIUM_PURCHASE_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
-    NEXT_PUBLIC_PREMIUM_PURCHASE_DISCORD_INVITE_LINK: z.string().optional(),
+    // Analytics
+    NEXT_PUBLIC_ANALYTICS_PROVIDER: z
+      .enum(['plausible', 'umami', 'google', 'none'])
+      .default('none'),
+    NEXT_PUBLIC_PLAUSIBLE_DOMAIN: z.string().optional(),
+    NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL: z.string().optional(),
+    NEXT_PUBLIC_UMAMI_WEBSITE_ID: z.string().optional(),
+    NEXT_PUBLIC_UMAMI_SCRIPT_URL: z.string().optional(),
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
+    NEXT_PUBLIC_ANALYTICS_ANONYMIZE_IP: z.string().optional(),
   },
 
   // Variables available on both server and client
@@ -142,9 +153,6 @@ export const env = createEnv({
     MICROSOFT_TENANT_ID: process.env.MICROSOFT_TENANT_ID,
     FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
     FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
-    PREMIUM_PURCHASE_STRIPE_SECRET_KEY: process.env.PREMIUM_PURCHASE_STRIPE_SECRET_KEY,
-    PREMIUM_PURCHASE_STRIPE_PRICE_ID: process.env.PREMIUM_PURCHASE_STRIPE_PRICE_ID,
-    PREMIUM_PURCHASE_STRIPE_WEBHOOK_SECRET: process.env.PREMIUM_PURCHASE_STRIPE_WEBHOOK_SECRET,
     PAYMENT_PROVIDER: process.env.PAYMENT_PROVIDER,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
@@ -158,6 +166,7 @@ export const env = createEnv({
     LEMONSQUEEZY_STORE_ID: process.env.LEMONSQUEEZY_STORE_ID,
     LEMONSQUEEZY_WEBHOOK_SECRET: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_ALLOW_ROBOTS: process.env.NEXT_PUBLIC_ALLOW_ROBOTS,
     NEXT_PUBLIC_LEMONSQUEEZY_PRODUCT_STARTER_MONTHLY:
       process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRODUCT_STARTER_MONTHLY,
     NEXT_PUBLIC_LEMONSQUEEZY_PRODUCT_PRO_MONTHLY:
@@ -177,10 +186,16 @@ export const env = createEnv({
     NEXT_PUBLIC_POLAR_PRODUCT_PRO_MONTHLY: process.env.NEXT_PUBLIC_POLAR_PRODUCT_PRO_MONTHLY,
     NEXT_PUBLIC_POLAR_PRODUCT_ENTERPRISE_MONTHLY:
       process.env.NEXT_PUBLIC_POLAR_PRODUCT_ENTERPRISE_MONTHLY,
-    NEXT_PUBLIC_PREMIUM_PURCHASE_STRIPE_PUBLISHABLE_KEY:
-      process.env.NEXT_PUBLIC_PREMIUM_PURCHASE_STRIPE_PUBLISHABLE_KEY,
-    NEXT_PUBLIC_PREMIUM_PURCHASE_DISCORD_INVITE_LINK:
-      process.env.NEXT_PUBLIC_PREMIUM_PURCHASE_DISCORD_INVITE_LINK,
+    CRON_PROVIDER: process.env.CRON_PROVIDER,
+    CRON_SECRET: process.env.CRON_SECRET,
+    JOB_LOG_RETENTION_DAYS: process.env.JOB_LOG_RETENTION_DAYS,
+    NEXT_PUBLIC_ANALYTICS_PROVIDER: process.env.NEXT_PUBLIC_ANALYTICS_PROVIDER,
+    NEXT_PUBLIC_PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
+    NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL: process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL,
+    NEXT_PUBLIC_UMAMI_WEBSITE_ID: process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID,
+    NEXT_PUBLIC_UMAMI_SCRIPT_URL: process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL,
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+    NEXT_PUBLIC_ANALYTICS_ANONYMIZE_IP: process.env.NEXT_PUBLIC_ANALYTICS_ANONYMIZE_IP,
   },
   emptyStringAsUndefined: true,
 })

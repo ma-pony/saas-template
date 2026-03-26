@@ -6,7 +6,7 @@ import { GridLayout } from '../(site)/grid-layout'
 
 export const metadata: Metadata = generateSEOMetadata({
   title: 'Licenses',
-  description: 'License information for ShipFree platform',
+  description: 'License information for [Your Company]',
   canonical: '/licenses',
 })
 
@@ -21,10 +21,12 @@ export default async function LicensesPage() {
 
           <div className='prose prose-sm max-w-none space-y-8 text-muted-foreground'>
             <section>
-              <h2 className='mb-4 text-xl font-semibold text-foreground'>1. shipfree codebase</h2>
+              <h2 className='mb-4 text-xl font-semibold text-foreground'>
+                1. [Your Company] codebase
+              </h2>
               <p>
-                the shipfree boilerplate and related source code are licensed for commercial and
-                personal projects with a valid purchase or access key. redistribution or resale
+                the [Your Company] boilerplate and related source code are licensed for commercial
+                and personal projects with a valid purchase or access key. redistribution or resale
                 without permission is prohibited.
               </p>
             </section>
@@ -34,7 +36,7 @@ export default async function LicensesPage() {
                 2. open-source components
               </h2>
               <p>
-                shipfree includes open-source libraries under their respective licenses (MIT,
+                [Your Company] includes open-source libraries under their respective licenses (MIT,
                 Apache 2.0, etc.). you must comply with their terms when using or modifying those
                 components.
               </p>
@@ -43,8 +45,8 @@ export default async function LicensesPage() {
             <section>
               <h2 className='mb-4 text-xl font-semibold text-foreground'>3. attribution</h2>
               <p>
-                you're not required to publicly credit shipfree, but attribution is appreciated when
-                showcasing products built using it.
+                you're not required to publicly credit [Your Company], but attribution is
+                appreciated when showcasing products built using it.
               </p>
             </section>
 

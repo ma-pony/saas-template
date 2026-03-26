@@ -1,198 +1,115 @@
-# ShipFree - AI Agent Onboarding Guide
+# CLAUDE.md
 
-## Overview
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-ShipFree is a production-ready Next.js boilerplate designed to help developers ship startups quickly. It's a free, open-source alternative to ShipFast, built with modern web technologies and best practices.
+## Project Overview
 
-### Key Characteristics
-- **Framework**: Next.js  with App Router
-- **Runtime**: Bun (package manager and runtime)
-- **Database**: PostgreSQL with Drizzle ORM
-- **Authentication**: Better-Auth with multiple OAuth providers
-- **Payments**: Multi-provider support (Stripe, Polar, Lemon Squeezy)
-- **Email**: Multi-provider support (Resend, Postmark, Plunk, Nodemailer)
-- **UI**: TailwindCSS 4, BaseUI components, Shadcn-style patterns
-- **Internationalization**: next-intl (i18n) with support for en, es, fr
-- **Monitoring**: Sentry integration
-- **Storage**: Cloudflare R2 support
+ShipFree is a Next.js SaaS boilerplate (free ShipFast alternative) using Bun runtime, PostgreSQL, Drizzle ORM, Better-Auth, and TailwindCSS 4.
+
+## Commands
+
+- `bun dev` — start dev server
+- `bun build` — production build (note: `typescript.ignoreBuildErrors: true` in next.config)
+- `bun lint` — run Biome linter
+- `bun format` — format with Biome
+- `bun run typecheck` — run `tsc --noEmit`
+- `bun run generate-migration` — generate Drizzle migration after schema changes
+- `bun run migrate:local` — run migrations locally
 
 ## Architecture
 
-### Project Structure
+### Path Alias
 
-Application code lives under `src/`. The path alias `@/*` maps to `src/*` (e.g. `@/lib/auth` is `src/lib/auth`).
+`@/*` maps to `src/*` (e.g., `@/lib/auth` resolves to `src/lib/auth`).
 
-```
-ShipFree/
-├── src/                    # Application source
-│   ├── app/                # Next.js App Router pages and routes
-│   │   ├── [locale]/       # Internationalized routes
-│   │   │   ├── (auth)/     # Authentication pages (login, register, etc.)
-│   │   │   ├── (main)/     # Main app pages (dashboard, etc.)
-│   │   │   └── (site)/     # Marketing/landing pages
-│   │   ├── api/            # API routes
-│   │   │   ├── auth/       # Better-Auth endpoints
-│   │   │   ├── payments/   # Payment processing
-│   │   │   └── webhooks/   # Webhook handlers
-│   │   └── _providers/     # React context providers
-│   ├── components/         # Reusable React components
-│   │   ├── emails/        # Email templates (React Email)
-│   │   └── ui/            # BaseUI/Shadcn UI components
-│   ├── config/            # Configuration files
-│   │   ├── env.ts        # Environment variable validation (t3-env)
-│   │   ├── payments.ts   # Payment plans and pricing
-│   │   ├── branding.ts   # Brand configuration
-│   │   └── feature-flags.ts
-│   ├── database/          # Database schema and connection
-│   │   ├── schema.ts     # Drizzle ORM schema
-│   │   └── index.ts      # Database connection
-│   ├── lib/               # Core libraries and utilities
-│   │   ├── auth/         # Authentication setup
-│   │   ├── payments/     # Payment service and adapters
-│   │   ├── messaging/    # Email service and providers
-│   │   ├── storage.ts    # Cloudflare R2 storage client
-│   │   └── utils/        # Utility functions
-│   ├── i18n/              # Internationalization configuration
-│   │   ├── routing.ts    # Routing configuration
-│   │   └── request.ts    # Request configuration
-│   ├── messages/          # Translation files (JSON format)
-│   │   ├── en.json
-│   │   ├── fr.json
-│   │   └── es.json
-│   └── hooks/             # React hooks
-├── scripts/               # Runtime scripts (e.g. migrate.ts)
-├── migrations/            # Drizzle migrations
-├── drizzle.config.ts      # Drizzle Kit config
-└── instrumentation*.ts    # Sentry and Next.js instrumentation
-```
+### Route Structure
 
-### Key Patterns
+All pages live under `src/app/[locale]/` with three route groups (don't affect URLs):
+- `(auth)` — login, register, verify, etc.
+- `(main)` — dashboard, settings, authenticated pages
+- `(site)` — marketing/landing pages
 
-#### 1. **Server Components by Default**
-- Most components are Server Components unless marked with `'use client'`
-- Client components are used for interactivity (forms, state, etc.)
+API routes are at `src/app/api/` (not under `[locale]`).
 
-#### 2. **Route Groups**
-- `(auth)`, `(main)`, `(site)` are route groups for organization
-- They don't affect URL structure but organize layouts
+### Payment Adapter Pattern (`src/lib/payments/`)
 
-#### 3. **Internationalization**
-- All routes are under `[locale]` dynamic segment
-- Supported languages: `en`, `es`, `fr`
-- Use `next-intl` for translations
-- Server components: Use `getTranslations` from `next-intl/server`
-- Client components: Use `useTranslations` hook from `next-intl`
+Strategy pattern: a `PaymentAdapter` interface (`types.ts`) with methods like `createCheckout`, `createCustomer`, `processWebhook`. A singleton factory in `service.ts` selects the adapter based on `env.PAYMENT_PROVIDER` (Stripe, Polar, or LemonSqueezy). Client-side hooks in `hooks.ts` use TanStack Query against `/api/payments/*` endpoints. Swapping providers requires only env var changes.
 
-#### 4. **Environment Configuration**
-- All env vars validated via `@t3-oss/env-nextjs` in `src/config/env.ts`
-- Server-only vars in `server` object
-- Client-accessible vars in `client` object (prefixed with `NEXT_PUBLIC_`)
+The `premiumPurchase` table in the schema is isolated — it's for the template's own one-time purchase flow (selling the boilerplate itself), separate from the app's subscription payment system.
+
+### Email Provider Pattern (`src/lib/messaging/email/`)
+
+Similar adapter pattern with auto-discovery fallback. Provider order: resend → postmark → nodemailer → plunk → custom → log. If no `EMAIL_PROVIDER` env var is set, it auto-discovers the first configured provider. Falls back to `log` provider (console output) in development — email flows never throw for missing credentials.
+
+### Auth (`src/lib/auth/`)
+
+Better-Auth with Drizzle adapter. Social providers (Google, GitHub, Microsoft, Facebook) conditionally enabled based on env vars being present. Plugins: `nextCookies`, `emailOTP` (6-digit, 15 min expiry), `organization` (multi-tenant). Auth client in `auth-client.ts` separates billing operations into a different client for type clarity.
+
+### Database (`src/database/`)
+
+PostgreSQL via `postgres-js` driver + Drizzle ORM. Schema in `schema.ts` uses text PKs (not serial/uuid), cascade deletes from user, and `$onUpdate` for `updatedAt`. Payment tables have a `provider` column for multi-provider safety.
+
+### Internationalization
+
+`next-intl` with locales: `en`, `es`, `fr`. Translation files in `src/messages/*.json`.
+- Server components: `getTranslations` from `next-intl/server`
+- Client components: `useTranslations` from `next-intl`
+
+### Environment Variables
+
+Validated via `@t3-oss/env-nextjs` in `src/config/env.ts`. Server vars in `server` object, client vars in `client` object (prefixed `NEXT_PUBLIC_`). Always add new env vars here.
 
 ## Code Style
 
-### TypeScript
+- **Formatter**: Biome — 2-space indent, single quotes, semicolons as-needed, trailing commas (ES5), 100-char line width
+- **Styling**: TailwindCSS only, use `cn()` from `@/lib/utils/css` for conditional classes
+- **Components**: PascalCase names, kebab-case filenames, `const` arrow functions preferred over `function` declarations
+- **Linter notes**: a11y rules are disabled, `noExplicitAny` is off, `useExhaustiveDependencies` is off
+- **Server Components by default**: only add `'use client'` when interactivity is needed
 
-- **Strict mode**: Enabled
-- **Path aliases**: `@/*` maps to `src/*`
-- **No implicit any**: Enabled
 
-### React Patterns
+# AI-DLC and Spec-Driven Development
 
-1. **Component Naming**: PascalCase
-2. **File Naming**: kebab-case for files, PascalCase for components
-3. **Hooks**: Prefix with `use`
-4. **Event Handlers**: Prefix with `handle` (e.g., `handleClick`)
-5. **Const over function**: Prefer `const fn = () => {}` over `function fn() {}`
+Kiro-style Spec Driven Development implementation on AI-DLC (AI Development Life Cycle)
 
-### Styling
+## Project Context
 
-- **TailwindCSS**: Primary styling method
-- **No CSS files**: Avoid custom CSS, use Tailwind classes
-- **Class utilities**: Use `cn()` from `src/lib/utils/css.ts` (or `@/lib/utils/css.ts`) for conditional classes
+### Paths
+- Steering: `.kiro/steering/`
+- Specs: `.kiro/specs/`
 
-## Common Tasks
+### Steering vs Specification
 
-### Adding a New Page
+**Steering** (`.kiro/steering/`) - Guide AI with project-wide rules and context
+**Specs** (`.kiro/specs/`) - Formalize development process for individual features
 
-1. Create file in `src/app/[locale]/(group)/page.tsx`
-2. Add metadata export if needed
-3. Use appropriate layout group
-4. Add translations if needed
+### Active Specifications
+- Check `.kiro/specs/` for active specifications
+- Use `/kiro:spec-status [feature-name]` to check progress
 
-### Adding an API Route
+## Development Guidelines
+- Think in English, generate responses in Simplified Chinese. All Markdown content written to project files (e.g., requirements.md, design.md, tasks.md, research.md, validation reports) MUST be written in the target language configured for this specification (see spec.json.language).
 
-1. Create file in `src/app/api/{route}/route.ts`
-2. Export `GET`, `POST`, etc. functions
-3. Validate input with Zod
-4. Handle errors gracefully
-5. Return JSON responses
+## Minimal Workflow
+- Phase 0 (optional): `/kiro:steering`, `/kiro:steering-custom`
+- Phase 1 (Specification):
+  - `/kiro:spec-init "description"`
+  - `/kiro:spec-requirements {feature}`
+  - `/kiro:validate-gap {feature}` (optional: for existing codebase)
+  - `/kiro:spec-design {feature} [-y]`
+  - `/kiro:validate-design {feature}` (optional: design review)
+  - `/kiro:spec-tasks {feature} [-y]`
+- Phase 2 (Implementation): `/kiro:spec-impl {feature} [tasks]`
+  - `/kiro:validate-impl {feature}` (optional: after implementation)
+- Progress check: `/kiro:spec-status {feature}` (use anytime)
 
-### Adding a Database Table
+## Development Rules
+- 3-phase approval workflow: Requirements → Design → Tasks → Implementation
+- Human review required each phase; use `-y` only for intentional fast-track
+- Keep steering current and verify alignment with `/kiro:spec-status`
+- Follow the user's instructions precisely, and within that scope act autonomously: gather the necessary context and complete the requested work end-to-end in this run, asking questions only when essential information is missing or the instructions are critically ambiguous.
 
-1. Define schema in `src/database/schema.ts`
-2. Add relations if needed
-3. Generate migration: `bun run generate-migration`
-4. Run migration: `bun run migrate:local`
-
-### Adding a UI Component
-
-1. Use BaseUI components from `src/components/ui/`
-2. Follow existing component patterns
-3. Add proper TypeScript types
-4. Include accessibility attributes
-5. Use Tailwind for styling
-
-### Adding Email Template
-
-1. Create template in `src/components/emails/`
-2. Use React Email components
-3. Add subject in `src/components/emails/subjects.ts`
-4. Export render function
-5. Use in auth flows or custom emails
-
-## Development Workflow
-
-### Setup
-
-1. Install dependencies: `bun install`
-2. Copy `.env.example` to `.env`
-3. Set up PostgreSQL database
-4. Run migrations: `bun run migrate:local`
-5. Start dev server: `bun dev`
-
-### Scripts
-
-- `bun dev`: Start development server
-- `bun build`: Build for production
-- `bun start`: Start production server
-- `bun lint`: Run linter
-- `bun format`: Format code
-- `bun generate-migration`: Generate DB migration
-- `bun migrate:local`: Run migrations locally
-
-### Testing
-
-- No test framework configured yet
-- Manual testing recommended
-- Use Sentry for error tracking in production
-
-## Important Notes
-
-1. **Bun Runtime**: This project uses Bun, not Node.js
-2. **Server Components**: Default to Server Components, use `'use client'` only when needed
-3. **Environment Variables**: Always validate via `src/config/env.ts`
-4. **Database**: Use Drizzle ORM, not raw SQL
-5. **Authentication**: Use Better-Auth client/server APIs, don't access DB directly
-6. **Payments**: Use payment service, don't call providers directly
-7. **Email**: Use email mailer, don't call providers directly
-8. **Internationalization**: All user-facing text should be translatable
-9. **Error Handling**: Always handle errors gracefully with proper messages
-10. **Type Safety**: Leverage TypeScript, avoid `any` types
-
-## Resources
-
-- **Better-Auth**: https://better-auth.com
-- **Drizzle ORM**: https://orm.drizzle.team
-- **Next.js**: https://nextjs.org/docs
-- **next-intl**: https://next-intl-docs.vercel.app
-- **BaseUI**: https://base-ui.com
+## Steering Configuration
+- Load entire `.kiro/steering/` as project memory
+- Default files: `product.md`, `tech.md`, `structure.md`
+- Custom files are supported (managed via `/kiro:steering-custom`)

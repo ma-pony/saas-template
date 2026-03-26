@@ -272,3 +272,30 @@ export function isFreePlan(planName: PlanName): boolean {
 export function getAvailablePlans(): PlanName[] {
   return Object.keys(paymentConfig.plans) as PlanName[]
 }
+
+/**
+ * Regional payment methods configuration.
+ * Maps country/region codes to supported payment method types.
+ * Used by payment adapters to offer localized payment options.
+ */
+export const REGIONAL_PAYMENT_METHODS: Record<string, string[]> = {
+  CN: ['alipay', 'wechat_pay'],
+  NL: ['ideal'],
+  DE: ['sepa_debit'],
+  AT: ['sepa_debit'],
+  BE: ['sepa_debit', 'bancontact'],
+  ES: ['sepa_debit'],
+  FR: ['sepa_debit'],
+  IT: ['sepa_debit'],
+  PT: ['sepa_debit'],
+  EU: ['sepa_debit'],
+}
+
+/**
+ * Get regional payment methods for a given country code.
+ * Returns an empty array if no specific methods are configured.
+ */
+export function getRegionalPaymentMethods(countryCode?: string): string[] {
+  if (!countryCode) return []
+  return REGIONAL_PAYMENT_METHODS[countryCode.toUpperCase()] || []
+}

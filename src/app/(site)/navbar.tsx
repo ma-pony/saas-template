@@ -12,7 +12,8 @@ export default function Navbar() {
   const [stars, setStars] = useState<number | null>(null)
   const [isLoadingStars, setIsLoadingStars] = useState(true)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const repo = 'revokslab/shipfree'
+  // TODO: Replace with your GitHub repository (org/repo)
+  const repo = 'your-org/your-repo'
 
   useEffect(() => {
     getGitHubStars(repo)
@@ -40,16 +41,21 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className='fixed inset-x-0 top-0 z-30 border-b border-[#E4E4E7] bg-[#F4F4F5]'>
+      <nav
+        aria-label='Main navigation'
+        className='fixed inset-x-0 top-0 z-30 border-b border-[#E4E4E7] bg-[#F4F4F5]'
+      >
         <div className='mx-auto max-w-7xl flex h-14 items-center justify-between gap-8 px-4 sm:px-6'>
           <div className='flex items-center gap-3'>
             <Link href='/' className='flex items-center gap-2'>
-              <img src='/image.png' alt='ShipFree Logo' className='h-6 w-6 object-contain' />
+              {/* TODO: Replace /image.png with your logo file */}
+              <img src='/image.png' alt='App Logo' className='h-6 w-6 object-contain' />
               <span
                 className='text-base font-semibold text-foreground'
                 style={{ fontFamily: 'var(--font-bricolage-grotesque)' }}
               >
-                ShipFree
+                {/* TODO: Replace with your app name */}
+                My App
               </span>
             </Link>
           </div>
@@ -81,6 +87,12 @@ export default function Navbar() {
                 className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
               >
                 FAQ
+              </Link>
+              <Link
+                href='/blog'
+                className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
+              >
+                Blog
               </Link>
               <Link
                 href='/docs'
@@ -159,6 +171,13 @@ export default function Navbar() {
                 onClick={toggleMenu}
               >
                 FAQ
+              </Link>
+              <Link
+                href='/blog'
+                className='block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground'
+                onClick={toggleMenu}
+              >
+                Blog
               </Link>
 
               <Button

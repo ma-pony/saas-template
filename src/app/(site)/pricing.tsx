@@ -6,9 +6,6 @@ import { Flame } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-// Premium template purchase - can be removed if not needed
-import { PremiumButton } from './pricing/premium-button'
-
 export default function Pricing() {
   const communityFeatures = [
     { text: 'Full Next.js boilerplate', included: true },
@@ -110,11 +107,12 @@ export default function Pricing() {
                   </Badge>
                 </div>
                 <div className='mb-4'>
+                  {/* TODO: Replace $XX with your actual pricing */}
                   <div className='flex items-baseline gap-2'>
                     <span className='text-sm text-muted-foreground line-through font-mono'>
-                      $150
+                      $XX
                     </span>
-                    <span className='text-4xl font-semibold font-mono'>$90</span>
+                    <span className='text-4xl font-semibold font-mono'>$XX</span>
                   </div>
                 </div>
                 <p className='text-sm text-muted-foreground mb-4'>
@@ -139,8 +137,10 @@ export default function Pricing() {
                 ))}
               </ul>
               <div className='flex flex-col gap-2'>
-                {/* Premium template purchase - can be removed if not needed */}
-                <PremiumButton />
+                {/* TODO: Replace with your checkout button or CTA */}
+                <Button className='w-full h-12! text-sm font-medium' size='lg'>
+                  Get Started
+                </Button>
                 <p className='text-sm text-center text-muted-foreground'>
                   Pay once. Build unlimited projects!
                 </p>

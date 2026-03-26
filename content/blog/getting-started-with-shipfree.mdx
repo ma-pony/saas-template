@@ -1,0 +1,84 @@
+---
+title: "Getting Started with ShipFree: Launch Your SaaS in Days"
+description: "Learn how to set up ShipFree, the free open-source Next.js SaaS boilerplate, and ship your product faster than ever before."
+date: "2026-03-20"
+author: "ShipFree Team"
+categories: ["Tutorial", "Getting Started"]
+tags: ["nextjs", "saas", "boilerplate", "shipfree"]
+coverImage: "/images/blog/getting-started.jpg"
+published: true
+---
+
+## Introduction
+
+ShipFree is a production-ready Next.js SaaS boilerplate that helps you launch your startup in days, not weeks. In this guide, we'll walk you through everything you need to get started.
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **Node.js** 18 or higher
+- **Bun** (package manager and runtime)
+- **PostgreSQL** database
+
+## Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/revokslab/shipfree.git my-saas
+cd my-saas
+bun install
+```
+
+## Configuration
+
+Copy the environment variables file and configure it:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` with your configuration. At a minimum, you'll need:
+
+- `NEXT_PUBLIC_APP_URL` — your app's base URL
+- `DATABASE_URL` — your PostgreSQL connection string
+
+## Running the Development Server
+
+```bash
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) and you should see your ShipFree app running.
+
+## What's Included
+
+ShipFree comes with everything you need to build a modern SaaS:
+
+- **Authentication** via Better-Auth with social login support
+- **Payments** supporting Stripe, Polar, and LemonSqueezy
+- **Email** with multiple provider support
+- **Database** with Drizzle ORM and PostgreSQL
+- **UI components** built with TailwindCSS and BaseUI
+- **SEO** optimization with JSON-LD structured data
+
+## Next Steps
+
+Now that you have ShipFree running locally, check out the following guides:
+
+1. [Setting up Authentication](/blog/setting-up-authentication)
+2. [Configuring Payments](/blog/configuring-payments)
+3. [Deploying to Production](/blog/deploying-to-production)
+
+<FAQ items={[
+  { question: "Is ShipFree really free?", answer: "Yes! ShipFree is 100% free and open-source under the MIT license. You can use it for personal and commercial projects without any restrictions." },
+  { question: "What database does ShipFree use?", answer: "ShipFree uses PostgreSQL with Drizzle ORM. It's a battle-tested combination that scales well for SaaS applications." },
+  { question: "Can I use ShipFree with Vercel?", answer: "Absolutely! ShipFree is optimized for Vercel deployments. Simply connect your GitHub repo and Vercel will handle the rest." }
+]} title="Frequently Asked Questions" />
+
+## Conclusion
+
+With ShipFree, you have everything you need to launch your SaaS product quickly. The boilerplate handles the infrastructure so you can focus on what matters most: building your product.
+
+Happy shipping!

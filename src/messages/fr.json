@@ -1,0 +1,338 @@
+{
+  "common": {
+    "button": {
+      "tryDemo": "Essayer la démo",
+      "cloneRepo": "Cloner le dépôt",
+      "getStarted": "Commencer",
+      "signIn": "Se connecter",
+      "signUp": "S'inscrire",
+      "createAccount": "Créer un compte",
+      "creatingAccount": "Création en cours...",
+      "signingIn": "Connexion en cours...",
+      "verifyEmail": "Vérifier l'email",
+      "verifying": "Vérification...",
+      "resend": "Renvoyer",
+      "sendResetLink": "Envoyer le lien de réinitialisation",
+      "sending": "Envoi en cours...",
+      "backToSignup": "Retour à l'inscription",
+      "learnMore": "En savoir plus"
+    },
+    "error": {
+      "emailRequired": "L'email est obligatoire.",
+      "emailInvalid": "Veuillez entrer une adresse email valide.",
+      "passwordRequired": "Le mot de passe est obligatoire.",
+      "passwordEmpty": "Le mot de passe ne peut pas être vide.",
+      "passwordMinLength": "Le mot de passe doit comporter au moins 8 caractères.",
+      "nameRequired": "Le nom est obligatoire.",
+      "invalidCredentials": "Email ou mot de passe invalide",
+      "emailSignInDisabled": "La connexion par email est actuellement désactivée.",
+      "invalidEmailOrPassword": "Email ou mot de passe invalide. Veuillez réessayer.",
+      "noAccountFound": "Aucun compte trouvé avec cet email. Veuillez vous inscrire d'abord.",
+      "enterEmailAndPassword": "Veuillez entrer votre email et votre mot de passe.",
+      "emailPasswordDisabled": "La connexion par email et mot de passe est désactivée.",
+      "failedToCreateSession": "Échec de la création de session. Veuillez réessayer.",
+      "tooManyAttempts": "Trop de tentatives. Veuillez réessayer plus tard ou réinitialiser votre mot de passe.",
+      "accountLocked": "Votre compte a été verrouillé pour des raisons de sécurité. Veuillez réinitialiser votre mot de passe.",
+      "networkError": "Erreur réseau. Veuillez vérifier votre connexion et réessayer.",
+      "rateLimitExceeded": "Trop de requêtes. Veuillez attendre un moment avant de réessayer."
+    },
+    "label": {
+      "email": "Email",
+      "password": "Mot de passe",
+      "fullName": "Nom complet",
+      "orContinueWith": "Ou continuer avec"
+    },
+    "placeholder": {
+      "email": "Entrez votre email",
+      "password": "Entrez votre mot de passe",
+      "name": "Entrez votre nom"
+    }
+  },
+  "site": {
+    "navbar": {
+      "features": "Fonctionnalités",
+      "pricing": "Tarifs",
+      "wallOfLove": "Mur d'amour",
+      "faq": "FAQ",
+      "docs": "Documentation",
+      "toggleMenu": "Basculer le menu",
+      "supportDev": "Soutenir le développeur"
+    },
+    "hero": {
+      "title": "Un boilerplate Next.js prêt pour la production, conçu pour générer $$$",
+      "description": "De l'idée au revenu en un temps record. Un boilerplate moderne qui vous fait gagner des semaines de configuration pour que vous puissiez consacrer du temps à construire des fonctionnalités qui génèrent réellement de l'argent.",
+      "builtWithBest": "CONSTRUIT AVEC LES MEILLEURS OUTILS"
+    },
+    "features": {
+      "sectionLabel": "FONCTIONNALITÉS",
+      "title": "Tout ce dont vous avez besoin pour livrer rapidement",
+      "subtitle": "Des fonctionnalités prêtes pour la production qui vous font gagner des semaines de configuration",
+      "items": {
+        "authentication": {
+          "title": "Authentification",
+          "description": "Auth intégré avec Better Auth. Connexions sociales, vérification d'email et gestion des sessions prêts à l'emploi."
+        },
+        "payments": {
+          "title": "Paiements",
+          "description": "Intégrations Stripe et Polar. Abonnements, paiements uniques et webhooks configurés."
+        },
+        "database": {
+          "title": "Base de données",
+          "description": "Drizzle ORM avec PostgreSQL. Migrations, relations et requêtes type-safe prêtes à l'emploi."
+        },
+        "uiComponents": {
+          "title": "Composants UI",
+          "description": "Des composants beaux et accessibles construits avec Base UI. Mode sombre, animations et design responsive."
+        },
+        "analytics": {
+          "title": "Analytics",
+          "description": "Analytics avec PostHog. Suivez le comportement des utilisateurs, les conversions et les insights produits prêts à l'emploi."
+        },
+        "emails": {
+          "title": "Emails",
+          "description": "Emails avec Resend. Emails transactionnels, modèles et suivi des livraisons configurés."
+        },
+        "typescript": {
+          "title": "TypeScript",
+          "description": "TypeScript type-safe. Sécurité des types complète sur toute votre pile avec zéro overhead."
+        },
+        "rateLimiting": {
+          "title": "Limitation de débit",
+          "description": "Limitation de débit avec Upstash. Protégez vos endpoints API et empêchez les abus automatiquement."
+        },
+        "vercelAI": {
+          "title": "Vercel AI SDK",
+          "description": "Construisez des applications alimentées par l'IA avec Vercel AI SDK. Intégrez avec OpenAI, Anthropic et plus."
+        },
+        "i18n": {
+          "title": "Internationalisation",
+          "description": "Support multilingue avec next-intl. Traduisez votre app et atteignez des audiences mondiales."
+        },
+        "aiTools": {
+          "title": "Outils IA",
+          "description": "Intégration avec des outils IA comme Cursor, Windsurf, Claude Code et GitHub Copilot pour un développement amélioré."
+        },
+        "andMore": {
+          "title": "Et plus encore",
+          "description": "Et bien d'autres fonctionnalités et intégrations prêtes pour la production pour vous aider à livrer plus rapidement."
+        }
+      }
+    },
+    "pricing": {
+      "sectionLabel": "Tarifs",
+      "title": "Construit pour les bâtisseurs qui jouent pour gagner",
+      "subtitle": "Lancez plus vite, vendez plus tôt, et grandissez sans vous battre avec la configuration",
+      "including": "INCLUS",
+      "mostPopular": "Le plus populaire",
+      "openSource": "Open source. Gratuit pour toujours",
+      "payOnce": "Payez une fois. Construisez des projets illimités !",
+      "pricingUSD": "Facturé en USD",
+      "community": {
+        "name": "Communauté",
+        "price": "$0",
+        "description": "Pour les apprenants, les premiers bâtisseurs et les devs indépendants qui aiment expérimenter.",
+        "features": {
+          "fullBoilerplate": "Boilerplate Next.js complet",
+          "authPaymentsUI": "Auth, paiements et UI préconfigurés",
+          "builtInSEO": "SEO intégré",
+          "transactionEmails": "Emails transactionnels Resend",
+          "payments": "Paiements via Stripe / Lemon Squeezy / Polar",
+          "hoursSaved": "Jusqu'à 100+ heures économisées",
+          "mitLicense": "Licence MIT open source",
+          "communityReleases": "Versions et corrections communautaires"
+        }
+      },
+      "premium": {
+        "name": "Premium",
+        "originalPrice": "$150",
+        "price": "$90",
+        "description": "Pour les fondateurs et bâtisseurs prêts à lancer de vrais produits et à gagner de l'argent.",
+        "features": {
+          "everythingInFree": "Tout ce qui est dans la version gratuite",
+          "i18n": "Internationalisation",
+          "rbac": "Contrôle d'accès basé sur les rôles et système d'invitation",
+          "advancedSEO": "SEO avancé et Blog",
+          "playwright": "Playwright et workflow CI",
+          "analytics": "Hooks d'analytics prêts pour Posthog",
+          "proUIKit": "Kit UI Pro",
+          "privateDiscord": "Communauté Discord privée",
+          "prioritySupport": "Support prioritaire"
+        }
+      }
+    },
+    "testimonials": {
+      "sectionLabel": "TÉMOIGNAGES",
+      "title": "Approuvé par les développeurs",
+      "subtitle": "Voyez ce que les bâtisseurs disent de notre plateforme"
+    },
+    "faq": {
+      "sectionLabel": "FAQ",
+      "title": "Questions Fréquemment Posées",
+      "contactUs": "Vous avez une autre question ?",
+      "contactLink": "Contactez-nous par email",
+      "items": {
+        "freeVersion": {
+          "question": "Qu'est-ce qui est inclus dans la version gratuite ?",
+          "answer": "Tout ce dont vous avez besoin pour construire : un boilerplate Next.js complet avec auth, paiements, UI, SEO et emails transactionnels. C'est gratuit pour toujours sous la licence MIT."
+        },
+        "proVersion": {
+          "question": "Qu'y a-t-il dans la version pro ?",
+          "answer": "Pro ajoute des déploiements en un clic, un outil CLI, une auth avancée (rôles et invitations), des emails automatisés, des hooks d'analytics, des mises à jour à vie et un support prioritaire."
+        },
+        "loseAccess": {
+          "question": "Est-ce que je perds l'accès à la version gratuite si je ne mets pas à niveau ?",
+          "answer": "Non. La version gratuite reste open source et toujours disponible. Pro vous fait juste gagner du temps et éviter les problèmes de configuration."
+        },
+        "oneTimePayment": {
+          "question": "C'est vraiment un paiement unique ?",
+          "answer": "Oui. 90 $ d'accès à vie. Pas d'abonnements, pas de frais de renouvellement, jamais."
+        },
+        "commercial": {
+          "question": "Puis-je l'utiliser pour des produits commerciaux ?",
+          "answer": "Oui — les versions gratuite et pro peuvent être utilisées pour construire et vendre vos propres projets."
+        },
+        "bugs": {
+          "question": "Que faire si je trouve un bug ou un problème ?",
+          "answer": "Ouvrez un problème sur GitHub ou signalez-le dans Discord — nous corrigeons les bugs rapidement, et les utilisateurs pro obtiennent des correctifs et mises à jour prioritaires."
+        },
+        "upgrade": {
+          "question": "Puis-je mettre à niveau plus tard ?",
+          "answer": "Absolument. Vous pouvez commencer gratuitement, et quand vous êtes prêt à passer en pro, votre configuration reste compatible."
+        },
+        "updates": {
+          "question": "À quelle fréquence publiez-vous des mises à jour ?",
+          "answer": "Les corrections de bugs et petites mises à jour sortent régulièrement ; les utilisateurs pro ont un accès anticipé aux nouveaux modèles et fonctionnalités."
+        },
+        "support": {
+          "question": "Quel support inclut la version pro ?",
+          "answer": "Discord privé, réponses prioritaires et mises à jour à vie. Vous ne serez jamais seul à résoudre les problèmes."
+        }
+      }
+    },
+    "cta": {
+      "sectionLabel": "COMMENCER",
+      "title": "Votre prochain produit pourrait être en ligne ce soir.",
+      "subtitle": "Concentrez-vous sur la croissance pendant que la stack s'occupe du gros du travail"
+    },
+    "footer": {
+      "links": {
+        "heading": "Liens",
+        "pricing": "Tarifs",
+        "docs": "Documentation",
+        "changelog": "Journal des modifications",
+        "demo": "Démo",
+        "support": "Support"
+      },
+      "legal": {
+        "heading": "Légal",
+        "terms": "Conditions d'utilisation",
+        "privacy": "Politique de confidentialité",
+        "licenses": "Licences"
+      },
+      "featuredOn": {
+        "heading": "Présent sur"
+      },
+      "community": {
+        "heading": "Communauté"
+      },
+      "tagline": "Transformez les idées en produits, rapidement",
+      "copyright": "Copyright © {year} -"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Se connecter",
+      "subtitle": "Entrez vos informations",
+      "forgotPassword": "Mot de passe oublié ?",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "signUpLink": "S'inscrire",
+      "agreeTerms": "En vous connectant, vous acceptez nos",
+      "termsLink": "Conditions d'utilisation",
+      "andText": "et",
+      "privacyLink": "Politique de confidentialité",
+      "resetPassword": {
+        "title": "Réinitialiser le mot de passe",
+        "description": "Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe si votre compte existe.",
+        "resetStatus": {
+          "success": "Lien de réinitialisation envoyé à votre email",
+          "emailRequired": "Veuillez entrer votre adresse email",
+          "emailInvalid": "Veuillez entrer une adresse email valide",
+          "noAccountFound": "Aucun compte trouvé avec cette adresse email"
+        }
+      }
+    },
+    "register": {
+      "title": "Créer un compte",
+      "subtitle": "Entrez vos informations",
+      "alreadyHaveAccount": "Vous avez déjà un compte ?",
+      "signInLink": "Se connecter",
+      "agreeTerms": "En créant un compte, vous acceptez nos",
+      "termsLink": "Conditions d'utilisation",
+      "andText": "et",
+      "privacyLink": "Politique de confidentialité"
+    },
+    "verify": {
+      "title": "Vérifiez votre email",
+      "titleVerified": "Email vérifié !",
+      "subtitle": "Un code de vérification a été envoyé à {email}",
+      "subtitleVerified": "Votre email a été vérifié. Redirection vers le tableau de bord...",
+      "enterCode": "Entrez le code à 6 chiffres pour vérifier votre compte.",
+      "didntReceive": "Vous n'avez pas reçu de code ?",
+      "resendIn": "Renvoyer dans",
+      "seconds": "{count}s"
+    },
+    "resetPassword": {
+      "title": "Réinitialiser le mot de passe",
+      "subtitle": "Entrez votre nouveau mot de passe ci-dessous.",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submitButton": "Réinitialiser le mot de passe",
+      "submitting": "Réinitialisation...",
+      "backToLogin": "Retour à la connexion"
+    }
+  },
+  "dashboard": {
+    "header": {
+      "title": "Tableau de bord",
+      "welcome": "Bienvenue sur votre tableau de bord"
+    },
+    "billing": {
+      "title": "Démo de facturation",
+      "description": "Explorez l'intégration du système de facturation avec les plugins de paiement de better-auth."
+    },
+    "profile": {
+      "title": "Profil",
+      "description": "Gérez les paramètres de votre compte."
+    },
+    "settings": {
+      "title": "Paramètres",
+      "description": "Configurez vos préférences."
+    }
+  },
+  "consent": {
+    "banner": {
+      "title": "Nous utilisons des cookies",
+      "description": "Nous utilisons des cookies pour améliorer votre expérience. En cliquant sur 'Tout accepter', vous consentez à notre utilisation des cookies.",
+      "acceptAll": "Tout accepter",
+      "necessaryOnly": "Nécessaires seulement",
+      "customize": "Personnaliser",
+      "close": "Fermer",
+      "preferences": {
+        "title": "Préférences des cookies",
+        "necessary": {
+          "title": "Nécessaires",
+          "description": "Requis pour le bon fonctionnement du site."
+        },
+        "analytics": {
+          "title": "Analytiques",
+          "description": "Nous aident à comprendre comment vous utilisez notre site."
+        },
+        "marketing": {
+          "title": "Marketing",
+          "description": "Utilisés pour vous montrer des publicités et du contenu pertinents."
+        },
+        "save": "Enregistrer les préférences"
+      }
+    }
+  }
+}

@@ -5,7 +5,9 @@ import { generateMetadata } from '@/lib/seo'
 export const dynamic = 'force-dynamic'
 
 export const metadata = generateMetadata({
-  title: 'Login | ShipFree',
+  title: 'Login',
+  noindex: true,
+  nofollow: true,
 })
 
 export default async function LoginPage() {

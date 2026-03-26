@@ -1,5 +1,8 @@
 import { withSentryConfig } from '@sentry/nextjs'
+import createNextIntlPlugin from 'next-intl/plugin'
 import type { NextConfig } from 'next'
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 const nextConfig: NextConfig = {
   // Enable standalone output for Docker optimization
@@ -8,9 +11,33 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async headers() {
+    return [
+      {
+        // Cache translation JSON files at CDN
+        source: '/messages/:locale.json',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
+        // Add Vary: Accept-Language for internationalized pages
+        source: '/:locale(en|es|fr|zh)/:path*',
+        headers: [
+          {
+            key: 'Vary',
+            value: 'Accept-Language',
+          },
+        ],
+      },
+    ]
+  },
 }
 
-export default withSentryConfig(nextConfig, {
+export default withNextIntl(withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
@@ -46,4 +73,4 @@ export default withSentryConfig(nextConfig, {
       removeDebugLogging: true,
     },
   },
-})
+}))
