@@ -6,58 +6,55 @@ import { SiThreads } from 'react-icons/si'
 import Image from 'next/image'
 
 export default function Testimonials() {
+  // TODO: Replace with your own testimonials
   const testimonials = [
     {
       quote:
-        '¡Awesome project! Create products or startups faster. ¡This open-source template has everything you need!\n\n$ git clone this-template',
-      name: 'Miguel Ángel Durán',
-      title: '@midudev',
-      avatar: '/testimonial-image1.jpg',
-      avatarType: 'image',
-      twitterLink: 'https://x.com/midudev/status/1889327503207960690',
-      verified: true,
+        'This template saved us weeks of setup. Auth, payments, and i18n just worked out of the box.',
+      name: 'Alex Chen',
+      title: 'CTO, Startup Co.',
+      avatar: 'AC',
+      avatarType: 'initials',
     },
     {
       quote:
-        'This template is a free alternative to ShipFast, designed to simplify and optimize your shipping process.',
-      name: 'developer.joy',
-      title: '@developer.joy',
-      avatar: '/testimonial-image2.png',
-      avatarType: 'image',
-      threadsLink:
-        'https://www.threads.com/@developer.joy/post/DGisRsoIAuE/shipfree-is-a-free-alternative-to-shipfast-designed-to-simplify-and-optimize-you?hl=en',
-    },
-    {
-      quote:
-        "I'm not even exaggerating - this saved me weeks of work.\nInstead of fighting errors and configs, I actually built features.\nIt's the first time I've felt in control of the entire launch process.",
-      name: 'Bong',
-      title: 'Indie Builder',
-      avatar: '/testimonial-image3.png',
-      avatarType: 'image',
-    },
-    {
-      quote:
-        "I've used other Next.js starters but this one feels built by someone who's actually shipped.\nThe little details - onboarding, SEO, dashboard flow - make it production-grade out of the box.",
-      name: 'David Alejandro',
+        'The adapter pattern for payments is brilliant. We switched from Stripe to Polar by changing one env var.',
+      name: 'Sarah Kim',
       title: 'Full-Stack Developer',
-      avatar: '/testimonial-image4.png',
-      avatarType: 'image',
+      avatar: 'SK',
+      avatarType: 'initials',
     },
     {
       quote:
-        'Bought it on a Friday night, had a live SaaS by Sunday.\nEverything just clicked - no roadblocks, no setup headaches.',
-      name: 'Finn Sheng',
+        "I'm not even exaggerating - this saved me weeks of work.\nInstead of fighting errors and configs, I actually built features.",
+      name: 'Jordan Lee',
+      title: 'Indie Builder',
+      avatar: 'JL',
+      avatarType: 'initials',
+    },
+    {
+      quote:
+        "The best Next.js starter I've used. Production-grade out of the box with SEO, dashboard flow, and multi-language support.",
+      name: 'Maria Garcia',
+      title: 'Product Engineer',
+      avatar: 'MG',
+      avatarType: 'initials',
+    },
+    {
+      quote:
+        'Started on a Friday night, had a live SaaS by Sunday.\nEverything just clicked - no roadblocks, no setup headaches.',
+      name: 'Ryan Park',
       title: 'SaaS Founder',
-      avatar: '/testimonial-image5.png',
-      avatarType: 'image',
+      avatar: 'RP',
+      avatarType: 'initials',
     },
     {
       quote:
-        'I was burned out from endless setup and half-working templates.\nThis made me fall in love with building again.\nI opened my laptop, ran one command, and started designing instead of debugging.',
-      name: 'Fabian Andres Parra Sanchez',
-      title: 'Product Builder',
-      avatar: '/testimonial-image6.png',
-      avatarType: 'image',
+        'Finally a template that takes security seriously. Auth, CSRF, rate limiting - all handled properly.',
+      name: 'Emma Wilson',
+      title: 'Security Engineer',
+      avatar: 'EW',
+      avatarType: 'initials',
     },
   ]
 

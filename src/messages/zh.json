@@ -15,7 +15,8 @@
       "sendResetLink": "发送重置链接",
       "sending": "发送中...",
       "backToSignup": "返回注册",
-      "learnMore": "了解更多"
+      "learnMore": "了解更多",
+      "connecting": "连接中..."
     },
     "error": {
       "emailRequired": "邮箱不能为空。",
@@ -34,13 +35,19 @@
       "tooManyAttempts": "登录尝试次数过多，请稍后重试或重置密码。",
       "accountLocked": "您的账号已因安全原因被锁定，请重置密码。",
       "networkError": "网络错误，请检查您的网络连接并重试。",
-      "rateLimitExceeded": "请求过于频繁，请稍后再试。"
+      "rateLimitExceeded": "请求过于频繁，请稍后再试。",
+      "socialSignInFailed": "通过 {provider} 登录失败",
+      "accountExists": "此邮箱已注册账号，请直接登录。",
+      "signInCancelled": "{provider} 登录已取消，请重试。"
     },
     "label": {
       "email": "邮箱",
       "password": "密码",
       "fullName": "全名",
-      "orContinueWith": "或通过以下方式继续"
+      "orContinueWith": "或通过以下方式继续",
+      "hidePassword": "隐藏密码",
+      "showPassword": "显示密码",
+      "loading": "加载中..."
     },
     "placeholder": {
       "email": "请输入您的邮箱",
@@ -283,12 +290,25 @@
     },
     "resetPassword": {
       "title": "重置密码",
-      "subtitle": "在下方输入您的新密码。",
+      "heading": "重置您的密码",
+      "subtitle": "为您的账号设置新密码",
       "newPassword": "新密码",
       "confirmPassword": "确认密码",
+      "enterNewPassword": "请输入新密码",
+      "confirmNewPassword": "请确认新密码",
       "submitButton": "重置密码",
       "submitting": "重置中...",
-      "backToLogin": "返回登录"
+      "backToLogin": "返回登录",
+      "invalidToken": "重置令牌无效或已过期。请重新请求密码重置链接。",
+      "success": "密码重置成功！正在跳转到登录页面...",
+      "failed": "密码重置失败",
+      "helperText": "我们将向此邮箱地址发送密码重置链接。",
+      "passwordMaxLength": "密码长度不能超过100个字符",
+      "passwordUppercase": "密码必须包含至少一个大写字母",
+      "passwordLowercase": "密码必须包含至少一个小写字母",
+      "passwordNumber": "密码必须包含至少一个数字",
+      "passwordSpecialChar": "密码必须包含至少一个特殊字符",
+      "passwordsDoNotMatch": "两次输入的密码不一致"
     }
   },
   "dashboard": {
@@ -307,6 +327,92 @@
     "settings": {
       "title": "设置",
       "description": "配置您的偏好。"
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "服务条款",
+      "lastUpdated": "最后更新：2026年1月17日",
+      "intro": "欢迎使用 [Your Company]。访问或使用我们的平台即表示您同意这些条款。如果您不同意，请不要使用我们的平台。",
+      "sections": {
+        "usage": {
+          "title": "1. 使用我们的平台",
+          "content": "您必须仅将我们的平台用于合法目的。您对如何使用平台负责，包括您上传或分享的任何项目、代码或数据。"
+        },
+        "accounts": {
+          "title": "2. 账户",
+          "content": "您有责任保护您的账户安全。如果您怀疑有未经授权的访问，请立即联系我们"
+        },
+        "ip": {
+          "title": "3. 知识产权",
+          "content": "通过 [Your Company] 提供的所有代码、模板和资产均归我们所有或已获授权。您保留使用我们工具构建的自己项目的权利，但不包括底层模板。"
+        },
+        "restrictions": {
+          "title": "4. 限制",
+          "content": "请勿试图破解、反编译或转售我们的产品或服务。我们保留暂停或终止违反这些条款的账户的权利。"
+        },
+        "liability": {
+          "title": "5. 责任",
+          "content": "我们的平台按\"原样\"提供。我们不保证不间断的服务或平台无错误。我们不对任何损害、数据丢失或停机负责。"
+        },
+        "updates": {
+          "title": "6. 条款更新",
+          "content": "我们可能随时更新这些条款。继续使用表示您接受最新版本。"
+        }
+      }
+    },
+    "licenses": {
+      "title": "许可证",
+      "lastUpdated": "最后更新：2026年1月17日",
+      "sections": {
+        "codebase": {
+          "title": "1. 代码库",
+          "content": "模板和相关源代码授权用于商业和个人项目，需有效购买或访问密钥。未经许可禁止再分发或转售。"
+        },
+        "openSource": {
+          "title": "2. 开源组件",
+          "content": "本项目包含其各自许可证（MIT、Apache 2.0 等）下的开源库。使用或修改这些组件时，您必须遵守其条款。"
+        },
+        "attribution": {
+          "title": "3. 署名",
+          "content": "您无需公开署名 [Your Company]，但在展示使用它构建的产品时，署名是受欢迎的。"
+        },
+        "termination": {
+          "title": "4. 终止",
+          "content": "如果您违反这些条款滥用或再分发我们的代码，我们保留撤销您许可的权利。"
+        }
+      }
+    },
+    "privacy": {
+      "title": "隐私政策",
+      "lastUpdated": "最后更新：2026年1月17日",
+      "intro": "我们重视您的隐私。以下是我们处理您信息的方式。",
+      "sections": {
+        "dataCollect": {
+          "title": "1. 我们收集的数据",
+          "list": ["基本账户信息（邮箱、姓名等）", "使用数据（您与应用的交互方式）", "您分享的可选数据（如反馈或支持请求）"]
+        },
+        "howWeUse": {
+          "title": "2. 我们如何使用",
+          "list": ["运营和改善我们的平台", "与您沟通有关更新或问题", "防止滥用或欺诈"]
+        },
+        "cookies": {
+          "title": "3. Cookie",
+          "content": "我们使用 Cookie 保持您的登录状态并追踪性能。您可以禁用 Cookie，但某些功能可能无法正常运行。"
+        },
+        "thirdParty": {
+          "title": "4. 第三方服务",
+          "content": "我们可能使用分析或托管工具（如 Vercel、Supabase 或 Stripe），这些工具按照其自己的政策收集数据。"
+        },
+        "security": {
+          "title": "5. 数据安全",
+          "content": "我们采取合理措施保护您的信息，但无法保证100%的安全性。"
+        },
+        "rights": {
+          "title": "6. 您的权利",
+          "content": "您可以随时通过 support@your-domain.com 请求删除或更正您的数据。"
+        }
+      }
     }
   },
   "consent": {

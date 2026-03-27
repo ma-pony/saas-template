@@ -162,12 +162,19 @@ export const auth = betterAuth({
           })
 
           if (!result.success && result.message.includes('no email service configured')) {
-            console.info('🔑 VERIFICATION CODE FOR LOGIN/SIGNUP', {
-              email: data.email,
-              otp: data.otp,
-              type: data.type,
-              validation: validation.checks,
-            })
+            // Only log OTP in non-production when no email service is configured
+            if (process.env.NODE_ENV !== 'production') {
+              console.info('🔑 [DEV] VERIFICATION CODE', {
+                email: data.email,
+                otp: data.otp,
+                type: data.type,
+              })
+            } else {
+              console.warn('No email service configured in production — OTP cannot be delivered', {
+                email: data.email,
+                type: data.type,
+              })
+            }
             return
           }
 

@@ -1,8 +1,8 @@
-# ShipFree - AI Agent Onboarding Guide
+# SaaS Template - AI Agent Onboarding Guide
 
 ## Overview
 
-ShipFree is a production-ready Next.js boilerplate designed to help developers ship startups quickly. It's a free, open-source alternative to ShipFast, built with modern web technologies and best practices.
+SaaS Template is a production-ready Next.js boilerplate designed to help developers ship startups quickly. Built with modern web technologies and best practices.
 
 ### Key Characteristics
 - **Framework**: Next.js  with App Router
@@ -12,7 +12,7 @@ ShipFree is a production-ready Next.js boilerplate designed to help developers s
 - **Payments**: Multi-provider support (Stripe, Polar, Lemon Squeezy)
 - **Email**: Multi-provider support (Resend, Postmark, Plunk, Nodemailer)
 - **UI**: TailwindCSS 4, BaseUI components, Shadcn-style patterns
-- **Internationalization**: next-intl (i18n) with support for en, es, fr
+- **Internationalization**: next-intl (i18n) with support for en, es, fr, zh
 - **Monitoring**: Sentry integration
 - **Storage**: Cloudflare R2 support
 
@@ -23,7 +23,7 @@ ShipFree is a production-ready Next.js boilerplate designed to help developers s
 Application code lives under `src/`. The path alias `@/*` maps to `src/*` (e.g. `@/lib/auth` is `src/lib/auth`).
 
 ```
-ShipFree/
+SaaS Template/
 ├── src/                    # Application source
 │   ├── app/                # Next.js App Router pages and routes
 │   │   ├── [locale]/       # Internationalized routes
@@ -78,7 +78,7 @@ ShipFree/
 
 #### 3. **Internationalization**
 - All routes are under `[locale]` dynamic segment
-- Supported languages: `en`, `es`, `fr`
+- Supported languages: `en`, `es`, `fr`, `zh`
 - Use `next-intl` for translations
 - Server components: Use `getTranslations` from `next-intl/server`
 - Client components: Use `useTranslations` hook from `next-intl`

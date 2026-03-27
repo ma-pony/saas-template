@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { ArrowRight, ChevronRight, Eye, EyeOff } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { Link } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -21,33 +23,6 @@ import { client } from '@/lib/auth/auth-client'
 import { cn, getBaseUrl } from '@/lib/utils'
 import { quickValidateEmail } from '@/lib/messaging/email/validation'
 import { SocialLoginButtons } from '../components/social-login-buttons'
-
-const validateEmailField = (emailValue: string): string[] => {
-  const errors: string[] = []
-
-  if (!emailValue || !emailValue.trim()) {
-    errors.push('Email is required.')
-    return errors
-  }
-
-  const validation = quickValidateEmail(emailValue.trim().toLowerCase())
-  if (!validation.isValid) {
-    errors.push(validation.reason || 'Please enter a valid email address.')
-  }
-
-  return errors
-}
-
-const PASSWORD_VALIDATIONS = {
-  required: {
-    test: (value: string) => Boolean(value && typeof value === 'string'),
-    message: 'Password is required.',
-  },
-  notEmpty: {
-    test: (value: string) => value.trim().length > 0,
-    message: 'Password cannot be empty.',
-  },
-}
 
 const validateCallbackUrl = (url: string): boolean => {
   try {
@@ -67,22 +42,6 @@ const validateCallbackUrl = (url: string): boolean => {
   }
 }
 
-const validatePassword = (passwordValue: string): string[] => {
-  const errors: string[] = []
-
-  if (!PASSWORD_VALIDATIONS.required.test(passwordValue)) {
-    errors.push(PASSWORD_VALIDATIONS.required.message)
-    return errors
-  }
-
-  if (!PASSWORD_VALIDATIONS.notEmpty.test(passwordValue)) {
-    errors.push(PASSWORD_VALIDATIONS.notEmpty.message)
-    return errors
-  }
-
-  return errors
-}
-
 export default function LoginPage({
   githubAvailable,
   googleAvailable,
@@ -96,10 +55,10 @@ export default function LoginPage({
   microsoftAvailable: boolean
   isProduction: boolean
 }) {
+  const t = useTranslations()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
-  const [_mounted, setMounted] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [passwordErrors, setPasswordErrors] = useState<string[]>([])
@@ -121,9 +80,33 @@ export default function LoginPage({
   const [emailErrors, setEmailErrors] = useState<string[]>([])
   const [showEmailValidationError, setShowEmailValidationError] = useState(false)
 
-  useEffect(() => {
-    setMounted(true)
+  const validateEmailField = (emailValue: string): string[] => {
+    const errors: string[] = []
+    if (!emailValue || !emailValue.trim()) {
+      errors.push(t('common.error.emailRequired'))
+      return errors
+    }
+    const validation = quickValidateEmail(emailValue.trim().toLowerCase())
+    if (!validation.isValid) {
+      errors.push(validation.reason || t('common.error.emailInvalid'))
+    }
+    return errors
+  }
 
+  const validatePassword = (passwordValue: string): string[] => {
+    const errors: string[] = []
+    if (!passwordValue || typeof passwordValue !== 'string') {
+      errors.push(t('common.error.passwordRequired'))
+      return errors
+    }
+    if (passwordValue.trim().length === 0) {
+      errors.push(t('common.error.passwordEmpty'))
+      return errors
+    }
+    return errors
+  }
+
+  useEffect(() => {
     if (!searchParams) {
       return
     }
@@ -177,9 +160,9 @@ export default function LoginPage({
 
     const formData = new FormData(e.currentTarget)
     const emailRaw = formData.get('email') as string
-    const email = emailRaw.trim().toLowerCase()
+    const emailVal = emailRaw.trim().toLowerCase()
 
-    const emailValidationErrors = validateEmailField(email)
+    const emailValidationErrors = validateEmailField(emailVal)
     setEmailErrors(emailValidationErrors)
     setShowEmailValidationError(emailValidationErrors.length > 0)
 
@@ -197,14 +180,14 @@ export default function LoginPage({
 
       const result = await client.signIn.email(
         {
-          email,
+          email: emailVal,
           password,
           callbackURL: safeCallbackUrl,
         },
         {
           onError: (ctx) => {
             console.error('Login error:', ctx.error)
-            const errorMessage: string[] = ['Invalid email or password']
+            const errorMessage: string[] = [t('common.error.invalidCredentials')]
 
             if (ctx.error.code?.includes('EMAIL_NOT_VERIFIED')) {
               return
@@ -213,35 +196,31 @@ export default function LoginPage({
               ctx.error.code?.includes('BAD_REQUEST') ||
               ctx.error.message?.includes('Email and password sign in is not enabled')
             ) {
-              errorMessage.push('Email sign in is currently disabled.')
+              errorMessage.push(t('common.error.emailSignInDisabled'))
             } else if (
               ctx.error.code?.includes('INVALID_CREDENTIALS') ||
               ctx.error.message?.includes('invalid password')
             ) {
-              errorMessage.push('Invalid email or password. Please try again.')
+              errorMessage.push(t('common.error.invalidEmailOrPassword'))
             } else if (
               ctx.error.code?.includes('USER_NOT_FOUND') ||
               ctx.error.message?.includes('not found')
             ) {
-              errorMessage.push('No account found with this email. Please sign up first.')
+              errorMessage.push(t('common.error.noAccountFound'))
             } else if (ctx.error.code?.includes('MISSING_CREDENTIALS')) {
-              errorMessage.push('Please enter both email and password.')
+              errorMessage.push(t('common.error.enterEmailAndPassword'))
             } else if (ctx.error.code?.includes('EMAIL_PASSWORD_DISABLED')) {
-              errorMessage.push('Email and password login is disabled.')
+              errorMessage.push(t('common.error.emailPasswordDisabled'))
             } else if (ctx.error.code?.includes('FAILED_TO_CREATE_SESSION')) {
-              errorMessage.push('Failed to create session. Please try again later.')
+              errorMessage.push(t('common.error.failedToCreateSession'))
             } else if (ctx.error.code?.includes('too many attempts')) {
-              errorMessage.push(
-                'Too many login attempts. Please try again later or reset your password.'
-              )
+              errorMessage.push(t('common.error.tooManyAttempts'))
             } else if (ctx.error.code?.includes('account locked')) {
-              errorMessage.push(
-                'Your account has been locked for security. Please reset your password.'
-              )
+              errorMessage.push(t('common.error.accountLocked'))
             } else if (ctx.error.code?.includes('network')) {
-              errorMessage.push('Network error. Please check your connection and try again.')
+              errorMessage.push(t('common.error.networkError'))
             } else if (ctx.error.message?.includes('rate limit')) {
-              errorMessage.push('Too many requests. Please wait a moment before trying again.')
+              errorMessage.push(t('common.error.rateLimitExceeded'))
             }
 
             setPasswordErrors(errorMessage)
@@ -254,10 +233,11 @@ export default function LoginPage({
         setIsLoading(false)
         return
       }
-    } catch (err: any) {
-      if (err.message?.includes('not verified') || err.code?.includes('EMAIL_NOT_VERIFIED')) {
+    } catch (err: unknown) {
+      const errObj = err as { message?: string; code?: string }
+      if (errObj.message?.includes('not verified') || errObj.code?.includes('EMAIL_NOT_VERIFIED')) {
         if (typeof window !== 'undefined') {
-          sessionStorage.setItem('verificationEmail', email)
+          sessionStorage.setItem('verificationEmail', emailVal)
         }
         router.push('/verify')
         return
@@ -273,7 +253,7 @@ export default function LoginPage({
     if (!forgotPasswordEmail) {
       setResetStatus({
         type: 'error',
-        message: 'Please enter your email address',
+        message: t('auth.login.resetPassword.resetStatus.emailRequired'),
       })
       return
     }
@@ -282,7 +262,7 @@ export default function LoginPage({
     if (!emailValidation.isValid) {
       setResetStatus({
         type: 'error',
-        message: 'Please enter a valid email address',
+        message: t('auth.login.resetPassword.resetStatus.emailInvalid'),
       })
       return
     }
@@ -304,28 +284,28 @@ export default function LoginPage({
 
       if (!response.ok) {
         const errorData = await response.json()
-        let errorMessage = errorData.message || 'Failed to request password reset'
+        let errorMsg = errorData.message || t('common.error.networkError')
 
         if (
-          errorMessage.includes('Invalid body parameters') ||
-          errorMessage.includes('invalid email')
+          errorMsg.includes('Invalid body parameters') ||
+          errorMsg.includes('invalid email')
         ) {
-          errorMessage = 'Please enter a valid email address'
-        } else if (errorMessage.includes('Email is required')) {
-          errorMessage = 'Please enter your email address'
+          errorMsg = t('auth.login.resetPassword.resetStatus.emailInvalid')
+        } else if (errorMsg.includes('Email is required')) {
+          errorMsg = t('auth.login.resetPassword.resetStatus.emailRequired')
         } else if (
-          errorMessage.includes('user not found') ||
-          errorMessage.includes('User not found')
+          errorMsg.includes('user not found') ||
+          errorMsg.includes('User not found')
         ) {
-          errorMessage = 'No account found with this email address'
+          errorMsg = t('auth.login.resetPassword.resetStatus.noAccountFound')
         }
 
-        throw new Error(errorMessage)
+        throw new Error(errorMsg)
       }
 
       setResetStatus({
         type: 'success',
-        message: 'Password reset link sent to your email',
+        message: t('auth.login.resetPassword.resetStatus.success'),
       })
 
       setTimeout(() => {
@@ -336,7 +316,7 @@ export default function LoginPage({
       console.error('Error requesting password reset:', { error })
       setResetStatus({
         type: 'error',
-        message: error instanceof Error ? error.message : 'Failed to request password reset',
+        message: error instanceof Error ? error.message : t('common.error.networkError'),
       })
     } finally {
       setIsSubmittingReset(false)
@@ -349,20 +329,20 @@ export default function LoginPage({
   return (
     <>
       <div className='space-y-1 text-center'>
-        <h1 className='font-medium text-[32px] text-black tracking-tight'>Sign in</h1>
-        <p className='font-[380] text-[16px] text-muted-foreground'>Enter your details</p>
+        <h1 className='font-medium text-[32px] text-black tracking-tight'>{t('auth.login.title')}</h1>
+        <p className='font-[380] text-[16px] text-muted-foreground'>{t('auth.login.subtitle')}</p>
       </div>
 
       <form onSubmit={onSubmit} className={`mt-8 space-y-8`}>
         <div className='space-y-6'>
           <div className='space-y-2'>
             <div className='flex items-center justify-between'>
-              <Label htmlFor='email'>Email</Label>
+              <Label htmlFor='email'>{t('common.label.email')}</Label>
             </div>
             <Input
               id='email'
               name='email'
-              placeholder='Enter your email'
+              placeholder={t('common.placeholder.email')}
               required
               autoCapitalize='none'
               size={'lg'}
@@ -387,13 +367,13 @@ export default function LoginPage({
           </div>
           <div className='space-y-2'>
             <div className='flex items-center justify-between'>
-              <Label htmlFor='password'>Password</Label>
+              <Label htmlFor='password'>{t('common.label.password')}</Label>
               <button
                 type='button'
                 onClick={() => setForgotPasswordOpen(true)}
                 className='font-medium text-muted-foreground text-xs transition hover:text-foreground'
               >
-                Forgot password?
+                {t('auth.login.forgotPassword')}
               </button>
             </div>
             <div className='relative'>
@@ -405,7 +385,7 @@ export default function LoginPage({
                 autoCapitalize='none'
                 autoComplete='current-password'
                 autoCorrect='off'
-                placeholder='Enter your password'
+                placeholder={t('common.placeholder.password')}
                 value={password}
                 size={'lg'}
                 onChange={handlePasswordChange}
@@ -420,7 +400,7 @@ export default function LoginPage({
                 type='button'
                 onClick={() => setShowPassword(!showPassword)}
                 className='-translate-y-1/2 absolute top-1/2 right-3 text-gray-500 transition hover:text-gray-700'
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('common.label.hidePassword') : t('common.label.showPassword')}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -444,7 +424,7 @@ export default function LoginPage({
           disabled={isLoading}
         >
           <span className='flex items-center gap-1'>
-            {isLoading ? 'Signing in...' : 'Sign in'}
+            {isLoading ? t('common.button.signingIn') : t('common.button.signIn')}
             <span className='inline-flex transition-transform duration-200 group-hover:translate-x-0.5'>
               {isButtonHovered ? (
                 <ArrowRight className='h-4 w-4' aria-hidden='true' />
@@ -463,7 +443,7 @@ export default function LoginPage({
             <div className='w-full border-t border-gray-200' />
           </div>
           <div className='relative flex justify-center text-sm'>
-            <span className='bg-white px-4 font-[340] text-muted-foreground'>Or continue with</span>
+            <span className='bg-white px-4 font-[340] text-muted-foreground'>{t('common.label.orContinueWith')}</span>
           </div>
         </div>
       )}
@@ -482,33 +462,33 @@ export default function LoginPage({
       )}
 
       <div className='pt-6 text-center text-[14px] font-light'>
-        <span className='font-normal'>Don't have an account? </span>
+        <span className='font-normal'>{t('auth.login.noAccount')} </span>
         <Link
           href={`/register?callbackUrl=${callbackUrl}`}
           className='font-medium text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'
         >
-          Sign up
+          {t('auth.login.signUpLink')}
         </Link>
       </div>
 
       <div className='absolute inset-x-0 bottom-0 px-8 pb-8 text-center text-[13px] font-[340] leading-relaxed text-muted-foreground sm:px-8 md:px-[44px]'>
-        By signing in, you agree to our{' '}
+        {t('auth.login.agreeTerms')}{' '}
         <Link
           href='/terms'
           target='_blank'
           rel='noopener noreferrer'
           className='text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'
         >
-          Terms of Service
+          {t('auth.login.termsLink')}
         </Link>{' '}
-        and{' '}
+        {t('auth.login.andText')}{' '}
         <Link
           href='/privacy'
           target='_blank'
           rel='noopener noreferrer'
           className='text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'
         >
-          Privacy Policy
+          {t('auth.login.privacyLink')}
         </Link>
       </div>
 
@@ -516,23 +496,22 @@ export default function LoginPage({
         <DialogPopup>
           <DialogHeader>
             <DialogTitle className='text-xl font-semibold tracking-tight text-black'>
-              Reset Password
+              {t('auth.login.resetPassword.title')}
             </DialogTitle>
             <DialogDescription className='text-sm text-muted-foreground'>
-              Enter your email address and we'll send you a link to reset your password if your
-              account exists.
+              {t('auth.login.resetPassword.description')}
             </DialogDescription>
           </DialogHeader>
           <DialogPanel className='space-y-4'>
             <div className='space-y-2'>
               <div className='flex items-center justify-between'>
-                <Label htmlFor='reset-email'>Email</Label>
+                <Label htmlFor='reset-email'>{t('common.label.email')}</Label>
               </div>
               <Input
                 id='reset-email'
                 value={forgotPasswordEmail}
                 onChange={(event) => setForgotPasswordEmail(event.target.value)}
-                placeholder='Enter your email'
+                placeholder={t('common.placeholder.email')}
                 size={'lg'}
                 type='email'
                 className={cn(
@@ -563,7 +542,7 @@ export default function LoginPage({
               disabled={isSubmittingReset}
             >
               <span className='flex items-center gap-1'>
-                {isSubmittingReset ? 'Sending...' : 'Send Reset Link'}
+                {isSubmittingReset ? t('common.button.sending') : t('common.button.sendResetLink')}
                 <span className='inline-flex transition-transform duration-200 group-hover:translate-x-0.5'>
                   {isResetButtonHovered ? (
                     <ArrowRight className='h-4 w-4' aria-hidden='true' />

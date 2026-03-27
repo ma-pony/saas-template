@@ -1,6 +1,8 @@
+import { headers } from 'next/headers'
+import { auth } from '@/lib/auth/auth'
 import { db } from '@/database'
 import { user } from '@/database/schema'
-import { count, ilike, or } from 'drizzle-orm'
+import { count, ilike, or, eq } from 'drizzle-orm'
 
 export interface GetUsersParams {
   page: number
@@ -26,6 +28,11 @@ export async function getUsers({
   pageSize = 20,
   query,
 }: GetUsersParams): Promise<GetUsersResult> {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session) throw new Error('Unauthorized')
+  const [dbUser] = await db.select({ role: user.role }).from(user).where(eq(user.id, session.user.id))
+  if (!dbUser || dbUser.role !== 'admin') throw new Error('Forbidden')
+
   const offset = (page - 1) * pageSize
 
   const whereClause = query

@@ -1,6 +1,6 @@
 # Docker Deployment Guide
 
-This directory contains Docker configurations for deploying the ShipFree Next.js application across different environments. All Dockerfiles use **Bun** as the runtime environment for optimal performance.
+This directory contains Docker configurations for deploying the SaaS Template Next.js application across different environments. All Dockerfiles use **Bun** as the runtime environment for optimal performance.
 
 ## Architecture
 
@@ -26,10 +26,10 @@ Build and run using the main Dockerfile:
 
 ```bash
 # Build the image
-docker build -f docker/Dockerfile -t shipfree:latest .
+docker build -f docker/Dockerfile -t my-saas-app:latest .
 
 # Run the container
-docker run -p 3000:3000 shipfree:latest
+docker run -p 3000:3000 my-saas-app:latest
 ```
 
 ### Environment-Specific Builds
@@ -139,7 +139,7 @@ docker logs <container-id>
 **Solution**: Ensure the Dockerfile properly sets ownership:
 ```bash
 # Rebuild with --no-cache if needed
-docker build --no-cache -f docker/Dockerfile -t shipfree:latest .
+docker build --no-cache -f docker/Dockerfile -t my-saas-app:latest .
 ```
 
 ## Additional Resources

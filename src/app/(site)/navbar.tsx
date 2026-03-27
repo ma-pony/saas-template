@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 
 import { getGitHubStars } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from '@/components/ui/button'
 
 export default function Navbar() {
   const [stars, setStars] = useState<number | null>(null)

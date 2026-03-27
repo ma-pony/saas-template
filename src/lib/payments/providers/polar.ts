@@ -193,12 +193,17 @@ export class PolarAdapter implements PaymentAdapter {
           const subscription = polarEvent.data
           const plan = this.mapProductToPlan(subscription.productId)
 
+          const userId = subscription.customerMetadata?.userId || ''
+          if (!userId) {
+            console.warn('[Polar] Webhook received subscription event without userId in customerMetadata')
+          }
+
           return {
             processed: true,
             subscription: {
               id: `polar_${subscription.id}`,
               providerSubscriptionId: subscription.id,
-              userId: subscription.customerMetadata?.userId || '',
+              userId,
               customerId: `polar_${subscription.customerId}`,
               status: this.mapPolarStatus(subscription.status),
               plan,
@@ -259,9 +264,26 @@ export class PolarAdapter implements PaymentAdapter {
     }
 
     try {
-      // Polar webhook validation - simplified for now
-      // In production, you'd implement proper signature verification
-      return true
+      const encoder = new TextEncoder()
+      const key = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(env.POLAR_WEBHOOK_SECRET),
+        { name: 'HMAC', hash: 'SHA-256' },
+        false,
+        ['sign'],
+      )
+      const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(rawBody))
+      const expected = Array.from(new Uint8Array(sig))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('')
+
+      // Constant-time comparison
+      if (expected.length !== signature.length) return false
+      let mismatch = 0
+      for (let i = 0; i < expected.length; i++) {
+        mismatch |= expected.charCodeAt(i) ^ signature.charCodeAt(i)
+      }
+      return mismatch === 0
     } catch (error) {
       console.error('Polar webhook signature validation failed:', error)
       return false

@@ -39,13 +39,11 @@
 
 import { getJobRegistry } from './job-registry'
 import { cleanupLogsJob } from './built-in/cleanup-logs'
-import { exampleStatsJob } from './built-in/example-stats'
 
 const registry = getJobRegistry()
 
 // Built-in jobs
 registry.register(cleanupLogsJob)
-registry.register(exampleStatsJob)
 
 // ↑ Add your custom jobs above this line
 

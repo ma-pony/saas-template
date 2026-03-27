@@ -187,10 +187,15 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
     // This is typically available on the subscription object or customer object
     // For now, we'll return a generic URL or throw if not available
     const { data } = await listCustomers({
-      filter: { email: customerId }, // Assuming customerId passed is email or we look up by ID
+      filter: { storeId: env.LEMONSQUEEZY_STORE_ID },
     })
 
-    const url = data?.data[0]?.attributes.urls?.customer_portal
+    // Find customer by provider customer ID (not email)
+    const matchedCustomer = data?.data.find(
+      (c) => c.id === customerId || c.attributes.email === customerId,
+    )
+
+    const url = matchedCustomer?.attributes.urls?.customer_portal
     if (!url) {
       throw new Error('Customer portal URL not found')
     }
@@ -211,14 +216,17 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
       case 'subscription_expired': {
         const attrs = data.attributes
         const plan = this.mapVariantToPlan(attrs.variant_id.toString())
-        const userId = body.meta.custom_data?.user_id // Need to ensure this is passed in checkout custom data
+        const userId = body.meta.custom_data?.user_id || ''
+        if (!userId) {
+          console.warn('[LemonSqueezy] Webhook received subscription event without userId in custom_data')
+        }
 
         return {
           processed: true,
           subscription: {
             id: `ls_${data.id}`,
             providerSubscriptionId: data.id,
-            userId: userId || '', // This might be missing if not passed in custom_data
+            userId,
             customerId: `ls_${attrs.customer_id}`,
             status: this.mapStatus(attrs.status),
             plan,

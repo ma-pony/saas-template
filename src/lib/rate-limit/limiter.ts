@@ -23,8 +23,13 @@ const DEFAULT_CONFIG: Required<RateLimitConfig> = {
   windowMs: 60_000,
   max: 60,
   keyGenerator: (req) => {
-    const forwarded = req.headers.get('x-forwarded-for')
-    return forwarded ? forwarded.split(',')[0].trim() : 'unknown'
+    // Prefer platform-specific headers that cannot be spoofed by clients
+    const realIp =
+      req.headers.get('x-real-ip') ||
+      req.headers.get('x-vercel-forwarded-for') ||
+      req.headers.get('cf-connecting-ip') ||
+      req.headers.get('x-forwarded-for')?.split(',')[0].trim()
+    return realIp || 'unknown'
   },
   message: 'Too many requests, please try again later.',
 }

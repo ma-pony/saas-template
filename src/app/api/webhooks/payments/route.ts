@@ -7,6 +7,26 @@ import { db } from '@/database'
 import { customer, subscription, payment } from '@/database/schema'
 import type { WebhookEvent } from '@/lib/payments/types'
 
+/**
+ * Map provider-specific event type names to canonical WebhookEventType.
+ * Stripe uses `customer.subscription.created` while our types use `subscription.created`.
+ */
+const STRIPE_EVENT_MAP: Record<string, WebhookEvent['type']> = {
+  'customer.subscription.created': 'subscription.created',
+  'customer.subscription.updated': 'subscription.updated',
+  'customer.subscription.deleted': 'subscription.canceled',
+  'invoice.payment_succeeded': 'payment.succeeded',
+  'invoice.payment_failed': 'payment.failed',
+  'checkout.session.completed': 'checkout.completed',
+}
+
+const LEMONSQUEEZY_EVENT_MAP: Record<string, WebhookEvent['type']> = {
+  subscription_created: 'subscription.created',
+  subscription_updated: 'subscription.updated',
+  subscription_cancelled: 'subscription.canceled',
+  order_created: 'payment.succeeded',
+}
+
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text()
@@ -16,7 +36,6 @@ export async function POST(req: Request) {
     const provider = adapter.provider
 
     // 1. Verify signature based on active provider
-    let isValid = false
     let signature = ''
 
     switch (provider) {
@@ -35,7 +54,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing signature' }, { status: 400 })
     }
 
-    isValid = await adapter.validateWebhook(rawBody, signature)
+    const isValid = await adapter.validateWebhook(rawBody, signature)
 
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
@@ -47,30 +66,32 @@ export async function POST(req: Request) {
     try {
       const parsedBody = JSON.parse(rawBody)
 
-      // Each adapter should handle raw parsing in processWebhook,
-      // but here we just construct the generic event structure
-      // Note: We might need provider-specific parsing here if the raw structure varies significantly
-      // For now, we pass the parsed body as rawEvent
-
-      // Determine event type based on provider (simplified)
-      let type: WebhookEvent['type'] | undefined
+      let rawType: string | undefined
 
       if (provider === 'stripe') {
-        type = parsedBody.type
+        rawType = parsedBody.type
       } else if (provider === 'polar') {
-        type = parsedBody.type
+        rawType = parsedBody.type
       } else if (provider === 'lemonsqueezy') {
-        // Lemon Squeezy event name is in meta.event_name
-        type = parsedBody.meta?.event_name
+        rawType = parsedBody.meta?.event_name
       }
 
-      if (!type) {
-        // Fallback or ignore
+      if (!rawType) {
         return NextResponse.json({ processed: true })
       }
 
+      // Map provider-specific event types to canonical types
+      let type: WebhookEvent['type']
+      if (provider === 'stripe' && STRIPE_EVENT_MAP[rawType]) {
+        type = STRIPE_EVENT_MAP[rawType]
+      } else if (provider === 'lemonsqueezy' && LEMONSQUEEZY_EVENT_MAP[rawType]) {
+        type = LEMONSQUEEZY_EVENT_MAP[rawType]
+      } else {
+        type = rawType as WebhookEvent['type']
+      }
+
       event = {
-        type: type as WebhookEvent['type'],
+        type,
         provider,
         data:
           provider === 'lemonsqueezy'
@@ -86,65 +107,85 @@ export async function POST(req: Request) {
     const result = await adapter.processWebhook(event)
 
     if (result.error) {
+      // Log but return 200 to prevent provider from retrying indefinitely
       console.error('Webhook processing error:', result.error)
-      return NextResponse.json({ error: result.error }, { status: 500 })
+      return NextResponse.json({ received: true, error: result.error })
     }
 
-    // 4. Update database
+    // 4. Update database in a transaction for atomicity
     if (result.processed) {
-      // Handle customer updates
-      if (result.customer) {
-        const existingCustomer = await db.query.customer.findFirst({
-          where: eq(customer.providerCustomerId, result.customer.providerCustomerId),
-        })
-
-        if (existingCustomer) {
-          await db
-            .update(customer)
-            .set({
-              email: result.customer.email,
-              updatedAt: new Date(),
-            })
-            .where(eq(customer.id, existingCustomer.id))
-        } else if (result.customer.userId) {
-          // Only create if we have a userId
-          await db.insert(customer).values({
-            id: result.customer.id,
-            userId: result.customer.userId,
-            provider: result.customer.provider,
-            providerCustomerId: result.customer.providerCustomerId,
-            email: result.customer.email,
-          })
-        }
-      }
-
-      // Handle subscription updates
-      if (result.subscription) {
-        const existingSub = await db.query.subscription.findFirst({
-          where: eq(
-            subscription.providerSubscriptionId,
-            result.subscription.providerSubscriptionId
-          ),
-        })
-
-        // Find customer if not provided directly but we have customerId
-        let dbCustomerId = result.subscription.customerId
-        if (!dbCustomerId && existingSub) {
-          dbCustomerId = existingSub.customerId || undefined
-        }
-
-        // If we still don't have a DB customer ID but have a provider customer ID, look it up
-        if (!dbCustomerId && result.customer?.providerCustomerId) {
-          const linkedCustomer = await db.query.customer.findFirst({
+      await db.transaction(async (tx) => {
+        // Handle customer updates
+        if (result.customer) {
+          const existingCustomer = await tx.query.customer.findFirst({
             where: eq(customer.providerCustomerId, result.customer.providerCustomerId),
           })
-          dbCustomerId = linkedCustomer?.id
+
+          if (existingCustomer) {
+            await tx
+              .update(customer)
+              .set({
+                email: result.customer.email,
+                updatedAt: new Date(),
+              })
+              .where(eq(customer.id, existingCustomer.id))
+          } else if (result.customer.userId) {
+            await tx.insert(customer).values({
+              id: result.customer.id,
+              userId: result.customer.userId,
+              provider: result.customer.provider,
+              providerCustomerId: result.customer.providerCustomerId,
+              email: result.customer.email,
+            })
+          }
         }
 
-        if (existingSub) {
-          await db
-            .update(subscription)
-            .set({
+        // Handle subscription updates
+        if (result.subscription) {
+          const existingSub = await tx.query.subscription.findFirst({
+            where: eq(
+              subscription.providerSubscriptionId,
+              result.subscription.providerSubscriptionId,
+            ),
+          })
+
+          let dbCustomerId = result.subscription.customerId
+          if (!dbCustomerId && existingSub) {
+            dbCustomerId = existingSub.customerId || undefined
+          }
+
+          if (!dbCustomerId && result.customer?.providerCustomerId) {
+            const linkedCustomer = await tx.query.customer.findFirst({
+              where: eq(customer.providerCustomerId, result.customer.providerCustomerId),
+            })
+            dbCustomerId = linkedCustomer?.id
+          }
+
+          if (existingSub) {
+            await tx
+              .update(subscription)
+              .set({
+                status: result.subscription.status,
+                plan: result.subscription.plan,
+                interval: result.subscription.interval,
+                amount: result.subscription.amount ? result.subscription.amount.toString() : null,
+                currency: result.subscription.currency,
+                currentPeriodStart: result.subscription.currentPeriodStart,
+                currentPeriodEnd: result.subscription.currentPeriodEnd,
+                cancelAtPeriodEnd: result.subscription.cancelAtPeriodEnd,
+                canceledAt: result.subscription.canceledAt,
+                trialStart: result.subscription.trialStart,
+                trialEnd: result.subscription.trialEnd,
+                updatedAt: new Date(),
+              })
+              .where(eq(subscription.id, existingSub.id))
+          } else if (result.subscription.userId) {
+            await tx.insert(subscription).values({
+              id: result.subscription.id,
+              userId: result.subscription.userId,
+              customerId: dbCustomerId,
+              provider: result.subscription.provider,
+              providerSubscriptionId: result.subscription.providerSubscriptionId,
               status: result.subscription.status,
               plan: result.subscription.plan,
               interval: result.subscription.interval,
@@ -156,65 +197,44 @@ export async function POST(req: Request) {
               canceledAt: result.subscription.canceledAt,
               trialStart: result.subscription.trialStart,
               trialEnd: result.subscription.trialEnd,
-              updatedAt: new Date(),
             })
-            .where(eq(subscription.id, existingSub.id))
-        } else if (result.subscription.userId) {
-          await db.insert(subscription).values({
-            id: result.subscription.id,
-            userId: result.subscription.userId,
-            customerId: dbCustomerId,
-            provider: result.subscription.provider,
-            providerSubscriptionId: result.subscription.providerSubscriptionId,
-            status: result.subscription.status,
-            plan: result.subscription.plan,
-            interval: result.subscription.interval,
-            amount: result.subscription.amount ? result.subscription.amount.toString() : null,
-            currency: result.subscription.currency,
-            currentPeriodStart: result.subscription.currentPeriodStart,
-            currentPeriodEnd: result.subscription.currentPeriodEnd,
-            cancelAtPeriodEnd: result.subscription.cancelAtPeriodEnd,
-            canceledAt: result.subscription.canceledAt,
-            trialStart: result.subscription.trialStart,
-            trialEnd: result.subscription.trialEnd,
-          })
+          }
         }
-      }
 
-      // Handle payment updates
-      if (result.payment) {
-        const existingPayment = await db.query.payment.findFirst({
-          where: eq(payment.providerPaymentId, result.payment.providerPaymentId),
-        })
+        // Handle payment updates
+        if (result.payment) {
+          const existingPayment = await tx.query.payment.findFirst({
+            where: eq(payment.providerPaymentId, result.payment.providerPaymentId),
+          })
 
-        // Resolve references
-        const dbCustomerId = result.payment.customerId
-        const dbSubscriptionId = result.payment.subscriptionId
+          const dbCustomerId = result.payment.customerId
+          const dbSubscriptionId = result.payment.subscriptionId
 
-        if (existingPayment) {
-          await db
-            .update(payment)
-            .set({
+          if (existingPayment) {
+            await tx
+              .update(payment)
+              .set({
+                status: result.payment.status,
+                updatedAt: new Date(),
+              })
+              .where(eq(payment.id, existingPayment.id))
+          } else if (result.payment.userId) {
+            await tx.insert(payment).values({
+              id: result.payment.id,
+              userId: result.payment.userId,
+              customerId: dbCustomerId,
+              subscriptionId: dbSubscriptionId,
+              provider: result.payment.provider as any,
+              providerPaymentId: result.payment.providerPaymentId,
+              type: result.payment.type,
               status: result.payment.status,
-              updatedAt: new Date(),
+              amount: result.payment.amount.toString(),
+              currency: result.payment.currency,
+              description: result.payment.description,
             })
-            .where(eq(payment.id, existingPayment.id))
-        } else if (result.payment.userId) {
-          await db.insert(payment).values({
-            id: result.payment.id,
-            userId: result.payment.userId,
-            customerId: dbCustomerId,
-            subscriptionId: dbSubscriptionId,
-            provider: result.payment.provider as any, // Cast if needed
-            providerPaymentId: result.payment.providerPaymentId,
-            type: result.payment.type,
-            status: result.payment.status,
-            amount: result.payment.amount.toString(),
-            currency: result.payment.currency,
-            description: result.payment.description,
-          })
+          }
         }
-      }
+      })
     }
 
     return NextResponse.json({ received: true })

@@ -15,7 +15,8 @@
       "sendResetLink": "Send Reset Link",
       "sending": "Sending...",
       "backToSignup": "Back to signup",
-      "learnMore": "Learn more"
+      "learnMore": "Learn more",
+      "connecting": "Connecting..."
     },
     "error": {
       "emailRequired": "Email is required.",
@@ -34,13 +35,19 @@
       "tooManyAttempts": "Too many login attempts. Please try again later or reset your password.",
       "accountLocked": "Your account has been locked for security. Please reset your password.",
       "networkError": "Network error. Please check your connection and try again.",
-      "rateLimitExceeded": "Too many requests. Please wait a moment before trying again."
+      "rateLimitExceeded": "Too many requests. Please wait a moment before trying again.",
+      "socialSignInFailed": "Failed to sign in with {provider}",
+      "accountExists": "An account with this email already exists. Please sign in instead.",
+      "signInCancelled": "{provider} sign in was cancelled. Please try again."
     },
     "label": {
       "email": "Email",
       "password": "Password",
       "fullName": "Full name",
-      "orContinueWith": "Or continue with"
+      "orContinueWith": "Or continue with",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password",
+      "loading": "Loading..."
     },
     "placeholder": {
       "email": "Enter your email",
@@ -283,12 +290,25 @@
     },
     "resetPassword": {
       "title": "Reset Password",
-      "subtitle": "Enter your new password below.",
+      "heading": "Reset your password",
+      "subtitle": "Enter a new password for your account",
       "newPassword": "New Password",
       "confirmPassword": "Confirm Password",
+      "enterNewPassword": "Enter new password",
+      "confirmNewPassword": "Confirm new password",
       "submitButton": "Reset Password",
       "submitting": "Resetting...",
-      "backToLogin": "Back to login"
+      "backToLogin": "Back to login",
+      "invalidToken": "Invalid or missing reset token. Please request a new password reset link.",
+      "success": "Password reset successful! Redirecting to login...",
+      "failed": "Failed to reset password",
+      "helperText": "We'll send a password reset link to this email address.",
+      "passwordMaxLength": "Password must not exceed 100 characters",
+      "passwordUppercase": "Password must contain at least one uppercase letter",
+      "passwordLowercase": "Password must contain at least one lowercase letter",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordSpecialChar": "Password must contain at least one special character",
+      "passwordsDoNotMatch": "Passwords do not match"
     }
   },
   "dashboard": {
@@ -307,6 +327,92 @@
     "settings": {
       "title": "Settings",
       "description": "Configure your preferences."
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Terms of Service",
+      "lastUpdated": "Last updated: 17 jan 2026",
+      "intro": "welcome to [Your Company]. by accessing or using our platform, you agree to these terms. if you don't agree, please don't use our platform.",
+      "sections": {
+        "usage": {
+          "title": "1. using our platform",
+          "content": "you must use our platform only for lawful purposes. you're responsible for how you use the platform, including any projects, code, or data you upload or share."
+        },
+        "accounts": {
+          "title": "2. accounts",
+          "content": "you're responsible for keeping your account secure. if you suspect unauthorized access, contact us immediately at"
+        },
+        "ip": {
+          "title": "3. intellectual property",
+          "content": "all code, templates, and assets provided through [Your Company] are owned by us or licensed to us. you retain rights to your own projects built using our tools, but not to the underlying boilerplate."
+        },
+        "restrictions": {
+          "title": "4. restrictions",
+          "content": "don't attempt to hack, decompile, or resell our products or services. we reserve the right to suspend or terminate accounts that violate these terms."
+        },
+        "liability": {
+          "title": "5. liability",
+          "content": "our platform is provided \"as is.\" we don't guarantee uninterrupted service or that our platform will be error-free. we're not liable for any damages, data loss, or downtime."
+        },
+        "updates": {
+          "title": "6. updates to terms",
+          "content": "we may update these terms anytime. continued use means you accept the latest version."
+        }
+      }
+    },
+    "licenses": {
+      "title": "Licenses",
+      "lastUpdated": "Last updated: 17 jan 2026",
+      "sections": {
+        "codebase": {
+          "title": "1. codebase",
+          "content": "the boilerplate and related source code are licensed for commercial and personal projects with a valid purchase or access key. redistribution or resale without permission is prohibited."
+        },
+        "openSource": {
+          "title": "2. open-source components",
+          "content": "this project includes open-source libraries under their respective licenses (MIT, Apache 2.0, etc.). you must comply with their terms when using or modifying those components."
+        },
+        "attribution": {
+          "title": "3. attribution",
+          "content": "you're not required to publicly credit [Your Company], but attribution is appreciated when showcasing products built using it."
+        },
+        "termination": {
+          "title": "4. termination",
+          "content": "we reserve the right to revoke your license if you misuse or redistribute our code in violation of these terms."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated: 17 jan 2026",
+      "intro": "we value your privacy. here's how we handle your info.",
+      "sections": {
+        "dataCollect": {
+          "title": "1. data we collect",
+          "list": ["basic account info (email, name, etc.)", "usage data (how you interact with the app)", "optional data you share (like feedback or support requests)"]
+        },
+        "howWeUse": {
+          "title": "2. how we use it",
+          "list": ["to run and improve our platform", "to communicate with you about updates or issues", "to prevent misuse or fraud"]
+        },
+        "cookies": {
+          "title": "3. cookies",
+          "content": "we use cookies to keep you logged in and track performance. you can disable cookies, but some features might not work properly."
+        },
+        "thirdParty": {
+          "title": "4. third-party services",
+          "content": "we may use analytics or hosting tools (like vercel, supabase, or stripe) that collect data in line with their own policies."
+        },
+        "security": {
+          "title": "5. data security",
+          "content": "we take reasonable steps to secure your info but can't guarantee 100% security."
+        },
+        "rights": {
+          "title": "6. your rights",
+          "content": "you can request deletion or correction of your data anytime at support@your-domain.com."
+        }
+      }
     }
   },
   "consent": {

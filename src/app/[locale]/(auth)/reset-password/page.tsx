@@ -1,12 +1,15 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 
 import { SetNewPasswordForm } from '@/app/(auth)/reset-password/reset-password-form'
 
 function ResetPasswordContent() {
+  const t = useTranslations()
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
@@ -24,10 +27,10 @@ function ResetPasswordContent() {
     if (!token) {
       setStatusMessage({
         type: 'error',
-        text: 'Invalid or missing reset token. Please request a new password reset link.',
+        text: t('auth.resetPassword.invalidToken'),
       })
     }
-  }, [token])
+  }, [token, t])
 
   const handleResetPassword = async (password: string) => {
     try {
@@ -47,12 +50,12 @@ function ResetPasswordContent() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to reset password')
+        throw new Error(errorData.message || t('auth.resetPassword.failed'))
       }
 
       setStatusMessage({
         type: 'success',
-        text: 'Password reset successful! Redirecting to login...',
+        text: t('auth.resetPassword.success'),
       })
 
       setTimeout(() => {
@@ -62,7 +65,7 @@ function ResetPasswordContent() {
       console.error('Error resetting password:', error)
       setStatusMessage({
         type: 'error',
-        text: error instanceof Error ? error.message : 'Failed to reset password',
+        text: error instanceof Error ? error.message : t('auth.resetPassword.failed'),
       })
     } finally {
       setIsSubmitting(false)
@@ -72,9 +75,9 @@ function ResetPasswordContent() {
   return (
     <>
       <div className='space-y-1 text-center'>
-        <h1 className='font-medium text-[32px] text-black tracking-tight'>Reset your password</h1>
+        <h1 className='font-medium text-[32px] text-black tracking-tight'>{t('auth.resetPassword.heading')}</h1>
         <p className='font-[380] text-[16px] text-muted-foreground'>
-          Enter a new password for your account
+          {t('auth.resetPassword.subtitle')}
         </p>
       </div>
 
@@ -89,8 +92,8 @@ function ResetPasswordContent() {
       </div>
 
       <div className='pt-6 text-center font-light text-[14px]'>
-        <Link href='/login' className='auth-link underline-offset-4 transition hover:underline'>
-          Back to login
+        <Link href='/login' className='font-medium text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'>
+          {t('auth.resetPassword.backToLogin')}
         </Link>
       </div>
     </>
@@ -98,9 +101,10 @@ function ResetPasswordContent() {
 }
 
 export default function ResetPasswordPage() {
+  const t = useTranslations()
   return (
     <Suspense
-      fallback={<div className='flex h-screen items-center justify-center'>Loading...</div>}
+      fallback={<div className='flex h-screen items-center justify-center'>{t('common.label.loading')}</div>}
     >
       <ResetPasswordContent />
     </Suspense>

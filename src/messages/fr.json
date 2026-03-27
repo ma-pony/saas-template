@@ -15,7 +15,8 @@
       "sendResetLink": "Envoyer le lien de réinitialisation",
       "sending": "Envoi en cours...",
       "backToSignup": "Retour à l'inscription",
-      "learnMore": "En savoir plus"
+      "learnMore": "En savoir plus",
+      "connecting": "Connexion..."
     },
     "error": {
       "emailRequired": "L'email est obligatoire.",
@@ -34,13 +35,19 @@
       "tooManyAttempts": "Trop de tentatives. Veuillez réessayer plus tard ou réinitialiser votre mot de passe.",
       "accountLocked": "Votre compte a été verrouillé pour des raisons de sécurité. Veuillez réinitialiser votre mot de passe.",
       "networkError": "Erreur réseau. Veuillez vérifier votre connexion et réessayer.",
-      "rateLimitExceeded": "Trop de requêtes. Veuillez attendre un moment avant de réessayer."
+      "rateLimitExceeded": "Trop de requêtes. Veuillez attendre un moment avant de réessayer.",
+      "socialSignInFailed": "Échec de la connexion avec {provider}",
+      "accountExists": "Un compte existe déjà avec cet email. Veuillez vous connecter.",
+      "signInCancelled": "Connexion {provider} annulée. Veuillez réessayer."
     },
     "label": {
       "email": "Email",
       "password": "Mot de passe",
       "fullName": "Nom complet",
-      "orContinueWith": "Ou continuer avec"
+      "orContinueWith": "Ou continuer avec",
+      "hidePassword": "Masquer le mot de passe",
+      "showPassword": "Afficher le mot de passe",
+      "loading": "Chargement..."
     },
     "placeholder": {
       "email": "Entrez votre email",
@@ -283,12 +290,25 @@
     },
     "resetPassword": {
       "title": "Réinitialiser le mot de passe",
-      "subtitle": "Entrez votre nouveau mot de passe ci-dessous.",
+      "heading": "Réinitialisez votre mot de passe",
+      "subtitle": "Entrez un nouveau mot de passe pour votre compte",
       "newPassword": "Nouveau mot de passe",
       "confirmPassword": "Confirmer le mot de passe",
+      "enterNewPassword": "Entrez le nouveau mot de passe",
+      "confirmNewPassword": "Confirmez le nouveau mot de passe",
       "submitButton": "Réinitialiser le mot de passe",
       "submitting": "Réinitialisation...",
-      "backToLogin": "Retour à la connexion"
+      "backToLogin": "Retour à la connexion",
+      "invalidToken": "Jeton de réinitialisation invalide ou manquant. Veuillez demander un nouveau lien de réinitialisation.",
+      "success": "Mot de passe réinitialisé ! Redirection vers la connexion...",
+      "failed": "Échec de la réinitialisation du mot de passe",
+      "helperText": "Nous enverrons un lien de réinitialisation à cette adresse email.",
+      "passwordMaxLength": "Le mot de passe ne doit pas dépasser 100 caractères",
+      "passwordUppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+      "passwordLowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+      "passwordNumber": "Le mot de passe doit contenir au moins un chiffre",
+      "passwordSpecialChar": "Le mot de passe doit contenir au moins un caractère spécial",
+      "passwordsDoNotMatch": "Les mots de passe ne correspondent pas"
     }
   },
   "dashboard": {
@@ -307,6 +327,92 @@
     "settings": {
       "title": "Paramètres",
       "description": "Configurez vos préférences."
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "lastUpdated": "Dernière mise à jour : 17 jan 2026",
+      "intro": "bienvenue sur [Your Company]. en accédant ou en utilisant notre plateforme, vous acceptez ces conditions. si vous n'êtes pas d'accord, veuillez ne pas utiliser notre plateforme.",
+      "sections": {
+        "usage": {
+          "title": "1. utilisation de notre plateforme",
+          "content": "vous devez utiliser notre plateforme uniquement à des fins légales. vous êtes responsable de la façon dont vous utilisez la plateforme, y compris les projets, le code ou les données que vous téléchargez ou partagez."
+        },
+        "accounts": {
+          "title": "2. comptes",
+          "content": "vous êtes responsable de la sécurité de votre compte. si vous soupçonnez un accès non autorisé, contactez-nous immédiatement à"
+        },
+        "ip": {
+          "title": "3. propriété intellectuelle",
+          "content": "tout le code, les modèles et les ressources fournis via [Your Company] nous appartiennent ou nous sont concédés sous licence. vous conservez les droits sur vos propres projets construits avec nos outils, mais pas sur le code de base sous-jacent."
+        },
+        "restrictions": {
+          "title": "4. restrictions",
+          "content": "ne tentez pas de pirater, décompiler ou revendre nos produits ou services. nous nous réservons le droit de suspendre ou de résilier les comptes qui violent ces conditions."
+        },
+        "liability": {
+          "title": "5. responsabilité",
+          "content": "notre plateforme est fournie \"telle quelle\". nous ne garantissons pas un service ininterrompu ni que notre plateforme sera sans erreur. nous ne sommes pas responsables des dommages, pertes de données ou temps d'arrêt."
+        },
+        "updates": {
+          "title": "6. mise à jour des conditions",
+          "content": "nous pouvons mettre à jour ces conditions à tout moment. l'utilisation continue signifie que vous acceptez la dernière version."
+        }
+      }
+    },
+    "licenses": {
+      "title": "Licences",
+      "lastUpdated": "Dernière mise à jour : 17 jan 2026",
+      "sections": {
+        "codebase": {
+          "title": "1. code source",
+          "content": "le modèle et le code source associé sont licenciés pour les projets commerciaux et personnels avec un achat ou une clé d'accès valide. la redistribution ou la revente sans autorisation est interdite."
+        },
+        "openSource": {
+          "title": "2. composants open source",
+          "content": "ce projet inclut des bibliothèques open source sous leurs licences respectives (MIT, Apache 2.0, etc.). vous devez respecter leurs conditions lors de l'utilisation ou de la modification de ces composants."
+        },
+        "attribution": {
+          "title": "3. attribution",
+          "content": "vous n'êtes pas tenu de créditer publiquement [Your Company], mais l'attribution est appréciée lors de la présentation de produits construits avec celui-ci."
+        },
+        "termination": {
+          "title": "4. résiliation",
+          "content": "nous nous réservons le droit de révoquer votre licence si vous abusez ou redistribuez notre code en violation de ces conditions."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "lastUpdated": "Dernière mise à jour : 17 jan 2026",
+      "intro": "nous accordons de l'importance à votre vie privée. voici comment nous traitons vos informations.",
+      "sections": {
+        "dataCollect": {
+          "title": "1. données que nous collectons",
+          "list": ["informations de base du compte (email, nom, etc.)", "données d'utilisation (comment vous interagissez avec l'app)", "données optionnelles que vous partagez (comme les commentaires ou les demandes d'assistance)"]
+        },
+        "howWeUse": {
+          "title": "2. comment nous les utilisons",
+          "list": ["pour exploiter et améliorer notre plateforme", "pour communiquer avec vous sur les mises à jour ou les problèmes", "pour prévenir les abus ou la fraude"]
+        },
+        "cookies": {
+          "title": "3. cookies",
+          "content": "nous utilisons des cookies pour maintenir votre connexion et suivre les performances. vous pouvez désactiver les cookies, mais certaines fonctionnalités pourraient ne pas fonctionner correctement."
+        },
+        "thirdParty": {
+          "title": "4. services tiers",
+          "content": "nous pouvons utiliser des outils d'analyse ou d'hébergement (comme vercel, supabase ou stripe) qui collectent des données conformément à leurs propres politiques."
+        },
+        "security": {
+          "title": "5. sécurité des données",
+          "content": "nous prenons des mesures raisonnables pour sécuriser vos informations, mais nous ne pouvons pas garantir une sécurité à 100%."
+        },
+        "rights": {
+          "title": "6. vos droits",
+          "content": "vous pouvez demander la suppression ou la correction de vos données à tout moment à support@your-domain.com."
+        }
+      }
     }
   },
   "consent": {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
-  "name": "ShipFree",
+  "name": "SaaS Template",
   "description": "Production-ready Next.js template with auth, payments, and email.",
   "colors": {
     "primary": "#0f172a",

@@ -15,7 +15,8 @@
       "sendResetLink": "Enviar enlace de restablecimiento",
       "sending": "Enviando...",
       "backToSignup": "Volver al registro",
-      "learnMore": "Saber más"
+      "learnMore": "Saber más",
+      "connecting": "Conectando..."
     },
     "error": {
       "emailRequired": "El correo es obligatorio.",
@@ -34,13 +35,19 @@
       "tooManyAttempts": "Demasiados intentos. Por favor intenta más tarde o restablece tu contraseña.",
       "accountLocked": "Tu cuenta ha sido bloqueada por seguridad. Por favor restablece tu contraseña.",
       "networkError": "Error de red. Por favor verifica tu conexión e intenta de nuevo.",
-      "rateLimitExceeded": "Demasiadas solicitudes. Por favor espera un momento antes de intentar de nuevo."
+      "rateLimitExceeded": "Demasiadas solicitudes. Por favor espera un momento antes de intentar de nuevo.",
+      "socialSignInFailed": "Error al iniciar sesión con {provider}",
+      "accountExists": "Ya existe una cuenta con este correo. Por favor inicia sesión.",
+      "signInCancelled": "Inicio de sesión con {provider} cancelado. Por favor intenta de nuevo."
     },
     "label": {
       "email": "Correo electrónico",
       "password": "Contraseña",
       "fullName": "Nombre completo",
-      "orContinueWith": "O continúa con"
+      "orContinueWith": "O continúa con",
+      "hidePassword": "Ocultar contraseña",
+      "showPassword": "Mostrar contraseña",
+      "loading": "Cargando..."
     },
     "placeholder": {
       "email": "Ingresa tu correo",
@@ -283,12 +290,25 @@
     },
     "resetPassword": {
       "title": "Restablecer contraseña",
-      "subtitle": "Ingresa tu nueva contraseña abajo.",
+      "heading": "Restablece tu contraseña",
+      "subtitle": "Ingresa una nueva contraseña para tu cuenta",
       "newPassword": "Nueva contraseña",
       "confirmPassword": "Confirmar contraseña",
+      "enterNewPassword": "Ingresa nueva contraseña",
+      "confirmNewPassword": "Confirma nueva contraseña",
       "submitButton": "Restablecer contraseña",
       "submitting": "Restableciendo...",
-      "backToLogin": "Volver a inicio de sesión"
+      "backToLogin": "Volver a inicio de sesión",
+      "invalidToken": "Token de restablecimiento inválido o faltante. Por favor solicita un nuevo enlace de restablecimiento.",
+      "success": "¡Contraseña restablecida! Redirigiendo al inicio de sesión...",
+      "failed": "Error al restablecer la contraseña",
+      "helperText": "Enviaremos un enlace de restablecimiento a esta dirección de correo.",
+      "passwordMaxLength": "La contraseña no debe exceder 100 caracteres",
+      "passwordUppercase": "La contraseña debe contener al menos una letra mayúscula",
+      "passwordLowercase": "La contraseña debe contener al menos una letra minúscula",
+      "passwordNumber": "La contraseña debe contener al menos un número",
+      "passwordSpecialChar": "La contraseña debe contener al menos un carácter especial",
+      "passwordsDoNotMatch": "Las contraseñas no coinciden"
     }
   },
   "dashboard": {
@@ -307,6 +327,92 @@
     "settings": {
       "title": "Configuración",
       "description": "Configura tus preferencias."
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Términos de Servicio",
+      "lastUpdated": "Última actualización: 17 ene 2026",
+      "intro": "bienvenido a [Your Company]. al acceder o usar nuestra plataforma, aceptas estos términos. si no estás de acuerdo, por favor no uses nuestra plataforma.",
+      "sections": {
+        "usage": {
+          "title": "1. uso de nuestra plataforma",
+          "content": "debes usar nuestra plataforma solo para fines legales. eres responsable de cómo usas la plataforma, incluidos los proyectos, código o datos que subas o compartas."
+        },
+        "accounts": {
+          "title": "2. cuentas",
+          "content": "eres responsable de mantener tu cuenta segura. si sospechas de acceso no autorizado, contáctanos inmediatamente en"
+        },
+        "ip": {
+          "title": "3. propiedad intelectual",
+          "content": "todo el código, plantillas y recursos proporcionados a través de [Your Company] son de nuestra propiedad o están licenciados a nosotros. conservas los derechos de tus propios proyectos construidos con nuestras herramientas, pero no del código base subyacente."
+        },
+        "restrictions": {
+          "title": "4. restricciones",
+          "content": "no intentes hackear, descompilar o revender nuestros productos o servicios. nos reservamos el derecho de suspender o terminar cuentas que violen estos términos."
+        },
+        "liability": {
+          "title": "5. responsabilidad",
+          "content": "nuestra plataforma se proporciona \"tal cual\". no garantizamos un servicio ininterrumpido ni que nuestra plataforma esté libre de errores. no somos responsables de ningún daño, pérdida de datos o tiempo de inactividad."
+        },
+        "updates": {
+          "title": "6. actualización de términos",
+          "content": "podemos actualizar estos términos en cualquier momento. el uso continuado significa que aceptas la última versión."
+        }
+      }
+    },
+    "licenses": {
+      "title": "Licencias",
+      "lastUpdated": "Última actualización: 17 ene 2026",
+      "sections": {
+        "codebase": {
+          "title": "1. código base",
+          "content": "la plantilla y el código fuente relacionado están licenciados para proyectos comerciales y personales con una compra o clave de acceso válida. la redistribución o reventa sin permiso está prohibida."
+        },
+        "openSource": {
+          "title": "2. componentes de código abierto",
+          "content": "este proyecto incluye bibliotecas de código abierto bajo sus respectivas licencias (MIT, Apache 2.0, etc.). debes cumplir con sus términos al usar o modificar esos componentes."
+        },
+        "attribution": {
+          "title": "3. atribución",
+          "content": "no estás obligado a dar crédito público a [Your Company], pero la atribución es apreciada al mostrar productos construidos con él."
+        },
+        "termination": {
+          "title": "4. terminación",
+          "content": "nos reservamos el derecho de revocar tu licencia si abusas o redistribuyes nuestro código en violación de estos términos."
+        }
+      }
+    },
+    "privacy": {
+      "title": "Política de Privacidad",
+      "lastUpdated": "Última actualización: 17 ene 2026",
+      "intro": "valoramos tu privacidad. así es como manejamos tu información.",
+      "sections": {
+        "dataCollect": {
+          "title": "1. datos que recopilamos",
+          "list": ["información básica de cuenta (correo, nombre, etc.)", "datos de uso (cómo interactúas con la app)", "datos opcionales que compartas (como comentarios o solicitudes de soporte)"]
+        },
+        "howWeUse": {
+          "title": "2. cómo los usamos",
+          "list": ["para operar y mejorar nuestra plataforma", "para comunicarnos contigo sobre actualizaciones o problemas", "para prevenir el abuso o fraude"]
+        },
+        "cookies": {
+          "title": "3. cookies",
+          "content": "usamos cookies para mantener tu sesión iniciada y rastrear el rendimiento. puedes desactivar las cookies, pero algunas funciones podrían no funcionar correctamente."
+        },
+        "thirdParty": {
+          "title": "4. servicios de terceros",
+          "content": "podemos usar herramientas de análisis o alojamiento (como vercel, supabase o stripe) que recopilan datos de acuerdo con sus propias políticas."
+        },
+        "security": {
+          "title": "5. seguridad de datos",
+          "content": "tomamos medidas razonables para proteger tu información, pero no podemos garantizar una seguridad del 100%."
+        },
+        "rights": {
+          "title": "6. tus derechos",
+          "content": "puedes solicitar la eliminación o corrección de tus datos en cualquier momento en support@your-domain.com."
+        }
+      }
     }
   },
   "consent": {

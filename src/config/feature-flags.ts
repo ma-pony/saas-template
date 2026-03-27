@@ -38,7 +38,7 @@ export const isEmailVerificationEnabled = isTruthy(env.EMAIL_VERIFICATION_ENABLE
 export const isStripeConfigured = Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET)
 
 /** Check if Polar is configured (@polar-sh/better-auth) */
-export const isPolarConfigured = Boolean(env.POLAR_ACCESS_TOKEN)
+export const isPolarConfigured = Boolean(env.POLAR_ACCESS_TOKEN && env.POLAR_WEBHOOK_SECRET)
 
 /** Check if LemonSqueezy is configured */
 export const isLemonSqueezyConfigured = Boolean(

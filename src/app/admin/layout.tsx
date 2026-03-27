@@ -1,25 +1,29 @@
-import { headers } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth/auth'
 import { db } from '@/database'
 import { user } from '@/database/schema'
 import { eq } from 'drizzle-orm'
+import { DEFAULT_LOCALE } from '@/lib/i18n/config'
 import { AdminSidebar } from './components/admin-sidebar'
 import { AdminMobileNav } from './components/admin-mobile-nav'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies()
+  const locale = cookieStore.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE
+
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
   if (!session) {
-    redirect('/en/login')
+    redirect(`/${locale}/login`)
   }
 
   const [dbUser] = await db.select().from(user).where(eq(user.id, session.user.id))
 
   if (!dbUser || dbUser.role !== 'admin') {
-    redirect('/en/dashboard')
+    redirect(`/${locale}/dashboard`)
   }
 
   return (

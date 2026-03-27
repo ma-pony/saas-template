@@ -26,6 +26,7 @@ async function main() {
     console.log('Migrations completed!')
   } catch (error) {
     console.error('Migrations failed:', error)
+    process.exit(1)
   } finally {
     await migrationClient.end()
   }

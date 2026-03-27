@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 
 import { client, useSession } from '@/lib/auth/auth-client'
 
@@ -24,7 +24,6 @@ interface UseVerificationReturn {
 }
 
 export function useVerification({ isProduction }: UseVerificationParams): UseVerificationReturn {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const { refetch: refetchSession } = useSession()
   const [otp, setOtp] = useState('')
@@ -51,7 +50,10 @@ export function useVerification({ isProduction }: UseVerificationParams): UseVer
 
     const redirectParam = searchParams.get('redirectAfter')
     if (redirectParam) {
-      setRedirectUrl(redirectParam)
+      // Only allow relative paths to prevent open redirect
+      if (redirectParam.startsWith('/') && !redirectParam.startsWith('//')) {
+        setRedirectUrl(redirectParam)
+      }
     }
   }, [searchParams])
 
@@ -94,35 +96,25 @@ export function useVerification({ isProduction }: UseVerificationParams): UseVer
           }
         }, 1000)
       } else {
-        console.info('Setting invalid OTP state - API error response')
         const message = 'Invalid verification code. Please check and try again.'
         setIsInvalidOtp(true)
         setErrorMessage(message)
-        console.info('Error state after API error:', {
-          isInvalidOtp: true,
-          errorMessage: message,
-        })
         setOtp('')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       let message = 'Verification failed. Please check your code and try again.'
+      const errMsg = error instanceof Error ? error.message : ''
 
-      if (error.message?.includes('expired')) {
+      if (errMsg.includes('expired')) {
         message = 'The verification code has expired. Please request a new one.'
-      } else if (error.message?.includes('invalid')) {
-        console.info('Setting invalid OTP state - caught error')
+      } else if (errMsg.includes('invalid')) {
         message = 'Invalid verification code. Please check and try again.'
-      } else if (error.message?.includes('attempts')) {
+      } else if (errMsg.includes('attempts')) {
         message = 'Too many failed attempts. Please request a new code.'
       }
 
       setIsInvalidOtp(true)
       setErrorMessage(message)
-      console.info('Error state after caught error:', {
-        isInvalidOtp: true,
-        errorMessage: message,
-      })
-
       setOtp('')
     } finally {
       setIsLoading(false)

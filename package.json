@@ -54,7 +54,6 @@
     "@sentry/nextjs": "^10",
     "@t3-oss/env-nextjs": "^0.13.10",
     "@tanstack/react-query": "^5.90.16",
-    "autumn-js": "^0.1.63",
     "aws4fetch": "^1.0.20",
     "better-auth": "^1.4.10",
     "class-variance-authority": "^0.7.1",
@@ -80,6 +79,7 @@
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "sonner": "^2.0.3",
+    "resend": "^6.6.0",
     "stripe": "^20.1.2",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.5",
@@ -100,7 +100,6 @@
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
     "react-email": "5.1.1",
-    "resend": "^6.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

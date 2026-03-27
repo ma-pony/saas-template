@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { ArrowRight, ChevronRight, Eye, EyeOff } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { Link } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -12,39 +14,6 @@ import { client } from '@/lib/auth/auth-client'
 import { cn } from '@/lib/utils'
 import { quickValidateEmail } from '@/lib/messaging/email/validation'
 import { SocialLoginButtons } from '../components/social-login-buttons'
-
-const validateEmailField = (emailValue: string): string[] => {
-  const errors: string[] = []
-
-  if (!emailValue || !emailValue.trim()) {
-    errors.push('Email is required.')
-    return errors
-  }
-
-  const validation = quickValidateEmail(emailValue.trim().toLowerCase())
-  if (!validation.isValid) {
-    errors.push(validation.reason || 'Please enter a valid email address.')
-  }
-
-  return errors
-}
-
-const PASSWORD_VALIDATIONS = {
-  minLength: {
-    test: (value: string) => value.length >= 8,
-    message: 'Password must be at least 8 characters long.',
-  },
-}
-
-const validatePassword = (passwordValue: string): string[] => {
-  const errors: string[] = []
-
-  if (!PASSWORD_VALIDATIONS.minLength.test(passwordValue)) {
-    errors.push(PASSWORD_VALIDATIONS.minLength.message)
-  }
-
-  return errors
-}
 
 export default function RegisterForm({
   githubAvailable,
@@ -59,11 +28,11 @@ export default function RegisterForm({
   microsoftAvailable: boolean
   isProduction: boolean
 }) {
+  const t = useTranslations()
   const router = useRouter()
   const searchParams = useSearchParams()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [, setMounted] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [passwordErrors, setPasswordErrors] = useState<string[]>([])
@@ -80,9 +49,28 @@ export default function RegisterForm({
 
   const [callbackUrl, setCallbackUrl] = useState('/dashboard')
 
-  useEffect(() => {
-    setMounted(true)
+  const validateEmailField = (emailValue: string): string[] => {
+    const errors: string[] = []
+    if (!emailValue || !emailValue.trim()) {
+      errors.push(t('common.error.emailRequired'))
+      return errors
+    }
+    const validation = quickValidateEmail(emailValue.trim().toLowerCase())
+    if (!validation.isValid) {
+      errors.push(validation.reason || t('common.error.emailInvalid'))
+    }
+    return errors
+  }
 
+  const validatePassword = (passwordValue: string): string[] => {
+    const errors: string[] = []
+    if (passwordValue.length < 8) {
+      errors.push(t('common.error.passwordMinLength'))
+    }
+    return errors
+  }
+
+  useEffect(() => {
     if (!searchParams) {
       return
     }
@@ -101,7 +89,7 @@ export default function RegisterForm({
     const errors: string[] = []
 
     if (!trimmed) {
-      errors.push('Name is required.')
+      errors.push(t('common.error.nameRequired'))
     }
 
     setNameErrors(errors)
@@ -138,7 +126,7 @@ export default function RegisterForm({
 
     const nameValidationErrors: string[] = []
     if (!nameValue) {
-      nameValidationErrors.push('Name is required.')
+      nameValidationErrors.push(t('common.error.nameRequired'))
     }
     setNameErrors(nameValidationErrors)
     setShowNameValidationError(nameValidationErrors.length > 0)
@@ -193,20 +181,20 @@ export default function RegisterForm({
   return (
     <>
       <div className='space-y-1 text-center'>
-        <h1 className='font-medium text-[32px] text-black tracking-tight'>Create an account</h1>
-        <p className='font-[380] text-[16px] text-muted-foreground'>Enter your details</p>
+        <h1 className='font-medium text-[32px] text-black tracking-tight'>{t('auth.register.title')}</h1>
+        <p className='font-[380] text-[16px] text-muted-foreground'>{t('auth.register.subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit} className='mt-8 space-y-8'>
         <div className='space-y-6'>
           <div className='space-y-2'>
             <div className='flex items-center justify-between'>
-              <Label htmlFor='name'>Full name</Label>
+              <Label htmlFor='name'>{t('common.label.fullName')}</Label>
             </div>
             <Input
               id='name'
               name='name'
-              placeholder='Enter your name'
+              placeholder={t('common.placeholder.name')}
               autoCapitalize='words'
               autoComplete='name'
               value={name}
@@ -230,12 +218,12 @@ export default function RegisterForm({
 
           <div className='space-y-2'>
             <div className='flex items-center justify-between'>
-              <Label htmlFor='email'>Email</Label>
+              <Label htmlFor='email'>{t('common.label.email')}</Label>
             </div>
             <Input
               id='email'
               name='email'
-              placeholder='Enter your email'
+              placeholder={t('common.placeholder.email')}
               required
               autoCapitalize='none'
               autoComplete='email'
@@ -261,7 +249,7 @@ export default function RegisterForm({
 
           <div className='space-y-2'>
             <div className='flex items-center justify-between'>
-              <Label htmlFor='password'>Password</Label>
+              <Label htmlFor='password'>{t('common.label.password')}</Label>
             </div>
             <div className='relative'>
               <Input
@@ -272,7 +260,7 @@ export default function RegisterForm({
                 autoCapitalize='none'
                 autoComplete='new-password'
                 autoCorrect='off'
-                placeholder='Enter your password'
+                placeholder={t('common.placeholder.password')}
                 value={password}
                 size='lg'
                 onChange={handlePasswordChange}
@@ -287,7 +275,7 @@ export default function RegisterForm({
                 type='button'
                 onClick={() => setShowPassword(!showPassword)}
                 className='-translate-y-1/2 absolute top-1/2 right-3 text-gray-500 transition hover:text-gray-700'
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('common.label.hidePassword') : t('common.label.showPassword')}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -311,7 +299,7 @@ export default function RegisterForm({
           disabled={isLoading}
         >
           <span className='flex items-center gap-1'>
-            {isLoading ? 'Creating account...' : 'Create account'}
+            {isLoading ? t('common.button.creatingAccount') : t('common.button.createAccount')}
             <span className='inline-flex transition-transform duration-200 group-hover:translate-x-0.5'>
               {isButtonHovered ? (
                 <ArrowRight className='h-4 w-4' aria-hidden='true' />
@@ -329,7 +317,7 @@ export default function RegisterForm({
             <div className='w-full border-t border-gray-200' />
           </div>
           <div className='relative flex justify-center text-sm'>
-            <span className='bg-white px-4 font-[340] text-muted-foreground'>Or continue with</span>
+            <span className='bg-white px-4 font-[340] text-muted-foreground'>{t('common.label.orContinueWith')}</span>
           </div>
         </div>
       )}
@@ -348,33 +336,33 @@ export default function RegisterForm({
       )}
 
       <div className='pt-6 text-center text-[14px] font-light'>
-        <span className='font-normal'>Already have an account? </span>
+        <span className='font-normal'>{t('auth.register.alreadyHaveAccount')} </span>
         <Link
           href={`/login?callbackUrl=${callbackUrl}`}
           className='font-medium text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'
         >
-          Sign in
+          {t('auth.register.signInLink')}
         </Link>
       </div>
 
       <div className='absolute inset-x-0 bottom-0 px-8 pb-8 text-center text-[13px] font-[340] leading-relaxed text-muted-foreground sm:px-8 md:px-[44px]'>
-        By creating an account, you agree to our{' '}
+        {t('auth.register.agreeTerms')}{' '}
         <Link
           href='/terms'
           target='_blank'
           rel='noopener noreferrer'
           className='text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'
         >
-          Terms of Service
+          {t('auth.register.termsLink')}
         </Link>{' '}
-        and{' '}
+        {t('auth.register.andText')}{' '}
         <Link
           href='/privacy'
           target='_blank'
           rel='noopener noreferrer'
           className='text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'
         >
-          Privacy Policy
+          {t('auth.register.privacyLink')}
         </Link>
       </div>
     </>

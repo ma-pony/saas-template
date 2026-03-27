@@ -5,7 +5,7 @@ export const env = createEnv({
   server: {
     // Core Database and Authentication
     DATABASE_URL: z.string().optional(),
-    BETTER_AUTH_SECRET: z.string().default('dev-secret-change-in-production'),
+    BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.string().default('http://localhost:3000'),
     BILLING_ENABLED: z.boolean().default(false),
     EMAIL_VERIFICATION_ENABLED: z.boolean().default(false),

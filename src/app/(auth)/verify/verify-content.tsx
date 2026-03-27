@@ -1,7 +1,8 @@
 'use client'
 
 import { Suspense, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
@@ -13,6 +14,7 @@ interface VerifyContentProps {
 }
 
 function VerificationForm({ isProduction }: { isProduction: boolean }) {
+  const t = useTranslations()
   const {
     otp,
     email,
@@ -47,16 +49,24 @@ function VerificationForm({ isProduction }: { isProduction: boolean }) {
     setCountdown(30)
   }
 
+  const otpSlotClass = (isInvalid: boolean) =>
+    cn(
+      'h-12 w-12 rounded-[10px] border bg-white text-center font-medium text-lg shadow-sm transition-all duration-200',
+      'border-gray-300 hover:border-gray-400',
+      'focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-100',
+      isInvalid && 'border-red-500 focus:border-red-500 focus:ring-red-100'
+    )
+
   return (
     <>
       <div className='space-y-1 text-center'>
         <h1 className='font-medium text-[32px] text-black tracking-tight'>
-          {isVerified ? 'Email Verified!' : 'Verify Your Email'}
+          {isVerified ? t('auth.verify.titleVerified') : t('auth.verify.title')}
         </h1>
         <p className='font-[380] text-[16px] text-muted-foreground'>
           {isVerified
-            ? 'Your email has been verified. Redirecting to dashboard...'
-            : `A verification code has been sent to ${email || 'your email'}`}
+            ? t('auth.verify.subtitleVerified')
+            : t('auth.verify.subtitle', { email: email || t('common.label.email').toLowerCase() })}
         </p>
       </div>
 
@@ -64,7 +74,7 @@ function VerificationForm({ isProduction }: { isProduction: boolean }) {
         <div className='mt-8 space-y-8'>
           <div className='space-y-6'>
             <p className='text-center text-muted-foreground text-sm'>
-              Enter the 6-digit code to verify your account.
+              {t('auth.verify.enterCode')}
             </p>
 
             <div className='flex justify-center'>
@@ -76,60 +86,13 @@ function VerificationForm({ isProduction }: { isProduction: boolean }) {
                 className={cn('gap-2', isInvalidOtp && 'border-red-500')}
               >
                 <InputOTPGroup className='gap-2 [&>div]:rounded-[10px]'>
-                  <InputOTPSlot
-                    index={0}
-                    className={cn(
-                      'h-12 w-12 rounded-[10px] border bg-white text-center font-medium text-lg shadow-sm transition-all duration-200',
-                      'border-gray-300 hover:border-gray-400',
-                      'focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-100',
-                      isInvalidOtp && 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    )}
-                  />
-                  <InputOTPSlot
-                    index={1}
-                    className={cn(
-                      'h-12 w-12 rounded-[10px] border bg-white text-center font-medium text-lg shadow-sm transition-all duration-200',
-                      'border-gray-300 hover:border-gray-400',
-                      'focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-100',
-                      isInvalidOtp && 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    )}
-                  />
-                  <InputOTPSlot
-                    index={2}
-                    className={cn(
-                      'h-12 w-12 rounded-[10px] border bg-white text-center font-medium text-lg shadow-sm transition-all duration-200',
-                      'border-gray-300 hover:border-gray-400',
-                      'focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-100',
-                      isInvalidOtp && 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    )}
-                  />
-                  <InputOTPSlot
-                    index={3}
-                    className={cn(
-                      'h-12 w-12 rounded-[10px] border bg-white text-center font-medium text-lg shadow-sm transition-all duration-200',
-                      'border-gray-300 hover:border-gray-400',
-                      'focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-100',
-                      isInvalidOtp && 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    )}
-                  />
-                  <InputOTPSlot
-                    index={4}
-                    className={cn(
-                      'h-12 w-12 rounded-[10px] border bg-white text-center font-medium text-lg shadow-sm transition-all duration-200',
-                      'border-gray-300 hover:border-gray-400',
-                      'focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-100',
-                      isInvalidOtp && 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    )}
-                  />
-                  <InputOTPSlot
-                    index={5}
-                    className={cn(
-                      'h-12 w-12 rounded-[10px] border bg-white text-center font-medium text-lg shadow-sm transition-all duration-200',
-                      'border-gray-300 hover:border-gray-400',
-                      'focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-100',
-                      isInvalidOtp && 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    )}
-                  />
+                  {[0, 1, 2, 3, 4, 5].map((index) => (
+                    <InputOTPSlot
+                      key={index}
+                      index={index}
+                      className={otpSlotClass(isInvalidOtp)}
+                    />
+                  ))}
                 </InputOTPGroup>
               </InputOTP>
             </div>
@@ -147,15 +110,15 @@ function VerificationForm({ isProduction }: { isProduction: boolean }) {
             className='flex w-full items-center justify-center gap-2 rounded-[10px] py-[6px] pr-[10px] pl-[12px] text-[15px] font-medium text-white shadow-[inset_0_2px_4px_0_#9B77FF] transition-all'
             disabled={!isOtpComplete || isLoading}
           >
-            {isLoading ? 'Verifying...' : 'Verify Email'}
+            {isLoading ? t('common.button.verifying') : t('common.button.verifyEmail')}
           </Button>
 
           <div className='text-center'>
             <p className='text-muted-foreground text-sm'>
-              Didn't receive a code?{' '}
+              {t('auth.verify.didntReceive')}{' '}
               {countdown > 0 ? (
                 <span>
-                  Resend in <span className='font-medium text-foreground'>{countdown}s</span>
+                  {t('auth.verify.resendIn')} <span className='font-medium text-foreground'>{t('auth.verify.seconds', { count: countdown })}</span>
                 </span>
               ) : (
                 <button
@@ -163,7 +126,7 @@ function VerificationForm({ isProduction }: { isProduction: boolean }) {
                   onClick={handleResend}
                   disabled={isLoading || isResendDisabled}
                 >
-                  Resend
+                  {t('common.button.resend')}
                 </button>
               )}
             </p>
@@ -181,7 +144,7 @@ function VerificationForm({ isProduction }: { isProduction: boolean }) {
               }}
               className='font-medium text-(--brand-accent-hex) underline-offset-4 transition hover:text-(--brand-accent-hover-hex) hover:underline'
             >
-              Back to signup
+              {t('common.button.backToSignup')}
             </button>
           </div>
         </div>

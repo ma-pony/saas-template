@@ -1,5 +1,5 @@
 import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 import { auth } from '@/lib/auth/auth'
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {

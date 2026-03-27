@@ -24,18 +24,32 @@ const bricolageGrotesque = localFont({
   weight: '200 800',
 })
 
-export const metadata: Metadata = {
-  ...generateSEOMetadata({
-    title: 'My SaaS App - Turn Ideas Into Products, Fast',
-    description:
-      'Ship your startup in days, not weeks. A production-ready Next.js boilerplate with auth, payments, and everything you need to launch fast. Free forever, open source.',
-    isRootLayout: true,
-  }),
-  icons: {
-    icon: '/image.png',
-    shortcut: '/image.png',
-    apple: '/image.png',
-  },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const alternateLocales = SUPPORTED_LOCALES.filter((l) => l !== locale)
+
+  return {
+    ...generateSEOMetadata({
+      title: 'My SaaS App - Turn Ideas Into Products, Fast',
+      description:
+        'Ship your startup in days, not weeks. A production-ready Next.js boilerplate with auth, payments, and everything you need to launch fast. Free forever, open source.',
+      isRootLayout: true,
+    }),
+    icons: {
+      icon: '/image.png',
+      shortcut: '/image.png',
+      apple: '/image.png',
+    },
+    alternates: {
+      languages: Object.fromEntries(
+        alternateLocales.map((l) => [l, `/${l}`]),
+      ),
+    },
+  }
 }
 
 interface LocaleLayoutProps {

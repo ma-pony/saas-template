@@ -1,6 +1,7 @@
 'use client'
 
 import { type ReactNode, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { GitHubIcon, GoogleIcon, MicrosoftIcon, FacebookIcon } from './icons'
 import { Button } from '@/components/ui/button'
 import { client } from '@/lib/auth/auth-client'
@@ -11,7 +12,7 @@ interface SocialLoginButtonsProps {
   microsoftAvailable: boolean
   facebookAvailable: boolean
   callbackURL?: string
-  isProduction: boolean
+  isProduction?: boolean
   children?: ReactNode
 }
 
@@ -23,6 +24,7 @@ export function SocialLoginButtons({
   callbackURL = '/dashboard',
   children,
 }: SocialLoginButtonsProps) {
+  const t = useTranslations()
   const [isGithubLoading, setIsGithubLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isMicrosoftLoading, setIsMicrosoftLoading] = useState(false)
@@ -37,24 +39,28 @@ export function SocialLoginButtons({
   // Only render on the client side to avoid hydration errors
   if (!mounted) return null
 
+  const handleSocialError = (err: unknown, provider: string) => {
+    const errMsg = err instanceof Error ? err.message : ''
+    if (errMsg.includes('account exists')) {
+      console.error(`[social-auth] ${t('common.error.accountExists')}`)
+    } else if (errMsg.includes('cancelled')) {
+      console.error(`[social-auth] ${t('common.error.signInCancelled', { provider })}`)
+    } else if (errMsg.includes('network')) {
+      console.error(`[social-auth] ${t('common.error.networkError')}`)
+    } else if (errMsg.includes('rate limit')) {
+      console.error(`[social-auth] ${t('common.error.rateLimitExceeded')}`)
+    } else {
+      console.error(`[social-auth] ${t('common.error.socialSignInFailed', { provider })}`, err)
+    }
+  }
+
   async function signInWithGithub() {
     if (!githubAvailable) return
-
     setIsGithubLoading(true)
     try {
       await client.signIn.social({ provider: 'github', callbackURL })
-    } catch (err: any) {
-      let errorMessage = 'Failed to sign in with GitHub'
-
-      if (err.message?.includes('account exists')) {
-        errorMessage = 'An account with this email already exists. Please sign in instead.'
-      } else if (err.message?.includes('cancelled')) {
-        errorMessage = 'GitHub sign in was cancelled. Please try again.'
-      } else if (err.message?.includes('network')) {
-        errorMessage = 'Network error. Please check your connection and try again.'
-      } else if (err.message?.includes('rate limit')) {
-        errorMessage = 'Too many attempts. Please try again later.'
-      }
+    } catch (err: unknown) {
+      handleSocialError(err, 'GitHub')
     } finally {
       setIsGithubLoading(false)
     }
@@ -62,22 +68,11 @@ export function SocialLoginButtons({
 
   async function signInWithGoogle() {
     if (!googleAvailable) return
-
     setIsGoogleLoading(true)
     try {
       await client.signIn.social({ provider: 'google', callbackURL })
-    } catch (err: any) {
-      let errorMessage = 'Failed to sign in with Google'
-
-      if (err.message?.includes('account exists')) {
-        errorMessage = 'An account with this email already exists. Please sign in instead.'
-      } else if (err.message?.includes('cancelled')) {
-        errorMessage = 'Google sign in was cancelled. Please try again.'
-      } else if (err.message?.includes('network')) {
-        errorMessage = 'Network error. Please check your connection and try again.'
-      } else if (err.message?.includes('rate limit')) {
-        errorMessage = 'Too many attempts. Please try again later.'
-      }
+    } catch (err: unknown) {
+      handleSocialError(err, 'Google')
     } finally {
       setIsGoogleLoading(false)
     }
@@ -85,22 +80,11 @@ export function SocialLoginButtons({
 
   async function signInWithMicrosoft() {
     if (!microsoftAvailable) return
-
     setIsMicrosoftLoading(true)
     try {
       await client.signIn.social({ provider: 'microsoft', callbackURL })
-    } catch (err: any) {
-      let errorMessage = 'Failed to sign in with Microsoft'
-
-      if (err.message?.includes('account exists')) {
-        errorMessage = 'An account with this email already exists. Please sign in instead.'
-      } else if (err.message?.includes('cancelled')) {
-        errorMessage = 'Microsoft sign in was cancelled. Please try again.'
-      } else if (err.message?.includes('network')) {
-        errorMessage = 'Network error. Please check your connection and try again.'
-      } else if (err.message?.includes('rate limit')) {
-        errorMessage = 'Too many attempts. Please try again later.'
-      }
+    } catch (err: unknown) {
+      handleSocialError(err, 'Microsoft')
     } finally {
       setIsMicrosoftLoading(false)
     }
@@ -108,26 +92,17 @@ export function SocialLoginButtons({
 
   async function signInWithFacebook() {
     if (!facebookAvailable) return
-
     setIsFacebookLoading(true)
     try {
       await client.signIn.social({ provider: 'facebook', callbackURL })
-    } catch (err: any) {
-      let errorMessage = 'Failed to sign in with Facebook'
-
-      if (err.message?.includes('account exists')) {
-        errorMessage = 'An account with this email already exists. Please sign in instead.'
-      } else if (err.message?.includes('cancelled')) {
-        errorMessage = 'Facebook sign in was cancelled. Please try again.'
-      } else if (err.message?.includes('network')) {
-        errorMessage = 'Network error. Please check your connection and try again.'
-      } else if (err.message?.includes('rate limit')) {
-        errorMessage = 'Too many attempts. Please try again later.'
-      }
+    } catch (err: unknown) {
+      handleSocialError(err, 'Facebook')
     } finally {
       setIsFacebookLoading(false)
     }
   }
+
+  const connectingText = t('common.button.connecting')
 
   const githubButton = (
     <Button
@@ -138,7 +113,7 @@ export function SocialLoginButtons({
       onClick={signInWithGithub}
     >
       <GitHubIcon className='h-[18px]! w-[18px]! mr-1' />
-      {isGithubLoading ? 'Connecting...' : 'GitHub'}
+      {isGithubLoading ? connectingText : 'GitHub'}
     </Button>
   )
 
@@ -151,7 +126,7 @@ export function SocialLoginButtons({
       onClick={signInWithGoogle}
     >
       <GoogleIcon className='h-[18px]! w-[18px]! mr-1' />
-      {isGoogleLoading ? 'Connecting...' : 'Google'}
+      {isGoogleLoading ? connectingText : 'Google'}
     </Button>
   )
 
@@ -164,7 +139,7 @@ export function SocialLoginButtons({
       onClick={signInWithMicrosoft}
     >
       <MicrosoftIcon className='h-[18px]! w-[18px]! mr-1' />
-      {isMicrosoftLoading ? 'Connecting...' : 'Microsoft'}
+      {isMicrosoftLoading ? connectingText : 'Microsoft'}
     </Button>
   )
 
@@ -177,11 +152,11 @@ export function SocialLoginButtons({
       onClick={signInWithFacebook}
     >
       <FacebookIcon className='h-[18px]! w-[18px]! mr-1' />
-      {isFacebookLoading ? 'Connecting...' : 'Facebook'}
+      {isFacebookLoading ? connectingText : 'Facebook'}
     </Button>
   )
 
-  const hasAnyOAuthProvider = githubAvailable || googleAvailable
+  const hasAnyOAuthProvider = githubAvailable || googleAvailable || microsoftAvailable || facebookAvailable
 
   if (!hasAnyOAuthProvider && !children) {
     return null

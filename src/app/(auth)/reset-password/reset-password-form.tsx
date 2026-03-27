@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ArrowRight, ChevronRight, Eye, EyeOff } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -26,6 +27,7 @@ export function RequestResetForm({
   statusMessage,
   className,
 }: RequestResetFormProps) {
+  const t = useTranslations()
   const [isButtonHovered, setIsButtonHovered] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,13 +40,13 @@ export function RequestResetForm({
       <div className='space-y-6'>
         <div className='space-y-2'>
           <div className='flex items-center justify-between'>
-            <Label htmlFor='reset-email'>Email</Label>
+            <Label htmlFor='reset-email'>{t('common.label.email')}</Label>
           </div>
           <Input
             id='reset-email'
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
-            placeholder='Enter your email'
+            placeholder={t('common.placeholder.email')}
             size='lg'
             type='email'
             disabled={isSubmitting}
@@ -52,7 +54,7 @@ export function RequestResetForm({
             className='transition-colors focus:border-gray-400 focus:ring-2 focus:ring-gray-100'
           />
           <p className='text-muted-foreground text-sm'>
-            We'll send a password reset link to this email address.
+            {t('auth.resetPassword.helperText')}
           </p>
         </div>
 
@@ -74,7 +76,7 @@ export function RequestResetForm({
         className='group inline-flex w-full items-center justify-center gap-2 rounded-[10px] py-[6px] pr-[10px] pl-[12px] text-[15px] text-white shadow-[inset_0_2px_4px_0_#9B77FF] transition-all'
       >
         <span className='flex items-center gap-1'>
-          {isSubmitting ? 'Sending...' : 'Send Reset Link'}
+          {isSubmitting ? t('common.button.sending') : t('common.button.sendResetLink')}
           <span className='inline-flex transition-transform duration-200 group-hover:translate-x-0.5'>
             {isButtonHovered ? (
               <ArrowRight className='h-4 w-4' aria-hidden='true' />
@@ -105,6 +107,7 @@ export function SetNewPasswordForm({
   statusMessage,
   className,
 }: SetNewPasswordFormProps) {
+  const t = useTranslations()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [validationMessage, setValidationMessage] = useState('')
@@ -116,37 +119,37 @@ export function SetNewPasswordForm({
     e.preventDefault()
 
     if (password.length < 8) {
-      setValidationMessage('Password must be at least 8 characters long')
+      setValidationMessage(t('common.error.passwordMinLength'))
       return
     }
 
     if (password.length > 100) {
-      setValidationMessage('Password must not exceed 100 characters')
+      setValidationMessage(t('auth.resetPassword.passwordMaxLength'))
       return
     }
 
     if (!/[A-Z]/.test(password)) {
-      setValidationMessage('Password must contain at least one uppercase letter')
+      setValidationMessage(t('auth.resetPassword.passwordUppercase'))
       return
     }
 
     if (!/[a-z]/.test(password)) {
-      setValidationMessage('Password must contain at least one lowercase letter')
+      setValidationMessage(t('auth.resetPassword.passwordLowercase'))
       return
     }
 
     if (!/[0-9]/.test(password)) {
-      setValidationMessage('Password must contain at least one number')
+      setValidationMessage(t('auth.resetPassword.passwordNumber'))
       return
     }
 
     if (!/[^A-Za-z0-9]/.test(password)) {
-      setValidationMessage('Password must contain at least one special character')
+      setValidationMessage(t('auth.resetPassword.passwordSpecialChar'))
       return
     }
 
     if (password !== confirmPassword) {
-      setValidationMessage('Passwords do not match')
+      setValidationMessage(t('auth.resetPassword.passwordsDoNotMatch'))
       return
     }
 
@@ -159,7 +162,7 @@ export function SetNewPasswordForm({
       <div className='space-y-6'>
         <div className='space-y-2'>
           <div className='flex items-center justify-between'>
-            <Label htmlFor='password'>New Password</Label>
+            <Label htmlFor='password'>{t('auth.resetPassword.newPassword')}</Label>
           </div>
           <div className='relative'>
             <Input
@@ -173,7 +176,7 @@ export function SetNewPasswordForm({
               size='lg'
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder='Enter new password'
+              placeholder={t('auth.resetPassword.enterNewPassword')}
               className={cn(
                 'pr-10 transition-colors focus:border-gray-400 focus:ring-2 focus:ring-gray-100',
                 validationMessage &&
@@ -184,7 +187,7 @@ export function SetNewPasswordForm({
               type='button'
               onClick={() => setShowPassword(!showPassword)}
               className='-translate-y-1/2 absolute top-1/2 right-3 text-gray-500 transition hover:text-gray-700'
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? t('common.label.hidePassword') : t('common.label.showPassword')}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -192,7 +195,7 @@ export function SetNewPasswordForm({
         </div>
         <div className='space-y-2'>
           <div className='flex items-center justify-between'>
-            <Label htmlFor='confirmPassword'>Confirm Password</Label>
+            <Label htmlFor='confirmPassword'>{t('auth.resetPassword.confirmPassword')}</Label>
           </div>
           <div className='relative'>
             <Input
@@ -206,7 +209,7 @@ export function SetNewPasswordForm({
               size='lg'
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              placeholder='Confirm new password'
+              placeholder={t('auth.resetPassword.confirmNewPassword')}
               className={cn(
                 'pr-10 transition-colors focus:border-gray-400 focus:ring-2 focus:ring-gray-100',
                 validationMessage &&
@@ -217,7 +220,7 @@ export function SetNewPasswordForm({
               type='button'
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className='-translate-y-1/2 absolute top-1/2 right-3 text-gray-500 transition hover:text-gray-700'
-              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              aria-label={showConfirmPassword ? t('common.label.hidePassword') : t('common.label.showPassword')}
             >
               {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -251,7 +254,7 @@ export function SetNewPasswordForm({
         className='group inline-flex w-full items-center justify-center gap-2 rounded-[10px] py-[6px] pr-[10px] pl-[12px] text-[15px] text-white shadow-[inset_0_2px_4px_0_#9B77FF] transition-all'
       >
         <span className='flex items-center gap-1'>
-          {isSubmitting ? 'Resetting...' : 'Reset Password'}
+          {isSubmitting ? t('auth.resetPassword.submitting') : t('auth.resetPassword.submitButton')}
           <span className='inline-flex transition-transform duration-200 group-hover:translate-x-0.5'>
             {isButtonHovered ? (
               <ArrowRight className='h-4 w-4' aria-hidden='true' />

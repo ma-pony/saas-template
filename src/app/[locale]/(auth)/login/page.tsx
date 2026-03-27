@@ -1,12 +1,19 @@
+import { getTranslations } from 'next-intl/server'
 import { getOAuthProviderStatus } from '@/app/(auth)/components/oauth-provider-checker'
 import LoginForm from '@/app/(auth)/login/login-form'
-import { generateMetadata } from '@/lib/seo'
+import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
+import { getBrandConfig } from '@/config/branding'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata = generateMetadata({
-  title: 'Login | My SaaS App',
-})
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'auth.login' })
+  const brand = getBrandConfig()
+  return generateSEOMetadata({
+    title: `${t('title')} | ${brand.name}`,
+  })
+}
 
 export default async function LoginPage() {
   const { githubAvailable, googleAvailable, facebookAvailable, microsoftAvailable, isProduction } =

@@ -30,10 +30,18 @@ const createLogger = (jobName: string, executionId: string): JobLogger => ({
  * JobRunner - Executes a job definition with timeout, error handling, and DB logging.
  */
 export class JobRunner {
+  // In-memory lock to prevent overlapping executions of the same job
+  private runningJobs = new Set<string>()
+
   /**
    * Execute a job and persist the execution record to `job_execution_logs`.
    */
   async execute(job: JobDefinition): Promise<ExecutionResult> {
+    if (this.runningJobs.has(job.name)) {
+      console.info(`[job-runner] Skipping "${job.name}" — already running`)
+      return { success: true, executionId: '', jobName: job.name, durationMs: 0 }
+    }
+    this.runningJobs.add(job.name)
     const executionId = generateId()
     const startedAt = new Date()
     const timeoutMs = job.timeoutMs ?? 30_000
@@ -84,6 +92,7 @@ export class JobRunner {
 
       logger.info(`Completed successfully in ${durationMs}ms`)
 
+      this.runningJobs.delete(job.name)
       return { success: true, executionId, jobName: job.name, durationMs }
     } catch (err) {
       durationMs = Date.now() - startMs
@@ -124,6 +133,7 @@ export class JobRunner {
         }
       }
 
+      this.runningJobs.delete(job.name)
       return {
         success: false,
         executionId,

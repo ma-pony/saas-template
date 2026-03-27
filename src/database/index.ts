@@ -10,6 +10,10 @@ if (!databaseUrl) {
   throw new Error('DATABASE_URL is required. Please set it in your .env file.')
 }
 
-const queryClient = postgres(databaseUrl)
+const queryClient = postgres(databaseUrl, {
+  max: 10,
+  idle_timeout: 20,
+  connect_timeout: 10,
+})
 
 export const db = drizzle({ client: queryClient, schema })
