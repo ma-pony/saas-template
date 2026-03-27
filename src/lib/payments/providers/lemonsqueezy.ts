@@ -27,6 +27,7 @@ import type {
 } from '../types'
 import type { PaymentProvider, PlanName } from '@/config/payments'
 import { getPriceConfig, paymentConfig } from '@/config/payments'
+import { env } from '@/config/env'
 import crypto from 'crypto'
 
 export class LemonSqueezyAdapter implements PaymentAdapter {

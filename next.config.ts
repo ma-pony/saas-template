@@ -8,9 +8,6 @@ const nextConfig: NextConfig = {
   // Enable standalone output for Docker optimization
   // This reduces the Docker image size by including only necessary files
   // output: 'standalone',
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   // next-intl 3.x sets experimental.turbo.resolveAlias which Next.js 16 ignores.
   // Manually set the turbopack alias so next-intl/config resolves correctly.
   turbopack: {

@@ -7,7 +7,15 @@ import Image from 'next/image'
 
 export default function Testimonials() {
   // TODO: Replace with your own testimonials
-  const testimonials = [
+  const testimonials: {
+    quote: string
+    name: string
+    title: string
+    avatar: string
+    avatarType: string
+    twitterLink?: string
+    threadsLink?: string
+  }[] = [
     {
       quote:
         'This template saved us weeks of setup. Auth, payments, and i18n just worked out of the box.',

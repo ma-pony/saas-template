@@ -1,14 +1,22 @@
 import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod'
 
+/**
+ * Environment variable validation using @t3-oss/env-nextjs.
+ *
+ * IMPORTANT: Values are evaluated and cached at module load time.
+ * Changes to .env during development require a server restart to take effect.
+ * For variables that need runtime re-evaluation (e.g., feature flags during
+ * development), read `process.env.X` directly instead of `env.X`.
+ */
 export const env = createEnv({
   server: {
     // Core Database and Authentication
     DATABASE_URL: z.string().optional(),
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.string().default('http://localhost:3000'),
-    BILLING_ENABLED: z.boolean().default(false),
-    EMAIL_VERIFICATION_ENABLED: z.boolean().default(false),
+    BILLING_ENABLED: z.string().default('false'),
+    EMAIL_VERIFICATION_ENABLED: z.string().default('false'),
 
     // Optional: Sentry
     SENTRY_DSN: z.string().optional(),
