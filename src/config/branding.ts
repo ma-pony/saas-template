@@ -37,13 +37,11 @@ export interface BrandConfig {
  * Default brand configuration values
  */
 const defaultConfig: BrandConfig = {
-  // TODO: Replace 'My SaaS App' with your product name
-  name: 'My SaaS App',
+  name: process.env.NEXT_PUBLIC_APP_NAME || 'My SaaS App',
   logoUrl: undefined,
   faviconUrl: '/favicon/favicon.ico',
   customCssUrl: undefined,
-  // TODO: Replace with your support email address
-  supportEmail: 'support@example.com',
+  supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
   documentationUrl: undefined,
   termsUrl: undefined,
   privacyUrl: undefined,

@@ -7,8 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: brand.name,
     short_name: brand.name,
-    description:
-      'A production-ready Next.js SaaS boilerplate with auth, payments, email, and everything you need to launch your product fast.',
+    description: brand.geo?.aiDescription || `${brand.name} - Launch your product fast.`,
     start_url: '/',
     scope: '/',
     display: 'standalone',

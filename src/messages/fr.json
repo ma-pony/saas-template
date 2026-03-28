@@ -367,7 +367,7 @@
     "terms": {
       "title": "Conditions d'utilisation",
       "lastUpdated": "Dernière mise à jour : 17 jan 2026",
-      "intro": "bienvenue sur [Your Company]. en accédant ou en utilisant notre plateforme, vous acceptez ces conditions. si vous n'êtes pas d'accord, veuillez ne pas utiliser notre plateforme.",
+      "intro": "bienvenue sur {companyName}. en accédant ou en utilisant notre plateforme, vous acceptez ces conditions. si vous n'êtes pas d'accord, veuillez ne pas utiliser notre plateforme.",
       "sections": {
         "usage": {
           "title": "1. utilisation de notre plateforme",
@@ -379,7 +379,7 @@
         },
         "ip": {
           "title": "3. propriété intellectuelle",
-          "content": "tout le code, les modèles et les ressources fournis via [Your Company] nous appartiennent ou nous sont concédés sous licence. vous conservez les droits sur vos propres projets construits avec nos outils, mais pas sur le code de base sous-jacent."
+          "content": "tout le code, les modèles et les ressources fournis via {companyName} nous appartiennent ou nous sont concédés sous licence. vous conservez les droits sur vos propres projets construits avec nos outils, mais pas sur le code de base sous-jacent."
         },
         "restrictions": {
           "title": "4. restrictions",
@@ -409,7 +409,7 @@
         },
         "attribution": {
           "title": "3. attribution",
-          "content": "vous n'êtes pas tenu de créditer publiquement [Your Company], mais l'attribution est appréciée lors de la présentation de produits construits avec celui-ci."
+          "content": "vous n'êtes pas tenu de créditer publiquement {companyName}, mais l'attribution est appréciée lors de la présentation de produits construits avec celui-ci."
         },
         "termination": {
           "title": "4. résiliation",
@@ -452,7 +452,7 @@
         },
         "rights": {
           "title": "6. vos droits",
-          "content": "vous pouvez demander la suppression ou la correction de vos données à tout moment à support@your-domain.com."
+          "content": "vous pouvez demander la suppression ou la correction de vos données à tout moment à {supportEmail}."
         }
       }
     }

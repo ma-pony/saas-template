@@ -1,7 +1,5 @@
 import { cookies } from 'next/headers'
 import { NextIntlClientProvider } from 'next-intl'
-import Navbar from '../navbar'
-import Footer from '../footer'
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/lib/i18n/config'
 
 export default async function BlogLayout({ children }: { children: React.ReactNode }) {
@@ -12,9 +10,7 @@ export default async function BlogLayout({ children }: { children: React.ReactNo
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <Navbar />
-      <main className='min-h-screen pt-14'>{children}</main>
-      <Footer />
+      {children}
     </NextIntlClientProvider>
   )
 }

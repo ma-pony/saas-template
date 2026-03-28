@@ -16,15 +16,24 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
+    const securityHeaders = [
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'X-Frame-Options', value: 'DENY' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+    ]
+
     return [
+      {
+        // Apply security headers to all routes
+        source: '/(.*)',
+        headers: securityHeaders,
+      },
       {
         // Add Vary: Accept-Language for internationalized pages
         source: '/:locale(en|es|fr|zh)/:path*',
         headers: [
-          {
-            key: 'Vary',
-            value: 'Accept-Language',
-          },
+          { key: 'Vary', value: 'Accept-Language' },
         ],
       },
     ]
@@ -35,10 +44,9 @@ export default withNextIntl(withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  // TODO: Replace with your Sentry organization and project
-  org: 'your-sentry-org',
+  org: process.env.SENTRY_ORG,
 
-  project: 'your-sentry-project',
+  project: process.env.SENTRY_PROJECT,
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,

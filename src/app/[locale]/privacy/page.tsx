@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 import { generateHreflangMetadata } from '@/lib/i18n/hreflang'
+import { getBrandConfig } from '@/config/branding'
 import Navbar from '@/app/(site)/navbar'
 import Footer from '@/app/(site)/footer'
 import { GridLayout } from '@/app/(site)/grid-layout'
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     ...generateSEOMetadata({
       title: t('title'),
-      description: `${t('title')} - [Your Company]`,
+      description: `${t('title')} - ${getBrandConfig().name}`,
     }),
     alternates: {
       ...hreflang,
@@ -30,6 +31,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function PrivacyPage({ params }: PageProps) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'legal.privacy' })
+  const brand = getBrandConfig()
+  const brandParams = { companyName: brand.name, supportEmail: brand.supportEmail || '' }
 
   const sectionKeys = ['dataCollect', 'howWeUse', 'cookies', 'thirdParty', 'security', 'rights'] as const
   const listSections = new Set(['dataCollect', 'howWeUse'])
@@ -57,7 +60,7 @@ export default async function PrivacyPage({ params }: PageProps) {
                     ))}
                   </ul>
                 ) : (
-                  <p>{t(`sections.${key}.content`)}</p>
+                  <p>{t(`sections.${key}.content`, brandParams)}</p>
                 )}
               </section>
             ))}

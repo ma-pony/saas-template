@@ -367,7 +367,7 @@
     "terms": {
       "title": "Terms of Service",
       "lastUpdated": "Last updated: 17 jan 2026",
-      "intro": "welcome to [Your Company]. by accessing or using our platform, you agree to these terms. if you don't agree, please don't use our platform.",
+      "intro": "welcome to {companyName}. by accessing or using our platform, you agree to these terms. if you don't agree, please don't use our platform.",
       "sections": {
         "usage": {
           "title": "1. using our platform",
@@ -379,7 +379,7 @@
         },
         "ip": {
           "title": "3. intellectual property",
-          "content": "all code, templates, and assets provided through [Your Company] are owned by us or licensed to us. you retain rights to your own projects built using our tools, but not to the underlying boilerplate."
+          "content": "all code, templates, and assets provided through {companyName} are owned by us or licensed to us. you retain rights to your own projects built using our tools, but not to the underlying boilerplate."
         },
         "restrictions": {
           "title": "4. restrictions",
@@ -409,7 +409,7 @@
         },
         "attribution": {
           "title": "3. attribution",
-          "content": "you're not required to publicly credit [Your Company], but attribution is appreciated when showcasing products built using it."
+          "content": "you're not required to publicly credit {companyName}, but attribution is appreciated when showcasing products built using it."
         },
         "termination": {
           "title": "4. termination",
@@ -452,7 +452,7 @@
         },
         "rights": {
           "title": "6. your rights",
-          "content": "you can request deletion or correction of your data anytime at support@your-domain.com."
+          "content": "you can request deletion or correction of your data anytime at {supportEmail}."
         }
       }
     }

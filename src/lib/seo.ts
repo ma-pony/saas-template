@@ -10,14 +10,10 @@ const brandConfig = getBrandConfig()
 
 export const siteConfig = {
   name: brandConfig.name,
-  // TODO: Replace with your product description
-  description:
-    'A production-ready Next.js SaaS boilerplate with auth, payments, and everything you need to launch fast.',
+  description: brandConfig.geo?.aiDescription || 'A production-ready Next.js SaaS boilerplate with auth, payments, and everything you need to launch fast.',
   url: getBaseUrl(),
-  // TODO: Replace with your Twitter/X handle
-  twitterHandle: '@yourhandle',
-  // TODO: Replace with your company name
-  creator: 'Your Company',
+  twitterHandle: brandConfig.geo?.socialLinks?.twitter ? `@${brandConfig.geo.socialLinks.twitter}` : '',
+  creator: brandConfig.name,
   keywords: [
     'Next.js SaaS boilerplate',
     'Open source SaaS template',
@@ -257,7 +253,12 @@ export const getOrganizationSchema = () => {
     url: siteConfig.url,
     logo: getAbsoluteUrl('/logo.png'),
     // TODO: Replace with your organization's social/web profiles
-    sameAs: ['https://github.com/your-org', 'https://x.com/yourhandle'],
+    sameAs: [
+      brandConfig.geo?.socialLinks?.github,
+      brandConfig.geo?.socialLinks?.twitter ? `https://x.com/${brandConfig.geo.socialLinks.twitter}` : undefined,
+      brandConfig.geo?.socialLinks?.discord,
+      brandConfig.geo?.socialLinks?.website,
+    ].filter(Boolean) as string[],
   }
 }
 

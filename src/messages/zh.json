@@ -367,7 +367,7 @@
     "terms": {
       "title": "服务条款",
       "lastUpdated": "最后更新：2026年1月17日",
-      "intro": "欢迎使用 [Your Company]。访问或使用我们的平台即表示您同意这些条款。如果您不同意，请不要使用我们的平台。",
+      "intro": "欢迎使用 {companyName}。访问或使用我们的平台即表示您同意这些条款。如果您不同意，请不要使用我们的平台。",
       "sections": {
         "usage": {
           "title": "1. 使用我们的平台",
@@ -379,7 +379,7 @@
         },
         "ip": {
           "title": "3. 知识产权",
-          "content": "通过 [Your Company] 提供的所有代码、模板和资产均归我们所有或已获授权。您保留使用我们工具构建的自己项目的权利，但不包括底层模板。"
+          "content": "通过 {companyName} 提供的所有代码、模板和资产均归我们所有或已获授权。您保留使用我们工具构建的自己项目的权利，但不包括底层模板。"
         },
         "restrictions": {
           "title": "4. 限制",
@@ -409,7 +409,7 @@
         },
         "attribution": {
           "title": "3. 署名",
-          "content": "您无需公开署名 [Your Company]，但在展示使用它构建的产品时，署名是受欢迎的。"
+          "content": "您无需公开署名 {companyName}，但在展示使用它构建的产品时，署名是受欢迎的。"
         },
         "termination": {
           "title": "4. 终止",
@@ -452,7 +452,7 @@
         },
         "rights": {
           "title": "6. 您的权利",
-          "content": "您可以随时通过 support@your-domain.com 请求删除或更正您的数据。"
+          "content": "您可以随时通过 {supportEmail} 请求删除或更正您的数据。"
         }
       }
     }

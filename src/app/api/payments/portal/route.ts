@@ -9,6 +9,11 @@ import { db } from '@/database'
 import { customer } from '@/database/schema'
 import { isBillingEnabled } from '@/config/feature-flags'
 import { isSameOriginUrl } from '@/lib/url'
+import { createRateLimiter } from '@/lib/rate-limit'
+
+export const dynamic = 'force-dynamic'
+
+const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 10 })
 
 const portalSchema = z.object({
   returnUrl: z.string().optional().refine((v) => !v || isSameOriginUrl(v), {
@@ -22,6 +27,9 @@ export async function POST(req: Request) {
   }
 
   try {
+    const rateLimitResult = await rateLimiter(req)
+    if (rateLimitResult instanceof NextResponse) return rateLimitResult
+
     const session = await auth.api.getSession({
       headers: await headers(),
     })

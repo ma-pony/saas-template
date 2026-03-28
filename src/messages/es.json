@@ -367,7 +367,7 @@
     "terms": {
       "title": "Términos de Servicio",
       "lastUpdated": "Última actualización: 17 ene 2026",
-      "intro": "bienvenido a [Your Company]. al acceder o usar nuestra plataforma, aceptas estos términos. si no estás de acuerdo, por favor no uses nuestra plataforma.",
+      "intro": "bienvenido a {companyName}. al acceder o usar nuestra plataforma, aceptas estos términos. si no estás de acuerdo, por favor no uses nuestra plataforma.",
       "sections": {
         "usage": {
           "title": "1. uso de nuestra plataforma",
@@ -379,7 +379,7 @@
         },
         "ip": {
           "title": "3. propiedad intelectual",
-          "content": "todo el código, plantillas y recursos proporcionados a través de [Your Company] son de nuestra propiedad o están licenciados a nosotros. conservas los derechos de tus propios proyectos construidos con nuestras herramientas, pero no del código base subyacente."
+          "content": "todo el código, plantillas y recursos proporcionados a través de {companyName} son de nuestra propiedad o están licenciados a nosotros. conservas los derechos de tus propios proyectos construidos con nuestras herramientas, pero no del código base subyacente."
         },
         "restrictions": {
           "title": "4. restricciones",
@@ -409,7 +409,7 @@
         },
         "attribution": {
           "title": "3. atribución",
-          "content": "no estás obligado a dar crédito público a [Your Company], pero la atribución es apreciada al mostrar productos construidos con él."
+          "content": "no estás obligado a dar crédito público a {companyName}, pero la atribución es apreciada al mostrar productos construidos con él."
         },
         "termination": {
           "title": "4. terminación",
@@ -452,7 +452,7 @@
         },
         "rights": {
           "title": "6. tus derechos",
-          "content": "puedes solicitar la eliminación o corrección de tus datos en cualquier momento en support@your-domain.com."
+          "content": "puedes solicitar la eliminación o corrección de tus datos en cualquier momento en {supportEmail}."
         }
       }
     }

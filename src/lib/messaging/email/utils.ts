@@ -3,6 +3,7 @@
  */
 
 import { env } from '@/config/env'
+import { getBrandConfig } from '@/config/branding'
 
 /**
  * Check if a string value is non-empty and not a placeholder.
@@ -16,8 +17,8 @@ export function hasNonEmpty(value: string | undefined): value is string {
  * Falls back to a constructed address using the Resend domain or a default.
  */
 export function getFromEmailAddress(): string {
-  // TODO: Replace 'My App' with your app name, or set DEFAULT_FROM_NAME env var
-  const fromName = env.DEFAULT_FROM_NAME || 'My App'
+  const brand = getBrandConfig()
+  const fromName = env.DEFAULT_FROM_NAME || brand.name
   const fromEmail =
     env.DEFAULT_FROM_EMAIL ||
     (env.RESEND_DOMAIN ? `noreply@${env.RESEND_DOMAIN}` : 'noreply@example.com')
