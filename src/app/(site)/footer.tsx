@@ -1,8 +1,13 @@
+'use client'
+
 import Link from 'next/link'
 import { FaGithub, FaDiscord, FaXTwitter } from 'react-icons/fa6'
 import { SiProducthunt, SiYcombinator, SiPeerlist } from 'react-icons/si'
+import { useTranslations } from 'next-intl'
 
 export default function Footer() {
+  const t = useTranslations('site.footer')
+
   return (
     <footer aria-label='Site footer' className='border-t border-[#E4E4E7] bg-[#F4F4F5] py-12'>
       <div className='mx-auto max-w-6xl px-4 sm:px-6'>
@@ -13,7 +18,7 @@ export default function Footer() {
               className='mb-4 text-sm font-semibold uppercase'
               style={{ fontFamily: 'var(--font-geist-mono)' }}
             >
-              Links
+              {t('links.heading')}
             </h3>
             <ul className='space-y-3'>
               <li>
@@ -21,7 +26,7 @@ export default function Footer() {
                   href='/#pricing'
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
-                  Pricing
+                  {t('links.pricing')}
                 </Link>
               </li>
               <li>
@@ -29,7 +34,7 @@ export default function Footer() {
                   href='/docs'
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
-                  Docs
+                  {t('links.docs')}
                 </Link>
               </li>
               <li>
@@ -37,7 +42,7 @@ export default function Footer() {
                   href='/changelog'
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
-                  Changelog
+                  {t('links.changelog')}
                 </Link>
               </li>
               <li>
@@ -45,7 +50,7 @@ export default function Footer() {
                   href='/demo'
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
-                  Demo
+                  {t('links.demo')}
                 </Link>
               </li>
               <li>
@@ -53,7 +58,7 @@ export default function Footer() {
                   href='/support'
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
-                  Support
+                  {t('links.support')}
                 </Link>
               </li>
             </ul>
@@ -65,7 +70,7 @@ export default function Footer() {
               className='mb-4 text-sm font-semibold uppercase'
               style={{ fontFamily: 'var(--font-geist-mono)' }}
             >
-              Legal
+              {t('legal.heading')}
             </h3>
             <ul className='space-y-3'>
               <li>
@@ -73,7 +78,7 @@ export default function Footer() {
                   href='/terms'
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
-                  Terms of services
+                  {t('legal.terms')}
                 </Link>
               </li>
               <li>
@@ -81,7 +86,7 @@ export default function Footer() {
                   href='/privacy'
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
-                  Privacy policy
+                  {t('legal.privacy')}
                 </Link>
               </li>
               <li>
@@ -89,7 +94,7 @@ export default function Footer() {
                   href='/licenses'
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
-                  Licenses
+                  {t('legal.licenses')}
                 </Link>
               </li>
             </ul>
@@ -101,7 +106,7 @@ export default function Footer() {
               className='mb-4 text-sm font-semibold uppercase'
               style={{ fontFamily: 'var(--font-geist-mono)' }}
             >
-              Featured On
+              {t('featuredOn.heading')}
             </h3>
             <ul className='space-y-3'>
               <li>
@@ -157,7 +162,7 @@ export default function Footer() {
               className='mb-4 text-sm font-semibold uppercase'
               style={{ fontFamily: 'var(--font-geist-mono)' }}
             >
-              Community
+              {t('community.heading')}
             </h3>
             <ul className='space-y-3'>
               <li>
@@ -213,11 +218,11 @@ export default function Footer() {
               </span>
             </div>
             {/* TODO: Replace with your product tagline */}
-            <p className='text-sm text-muted-foreground'>Your product tagline here</p>
+            <p className='text-sm text-muted-foreground'>{t('tagline')}</p>
             <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
               <p className='text-sm text-muted-foreground'>
                 {/* TODO: Replace with your company name and website */}
-                Copyright © {new Date().getFullYear()} - Your Company
+                {t('copyright', { year: new Date().getFullYear() })} Your Company
               </p>
             </div>
           </div>

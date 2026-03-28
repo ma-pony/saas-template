@@ -1,19 +1,36 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { cookies } from 'next/headers'
+import { getTranslations } from 'next-intl/server'
 import type { PostMeta } from '@/lib/blog/types'
 import { cn } from '@/lib/utils'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/lib/i18n/config'
 
 interface BlogPostCardProps {
   post: PostMeta
   className?: string
 }
 
-const BlogPostCard = ({ post, className }: BlogPostCardProps) => {
-  const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
+const LOCALE_TO_DATE_LOCALE: Record<string, string> = {
+  en: 'en-US',
+  zh: 'zh-CN',
+  es: 'es',
+  fr: 'fr',
+}
+
+const BlogPostCard = async ({ post, className }: BlogPostCardProps) => {
+  const cookieStore = await cookies()
+  const rawLocale = cookieStore.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE
+  const locale = (SUPPORTED_LOCALES as readonly string[]).includes(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dateLocale = LOCALE_TO_DATE_LOCALE[locale] ?? 'en-US'
+
+  const formattedDate = new Date(post.date).toLocaleDateString(dateLocale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   })
+
+  const t = await getTranslations('blog')
 
   return (
     <article
@@ -68,7 +85,7 @@ const BlogPostCard = ({ post, className }: BlogPostCardProps) => {
             href={`/blog/${post.slug}`}
             className='text-xs font-medium text-primary transition-colors hover:underline'
           >
-            Read more →
+            {t('readMore')}
           </Link>
         </div>
 

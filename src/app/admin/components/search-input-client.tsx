@@ -2,6 +2,7 @@
 
 import { useCallback, useRef } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
@@ -14,6 +15,7 @@ export const SearchInputClient = ({ defaultValue }: SearchInputClientProps) => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const t = useTranslations('admin.users')
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -34,7 +36,7 @@ export const SearchInputClient = ({ defaultValue }: SearchInputClientProps) => {
       <Search className='pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
       <Input
         type='search'
-        placeholder='搜索姓名或邮箱...'
+        placeholder={t('searchPlaceholder')}
         defaultValue={defaultValue}
         className='pl-8 w-64'
         onChange={(e) => {

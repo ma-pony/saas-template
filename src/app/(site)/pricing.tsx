@@ -3,32 +3,37 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons'
 import { Flame } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-export default function Pricing() {
-  const communityFeatures = [
-    { text: 'Full Next.js boilerplate', included: true },
-    { text: 'Auth, payments & UI prewired', included: true },
-    { text: 'Built-in SEO', included: true },
-    { text: 'Resend transaction emails', included: true },
-    { text: 'Payments via Stripe / Lemon Squeezy / Polar', included: true },
-    { text: 'Up to 100+ hours saved', included: true },
-    { text: 'MIT open-source license', included: true },
-    { text: 'Community Releases & fixes', included: true },
-  ]
 
-  const premiumFeatures = [
-    { text: 'Everything in free', included: true },
-    { text: 'Internationalization', included: true },
-    { text: 'Role-based access & invite system', included: true },
-    { text: 'Advanced SEO & Blog', included: true },
-    { text: 'Playwright and CI workflow', included: true },
-    { text: 'Analytics hooks ready for Posthog', included: true },
-    { text: 'Pro UI kit', included: true },
-    { text: 'Private Discord Community', included: true },
-    { text: 'Priority support', included: true },
-  ]
+const communityFeatureKeys = [
+  'fullBoilerplate',
+  'authPaymentsUI',
+  'builtInSEO',
+  'transactionEmails',
+  'payments',
+  'hoursSaved',
+  'mitLicense',
+  'communityReleases',
+] as const
+
+const premiumFeatureKeys = [
+  'everythingInFree',
+  'i18n',
+  'rbac',
+  'advancedSEO',
+  'playwright',
+  'analytics',
+  'proUIKit',
+  'privateDiscord',
+  'prioritySupport',
+] as const
+
+export default function Pricing() {
+  const t = useTranslations('site.pricing')
+  const tButton = useTranslations('common.button')
 
   return (
     <section id='pricing' className='py-24 bg-[#F4F4F5]'>
@@ -38,43 +43,37 @@ export default function Pricing() {
             className='text-center text-sm font-medium text-muted-foreground mb-8'
             style={{ fontFamily: 'var(--font-geist-mono)' }}
           >
-            Pricing
+            {t('sectionLabel')}
           </h2>
           <div className='text-center mb-16'>
-            <h2 className='text-4xl font-semibold tracking-tight mb-4'>
-              Built for builders who play to win
-            </h2>
-            <p className='text-lg text-muted-foreground'>
-              Launch faster, sell sooner, and grow without fighting setup pain
-            </p>
+            <h2 className='text-4xl font-semibold tracking-tight mb-4'>{t('title')}</h2>
+            <p className='text-lg text-muted-foreground'>{t('subtitle')}</p>
           </div>
 
           <div className='grid md:grid-cols-2 border border-[#E4E4E7] rounded-none overflow-hidden bg-transparent'>
             {/* Community */}
             <div className='flex flex-col p-8 border-r border-[#E4E4E7]'>
               <div className='mb-6'>
-                <h3 className='text-2xl font-semibold mb-4'>Community</h3>
+                <h3 className='text-2xl font-semibold mb-4'>{t('community.name')}</h3>
                 <div className='mb-4'>
-                  <span className='text-4xl font-semibold font-mono'>$0</span>
+                  <span className='text-4xl font-semibold font-mono'>{t('community.price')}</span>
                 </div>
-                <p className='text-sm text-muted-foreground mb-4'>
-                  For learners, early builders & indie devs who love to experiment.
-                </p>
+                <p className='text-sm text-muted-foreground mb-4'>{t('community.description')}</p>
                 <p
                   className='text-xs font-medium text-foreground uppercase'
                   style={{ fontFamily: 'var(--font-geist-mono)' }}
                 >
-                  INCLUDING
+                  {t('including')}
                 </p>
               </div>
               <ul className='space-y-3 mb-8 flex-1'>
-                {communityFeatures.map((feature, index) => (
-                  <li key={index} className='flex items-center gap-2 text-sm'>
+                {communityFeatureKeys.map((key) => (
+                  <li key={key} className='flex items-center gap-2 text-sm'>
                     <HugeiconsIcon
                       icon={CheckmarkCircle01Icon}
                       className='h-4 w-4 text-muted-foreground shrink-0'
                     />
-                    <span className='text-muted-foreground'>{feature.text}</span>
+                    <span className='text-muted-foreground'>{t(`community.features.${key}`)}</span>
                   </li>
                 ))}
               </ul>
@@ -88,11 +87,9 @@ export default function Pricing() {
                   >
                     <path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z' />
                   </svg>
-                  Clone repo
+                  {tButton('cloneRepo')}
                 </Button>
-                <p className='text-sm text-center text-muted-foreground'>
-                  Open source. Free forever
-                </p>
+                <p className='text-sm text-center text-muted-foreground'>{t('openSource')}</p>
               </div>
             </div>
 
@@ -100,50 +97,46 @@ export default function Pricing() {
             <div className='flex flex-col p-8 relative'>
               <div className='mb-6'>
                 <div className='flex items-start justify-between mb-4'>
-                  <h3 className='text-2xl font-semibold'>Premium</h3>
+                  <h3 className='text-2xl font-semibold'>{t('premium.name')}</h3>
                   <Badge className='bg-white border border-[#DBDAD6] text-[#878787] rounded-full px-3 py-3 font-medium flex items-center gap-1.5'>
                     <Flame className='h-3.5 w-3.5' />
-                    Most popular
+                    {t('mostPopular')}
                   </Badge>
                 </div>
                 <div className='mb-4'>
                   {/* TODO: Replace $XX with your actual pricing */}
                   <div className='flex items-baseline gap-2'>
                     <span className='text-sm text-muted-foreground line-through font-mono'>
-                      $XX
+                      {t('premium.originalPrice')}
                     </span>
-                    <span className='text-4xl font-semibold font-mono'>$XX</span>
+                    <span className='text-4xl font-semibold font-mono'>{t('premium.price')}</span>
                   </div>
                 </div>
-                <p className='text-sm text-muted-foreground mb-4'>
-                  For founders & builders ready to ship real products and make money.
-                </p>
+                <p className='text-sm text-muted-foreground mb-4'>{t('premium.description')}</p>
                 <p
                   className='text-xs font-medium text-foreground uppercase'
                   style={{ fontFamily: 'var(--font-geist-mono)' }}
                 >
-                  INCLUDING
+                  {t('including')}
                 </p>
               </div>
               <ul className='space-y-3 mb-8 flex-1'>
-                {premiumFeatures.map((feature, index) => (
-                  <li key={index} className='flex items-center gap-2 text-sm'>
+                {premiumFeatureKeys.map((key) => (
+                  <li key={key} className='flex items-center gap-2 text-sm'>
                     <HugeiconsIcon
                       icon={CheckmarkCircle01Icon}
                       className='h-4 w-4 text-muted-foreground shrink-0'
                     />
-                    <span className='text-muted-foreground'>{feature.text}</span>
+                    <span className='text-muted-foreground'>{t(`premium.features.${key}`)}</span>
                   </li>
                 ))}
               </ul>
               <div className='flex flex-col gap-2'>
                 {/* TODO: Replace with your checkout button or CTA */}
                 <Button className='w-full h-12! text-sm font-medium' size='lg'>
-                  Get Started
+                  {tButton('getStarted')}
                 </Button>
-                <p className='text-sm text-center text-muted-foreground'>
-                  Pay once. Build unlimited projects!
-                </p>
+                <p className='text-sm text-center text-muted-foreground'>{t('payOnce')}</p>
               </div>
             </div>
           </div>

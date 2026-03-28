@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Menu, LayoutDashboard, Users, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,11 +17,6 @@ import {
 import { cn } from '@/lib/utils'
 import { signOut } from '@/lib/auth/auth-client'
 
-const navItems = [
-  { href: '/admin', label: '概览', icon: LayoutDashboard },
-  { href: '/admin/users', label: '用户管理', icon: Users },
-]
-
 interface AdminMobileNavProps {
   user: {
     name: string
@@ -31,6 +27,12 @@ interface AdminMobileNavProps {
 export const AdminMobileNav = ({ user }: AdminMobileNavProps) => {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const t = useTranslations('admin')
+
+  const navItems = [
+    { href: '/admin', label: t('sidebar.overview'), icon: LayoutDashboard },
+    { href: '/admin/users', label: t('sidebar.users'), icon: Users },
+  ]
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -41,7 +43,7 @@ export const AdminMobileNav = ({ user }: AdminMobileNavProps) => {
       </SheetTrigger>
       <SheetPopup side='left'>
         <SheetHeader>
-          <SheetTitle>管理后台</SheetTitle>
+          <SheetTitle>{t('sidebar.title')}</SheetTitle>
         </SheetHeader>
         <SheetPanel>
           <nav className='flex flex-col gap-1'>
@@ -74,7 +76,7 @@ export const AdminMobileNav = ({ user }: AdminMobileNavProps) => {
               onClick={() => signOut()}
             >
               <LogOut className='size-4' />
-              退出登录
+              {t('sidebar.signOut')}
             </Button>
           </div>
         </SheetPanel>

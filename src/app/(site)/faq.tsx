@@ -7,50 +7,27 @@ import {
   AccordionPanel,
 } from '@/components/ui/accordion'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
-export const FAQ_ITEMS = [
-  {
-    question: "What's included?",
-    answer:
-      'Everything you need to build: a full Next.js boilerplate with auth, payments, UI, SEO, and transactional emails. Ready to customize for your product.',
-  },
-  {
-    question: 'What payment providers are supported?',
-    answer:
-      'Stripe, Polar, and LemonSqueezy are all pre-configured. Switch providers by changing a single environment variable.',
-  },
-  {
-    question: 'Can I use it for commercial products?',
-    answer: 'Yes — use this boilerplate to build and sell your own SaaS products.',
-  },
-  {
-    question: 'What if I find a bug or issue?',
-    answer: 'Open an issue on GitHub or reach out by email — we aim to fix bugs quickly.',
-  },
-  {
-    question: 'How do I get started?',
-    answer:
-      'Clone the repository, set your environment variables, and run bun dev. Full setup instructions are in the README.',
-  },
-  {
-    question: 'What database does it use?',
-    answer:
-      'PostgreSQL via Drizzle ORM. The schema is fully customizable and migrations are managed with Drizzle Kit.',
-  },
-  {
-    question: 'Is internationalization (i18n) supported?',
-    answer:
-      'Yes — next-intl is pre-configured with English, French, and Spanish. Adding new locales is straightforward.',
-  },
-  {
-    question: 'What authentication methods are available?',
-    answer:
-      'Better-Auth provides email/password, magic links (OTP), and social OAuth (Google, GitHub, Microsoft, Facebook). Enable only what you need via env vars.',
-  },
-]
+const faqKeys = [
+  'freeVersion',
+  'proVersion',
+  'loseAccess',
+  'oneTimePayment',
+  'commercial',
+  'bugs',
+  'upgrade',
+  'updates',
+  'support',
+] as const
 
 export default function FAQ() {
-  const faqs = FAQ_ITEMS
+  const t = useTranslations('site.faq')
+
+  const faqs = faqKeys.map((key) => ({
+    question: t(`items.${key}.question`),
+    answer: t(`items.${key}.answer`),
+  }))
 
   return (
     <section
@@ -64,21 +41,20 @@ export default function FAQ() {
           className='text-center text-sm font-medium text-muted-foreground mb-8'
           style={{ fontFamily: 'var(--font-geist-mono)' }}
         >
-          FAQ
+          {t('sectionLabel')}
         </h2>
         <div className='grid md:grid-cols-2 gap-12 md:gap-16'>
           {/* Left Section */}
           <div>
-            <h2 className='text-4xl font-semibold tracking-tight mb-4'>
-              Frequently Asked Questions
-            </h2>
+            <h2 className='text-4xl font-semibold tracking-tight mb-4'>{t('title')}</h2>
             <p className='text-lg text-muted-foreground'>
-              Have another question? {/* TODO: Replace with your support email address */}
+              {t('contactUs')}{' '}
+              {/* TODO: Replace with your support email address */}
               <Link
                 href='mailto:support@example.com'
                 className='underline underline-offset-4 hover:text-foreground transition-colors'
               >
-                Contact us by email
+                {t('contactLink')}
               </Link>
               .
             </p>

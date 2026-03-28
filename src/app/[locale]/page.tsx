@@ -10,6 +10,7 @@ import { GridLayout, SectionDivider } from '@/app/(site)/grid-layout'
 import { generateHreflangMetadata } from '@/lib/i18n/hreflang'
 import type { Metadata } from 'next'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
+import { getTranslations } from 'next-intl/server'
 
 interface PageProps {
   params: Promise<{ locale: string }>
@@ -17,13 +18,13 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'site.hero' })
   const hreflang = generateHreflangMetadata('/')
 
   return {
     ...generateSEOMetadata({
-      title: 'My SaaS App - Turn Ideas Into Products, Fast',
-      description:
-        'Ship your startup in days, not weeks. A production-ready Next.js boilerplate with auth, payments, and everything you need to launch fast. Free forever, open source.',
+      title: t('title'),
+      description: t('description'),
     }),
     alternates: {
       ...hreflang,

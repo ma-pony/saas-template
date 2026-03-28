@@ -64,7 +64,8 @@
       "faq": "FAQ",
       "docs": "Docs",
       "toggleMenu": "Toggle menu",
-      "supportDev": "Support Dev"
+      "supportDev": "Support Dev",
+      "blog": "Blog"
     },
     "hero": {
       "title": "A production-ready Next.js boilerplate built to make $$$",
@@ -171,7 +172,39 @@
     "testimonials": {
       "sectionLabel": "TESTIMONIALS",
       "title": "Trusted by developers",
-      "subtitle": "See what builders are saying about our platform"
+      "subtitle": "See what builders are saying about our platform",
+      "items": {
+        "alex": {
+          "quote": "This template saved us weeks of setup. Auth, payments, and i18n just worked out of the box.",
+          "name": "Alex Chen",
+          "title": "CTO, Startup Co."
+        },
+        "sarah": {
+          "quote": "The adapter pattern for payments is brilliant. We switched from Stripe to Polar by changing one env var.",
+          "name": "Sarah Kim",
+          "title": "Full-Stack Developer"
+        },
+        "jordan": {
+          "quote": "I'm not even exaggerating - this saved me weeks of work.\nInstead of fighting errors and configs, I actually built features.",
+          "name": "Jordan Lee",
+          "title": "Indie Builder"
+        },
+        "maria": {
+          "quote": "The best Next.js starter I've used. Production-grade out of the box with SEO, dashboard flow, and multi-language support.",
+          "name": "Maria Garcia",
+          "title": "Product Engineer"
+        },
+        "ryan": {
+          "quote": "Started on a Friday night, had a live SaaS by Sunday.\nEverything just clicked - no roadblocks, no setup headaches.",
+          "name": "Ryan Park",
+          "title": "SaaS Founder"
+        },
+        "emma": {
+          "quote": "Finally a template that takes security seriously. Auth, CSRF, rate limiting - all handled properly.",
+          "name": "Emma Wilson",
+          "title": "Security Engineer"
+        }
+      }
     },
     "faq": {
       "sectionLabel": "FAQ",
@@ -391,11 +424,19 @@
       "sections": {
         "dataCollect": {
           "title": "1. data we collect",
-          "list": ["basic account info (email, name, etc.)", "usage data (how you interact with the app)", "optional data you share (like feedback or support requests)"]
+          "list": [
+            "basic account info (email, name, etc.)",
+            "usage data (how you interact with the app)",
+            "optional data you share (like feedback or support requests)"
+          ]
         },
         "howWeUse": {
           "title": "2. how we use it",
-          "list": ["to run and improve our platform", "to communicate with you about updates or issues", "to prevent misuse or fraud"]
+          "list": [
+            "to run and improve our platform",
+            "to communicate with you about updates or issues",
+            "to prevent misuse or fraud"
+          ]
         },
         "cookies": {
           "title": "3. cookies",
@@ -440,6 +481,81 @@
         },
         "save": "Save Preferences"
       }
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "title": "Admin Panel",
+      "overview": "Overview",
+      "users": "User Management",
+      "signOut": "Sign Out"
+    },
+    "overview": {
+      "title": "Overview",
+      "subtitle": "View key platform metrics"
+    },
+    "users": {
+      "title": "User Management",
+      "totalUsers": "{total} registered users",
+      "searchPlaceholder": "Search name or email...",
+      "table": {
+        "user": "User",
+        "email": "Email",
+        "emailVerification": "Email Verification",
+        "registeredAt": "Registered At",
+        "verified": "Verified",
+        "unverified": "Unverified"
+      },
+      "empty": {
+        "title": "No users",
+        "noResults": "No users found matching \"{query}\"",
+        "noUsers": "No registered users yet"
+      }
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "totalUsersDesc": "Total registered users",
+      "newThisMonth": "New This Month",
+      "newThisMonthDesc": "New registrations this month",
+      "activeSubscriptions": "Active Subscriptions",
+      "activeSubscriptionsDesc": "Current active subscriptions",
+      "totalRevenue": "Total Revenue",
+      "totalRevenueDesc": "Total successful payments"
+    },
+    "error": {
+      "loadFailed": "Failed to load data",
+      "loadFailedDesc": "An unexpected error occurred. Please try again later.",
+      "retry": "Retry",
+      "usersLoadFailed": "Failed to load user list",
+      "usersLoadFailedDesc": "Unable to load user data. Please try again later."
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Insights, tutorials, and updates from our team.",
+    "empty": "No posts published yet. Check back soon!",
+    "readMore": "Read more →",
+    "backToBlog": "← Back to Blog",
+    "onThisPage": "On this page",
+    "tagsLabel": "Tags:",
+    "categories": "Categories",
+    "tags": "Tags",
+    "pagination": {
+      "previous": "← Previous",
+      "next": "Next →",
+      "page": "Page {current} of {total}"
+    },
+    "category": {
+      "title": "Category: {name}",
+      "count": "{count} posts in this category",
+      "countOne": "1 post in this category",
+      "empty": "No posts in this category yet."
+    },
+    "tag": {
+      "title": "Tag: #{name}",
+      "count": "{count} posts with this tag",
+      "countOne": "1 post with this tag",
+      "empty": "No posts with this tag yet."
     }
   }
 }

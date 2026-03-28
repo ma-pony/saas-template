@@ -2,15 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { LayoutDashboard, Users, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { signOut } from '@/lib/auth/auth-client'
-
-const navItems = [
-  { href: '/admin', label: '概览', icon: LayoutDashboard },
-  { href: '/admin/users', label: '用户管理', icon: Users },
-]
 
 interface AdminSidebarProps {
   user: {
@@ -21,11 +17,17 @@ interface AdminSidebarProps {
 
 export const AdminSidebar = ({ user }: AdminSidebarProps) => {
   const pathname = usePathname()
+  const t = useTranslations('admin')
+
+  const navItems = [
+    { href: '/admin', label: t('sidebar.overview'), icon: LayoutDashboard },
+    { href: '/admin/users', label: t('sidebar.users'), icon: Users },
+  ]
 
   return (
     <aside className='hidden w-56 flex-col border-r bg-background lg:flex'>
       <div className='flex h-14 items-center border-b px-4'>
-        <span className='font-semibold text-sm'>管理后台</span>
+        <span className='font-semibold text-sm'>{t('sidebar.title')}</span>
       </div>
       <nav className='flex flex-1 flex-col gap-1 p-2'>
         {navItems.map((item) => {
@@ -57,7 +59,7 @@ export const AdminSidebar = ({ user }: AdminSidebarProps) => {
           onClick={() => signOut()}
         >
           <LogOut className='size-4' />
-          退出登录
+          {t('sidebar.signOut')}
         </Button>
       </div>
     </aside>

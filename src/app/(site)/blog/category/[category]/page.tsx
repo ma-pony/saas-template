@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { getAllCategories, getPostsByCategory } from '@/lib/blog/content-reader'
 import { generateMetadata as genSeoMetadata, siteConfig } from '@/lib/seo'
 import BlogPostCard from '@/components/blog/blog-post-card'
@@ -35,14 +36,16 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   // Find posts matching any category (case-insensitive)
   const posts = getPostsByCategory(decodedCategory)
 
+  const t = await getTranslations('blog')
+
   return (
     <div className='mx-auto max-w-7xl px-4 py-24 sm:px-6'>
       <nav className='mb-6 text-sm text-muted-foreground'>
         <Link href='/blog' className='hover:text-foreground transition-colors'>
-          Blog
+          {t('title')}
         </Link>
         <span className='mx-2'>›</span>
-        <span>Category: {displayName}</span>
+        <span>{t('category.title', { name: displayName })}</span>
       </nav>
 
       <div className='mb-10'>
@@ -53,18 +56,18 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           {displayName}
         </h1>
         <p className='mt-2 text-muted-foreground'>
-          {posts.length} post{posts.length !== 1 ? 's' : ''} in this category
+          {posts.length === 1 ? t('category.countOne') : t('category.count', { count: posts.length })}
         </p>
       </div>
 
       {posts.length === 0 ? (
         <div className='rounded-xl border border-[#E4E4E7] bg-[#F4F4F5] p-12 text-center'>
-          <p className='text-muted-foreground'>No posts in this category yet.</p>
+          <p className='text-muted-foreground'>{t('category.empty')}</p>
           <Link
             href='/blog'
             className='mt-4 inline-block text-sm font-medium text-primary hover:underline'
           >
-            ← Back to Blog
+            {t('backToBlog')}
           </Link>
         </div>
       ) : (
@@ -80,7 +83,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           href='/blog'
           className='text-sm font-medium text-primary transition-colors hover:underline'
         >
-          ← Back to Blog
+          {t('backToBlog')}
         </Link>
       </div>
     </div>

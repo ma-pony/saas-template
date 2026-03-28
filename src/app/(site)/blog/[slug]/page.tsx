@@ -5,16 +5,26 @@ import remarkGfm from 'remark-gfm'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeHighlight from 'rehype-highlight'
+import { cookies } from 'next/headers'
+import { getTranslations } from 'next-intl/server'
 import { getAllPosts, getPostBySlug } from '@/lib/blog/content-reader'
 import { generateArticleJsonLd } from '@/lib/blog/json-ld'
 import { generateMetadata as genSeoMetadata } from '@/lib/seo'
 import { getBaseUrl } from '@/lib/utils'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/lib/i18n/config'
 import { getMDXComponents } from '@/components/blog/mdx-components'
 import JsonLdScript from '@/components/blog/json-ld-script'
 import TableOfContents from '@/components/blog/table-of-contents'
 import type { TocItem } from '@/components/blog/table-of-contents'
 import Link from 'next/link'
 import Image from 'next/image'
+
+const LOCALE_TO_DATE_LOCALE: Record<string, string> = {
+  en: 'en-US',
+  zh: 'zh-CN',
+  es: 'es',
+  fr: 'fr',
+}
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -90,11 +100,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     ...(post.coverImage && { image: `${baseUrl}${post.coverImage}` }),
   })
 
-  const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
+  const cookieStore = await cookies()
+  const rawLocale = cookieStore.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE
+  const locale = (SUPPORTED_LOCALES as readonly string[]).includes(rawLocale) ? rawLocale : DEFAULT_LOCALE
+  const dateLocale = LOCALE_TO_DATE_LOCALE[locale] ?? 'en-US'
+
+  const formattedDate = new Date(post.date).toLocaleDateString(dateLocale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   })
+
+  const t = await getTranslations('blog')
 
   const mdxOptions = {
     mdxOptions: {
@@ -113,7 +130,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Breadcrumb */}
             <nav className='mb-6 text-sm text-muted-foreground'>
               <Link href='/blog' className='hover:text-foreground transition-colors'>
-                Blog
+                {t('title')}
               </Link>
               <span className='mx-2'>›</span>
               <span>{post.title}</span>
@@ -178,7 +195,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {post.tags.length > 0 && (
               <footer className='mt-10 border-t border-[#E4E4E7] pt-6'>
                 <div className='flex flex-wrap gap-2'>
-                  <span className='text-sm font-medium text-muted-foreground'>Tags:</span>
+                  <span className='text-sm font-medium text-muted-foreground'>{t('tagsLabel')}</span>
                   {post.tags.map((tag) => (
                     <Link
                       key={tag}
@@ -195,7 +212,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     href='/blog'
                     className='text-sm font-medium text-primary transition-colors hover:underline'
                   >
-                    ← Back to Blog
+                    {t('backToBlog')}
                   </Link>
                 </div>
               </footer>

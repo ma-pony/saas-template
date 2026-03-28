@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { getTranslations } from 'next-intl/server'
 import {
   Table,
   TableHeader,
@@ -36,7 +37,9 @@ function buildPageUrl(page: number, query?: string) {
   return `/admin/users?${params.toString()}`
 }
 
-export const UsersTable = ({ users, total: _total, page, pageCount, query }: UsersTableProps) => {
+export const UsersTable = async ({ users, total: _total, page, pageCount, query }: UsersTableProps) => {
+  const t = await getTranslations('admin.users')
+
   return (
     <div className='space-y-4'>
       <div className='flex items-center justify-between'>
@@ -48,9 +51,9 @@ export const UsersTable = ({ users, total: _total, page, pageCount, query }: Use
       {users.length === 0 ? (
         <Empty className='border'>
           <EmptyHeader>
-            <EmptyTitle>暂无用户</EmptyTitle>
+            <EmptyTitle>{t('empty.title')}</EmptyTitle>
             <EmptyDescription>
-              {query ? `没有找到与 "${query}" 相关的用户` : '还没有注册用户'}
+              {query ? t('empty.noResults', { query }) : t('empty.noUsers')}
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
@@ -59,10 +62,10 @@ export const UsersTable = ({ users, total: _total, page, pageCount, query }: Use
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>用户</TableHead>
-                <TableHead>邮箱</TableHead>
-                <TableHead>邮箱验证</TableHead>
-                <TableHead>注册时间</TableHead>
+                <TableHead>{t('table.user')}</TableHead>
+                <TableHead>{t('table.email')}</TableHead>
+                <TableHead>{t('table.emailVerification')}</TableHead>
+                <TableHead>{t('table.registeredAt')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -87,11 +90,11 @@ export const UsersTable = ({ users, total: _total, page, pageCount, query }: Use
                   <TableCell className='text-muted-foreground text-sm'>{u.email}</TableCell>
                   <TableCell>
                     <Badge variant={u.emailVerified ? 'success' : 'warning'}>
-                      {u.emailVerified ? '已验证' : '未验证'}
+                      {u.emailVerified ? t('table.verified') : t('table.unverified')}
                     </Badge>
                   </TableCell>
                   <TableCell className='text-muted-foreground text-sm'>
-                    {new Date(u.createdAt).toLocaleDateString('zh-CN', {
+                    {new Date(u.createdAt).toLocaleDateString('en', {
                       year: 'numeric',
                       month: '2-digit',
                       day: '2-digit',

@@ -4,67 +4,31 @@ import Link from 'next/link'
 import { FaXTwitter } from 'react-icons/fa6'
 import { SiThreads } from 'react-icons/si'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+
+const testimonialKeys = ['alex', 'sarah', 'jordan', 'maria', 'ryan', 'emma'] as const
+
+const testimonialMeta: Record<
+  string,
+  { avatar: string; avatarType: string; twitterLink?: string; threadsLink?: string }
+> = {
+  alex: { avatar: 'AC', avatarType: 'initials' },
+  sarah: { avatar: 'SK', avatarType: 'initials' },
+  jordan: { avatar: 'JL', avatarType: 'initials' },
+  maria: { avatar: 'MG', avatarType: 'initials' },
+  ryan: { avatar: 'RP', avatarType: 'initials' },
+  emma: { avatar: 'EW', avatarType: 'initials' },
+}
 
 export default function Testimonials() {
-  // TODO: Replace with your own testimonials
-  const testimonials: {
-    quote: string
-    name: string
-    title: string
-    avatar: string
-    avatarType: string
-    twitterLink?: string
-    threadsLink?: string
-  }[] = [
-    {
-      quote:
-        'This template saved us weeks of setup. Auth, payments, and i18n just worked out of the box.',
-      name: 'Alex Chen',
-      title: 'CTO, Startup Co.',
-      avatar: 'AC',
-      avatarType: 'initials',
-    },
-    {
-      quote:
-        'The adapter pattern for payments is brilliant. We switched from Stripe to Polar by changing one env var.',
-      name: 'Sarah Kim',
-      title: 'Full-Stack Developer',
-      avatar: 'SK',
-      avatarType: 'initials',
-    },
-    {
-      quote:
-        "I'm not even exaggerating - this saved me weeks of work.\nInstead of fighting errors and configs, I actually built features.",
-      name: 'Jordan Lee',
-      title: 'Indie Builder',
-      avatar: 'JL',
-      avatarType: 'initials',
-    },
-    {
-      quote:
-        "The best Next.js starter I've used. Production-grade out of the box with SEO, dashboard flow, and multi-language support.",
-      name: 'Maria Garcia',
-      title: 'Product Engineer',
-      avatar: 'MG',
-      avatarType: 'initials',
-    },
-    {
-      quote:
-        'Started on a Friday night, had a live SaaS by Sunday.\nEverything just clicked - no roadblocks, no setup headaches.',
-      name: 'Ryan Park',
-      title: 'SaaS Founder',
-      avatar: 'RP',
-      avatarType: 'initials',
-    },
-    {
-      quote:
-        'Finally a template that takes security seriously. Auth, CSRF, rate limiting - all handled properly.',
-      name: 'Emma Wilson',
-      title: 'Security Engineer',
-      avatar: 'EW',
-      avatarType: 'initials',
-    },
-  ]
+  const t = useTranslations('site.testimonials')
+
+  const testimonials = testimonialKeys.map((key) => ({
+    quote: t(`items.${key}.quote`),
+    name: t(`items.${key}.name`),
+    title: t(`items.${key}.title`),
+    ...testimonialMeta[key],
+  }))
 
   return (
     <section id='wall-of-love' className='py-24 bg-[#F4F4F5]'>
@@ -73,13 +37,11 @@ export default function Testimonials() {
           className='text-center text-sm font-medium text-muted-foreground mb-8'
           style={{ fontFamily: 'var(--font-geist-mono)' }}
         >
-          TESTIMONIALS
+          {t('sectionLabel')}
         </h2>
         <div className='text-center mb-16'>
-          <h2 className='text-4xl font-semibold tracking-tight mb-4'>Trusted by developers</h2>
-          <p className='text-lg text-muted-foreground'>
-            See what builders are saying about our platform
-          </p>
+          <h2 className='text-4xl font-semibold tracking-tight mb-4'>{t('title')}</h2>
+          <p className='text-lg text-muted-foreground'>{t('subtitle')}</p>
         </div>
 
         <div className='border border-[#E4E4E7] rounded-none overflow-hidden bg-transparent'>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 
 interface TocItem {
@@ -16,6 +17,7 @@ interface TableOfContentsProps {
 
 const TableOfContents = ({ headings, className }: TableOfContentsProps) => {
   const [activeId, setActiveId] = useState<string>('')
+  const t = useTranslations('blog')
 
   useEffect(() => {
     if (headings.length === 0) return
@@ -46,7 +48,7 @@ const TableOfContents = ({ headings, className }: TableOfContentsProps) => {
   return (
     <nav className={cn('sticky top-20', className)}>
       <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-        On this page
+        {t('onThisPage')}
       </p>
       <ul className='space-y-1.5 text-sm'>
         {headings.map((heading) => (

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { getAllPosts, getAllCategories, getAllTags } from '@/lib/blog/content-reader'
 import { generateBlogJsonLd } from '@/lib/blog/json-ld'
 import { generateMetadata as genSeoMetadata, siteConfig } from '@/lib/seo'
@@ -42,6 +43,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
   const jsonLd = generateBlogJsonLd(getBaseUrl(), `${siteConfig.name} Blog`)
 
+  const t = await getTranslations('blog')
+
   return (
     <>
       <JsonLdScript data={jsonLd} />
@@ -51,10 +54,10 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             className='text-4xl font-semibold tracking-tight'
             style={{ fontFamily: 'var(--font-bricolage-grotesque)' }}
           >
-            Blog
+            {t('title')}
           </h1>
           <p className='mt-3 text-lg text-muted-foreground'>
-            Insights, tutorials, and updates from our team.
+            {t('subtitle')}
           </p>
         </div>
 
@@ -63,7 +66,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           <main className='flex-1'>
             {posts.length === 0 ? (
               <div className='rounded-xl border border-[#E4E4E7] bg-[#F4F4F5] p-12 text-center'>
-                <p className='text-muted-foreground'>No posts published yet. Check back soon!</p>
+                <p className='text-muted-foreground'>{t('empty')}</p>
               </div>
             ) : (
               <div className='grid gap-6 sm:grid-cols-2'>
@@ -81,18 +84,18 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                     href={`/blog?page=${currentPage - 1}`}
                     className='rounded-md border border-[#E4E4E7] px-4 py-2 text-sm transition-colors hover:bg-[#F4F4F5]'
                   >
-                    ← Previous
+                    {t('pagination.previous')}
                   </Link>
                 )}
                 <span className='text-sm text-muted-foreground'>
-                  Page {currentPage} of {totalPages}
+                  {t('pagination.page', { current: currentPage, total: totalPages })}
                 </span>
                 {currentPage < totalPages && (
                   <Link
                     href={`/blog?page=${currentPage + 1}`}
                     className='rounded-md border border-[#E4E4E7] px-4 py-2 text-sm transition-colors hover:bg-[#F4F4F5]'
                   >
-                    Next →
+                    {t('pagination.next')}
                   </Link>
                 )}
               </nav>
@@ -104,7 +107,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             {categories.length > 0 && (
               <div className='mb-8'>
                 <h2 className='mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground'>
-                  Categories
+                  {t('categories')}
                 </h2>
                 <ul className='space-y-1.5'>
                   {categories.map((category) => (
@@ -124,7 +127,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             {tags.length > 0 && (
               <div>
                 <h2 className='mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground'>
-                  Tags
+                  {t('tags')}
                 </h2>
                 <div className='flex flex-wrap gap-2'>
                   {tags.map((tag) => (

@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { getUsers } from '../actions/users'
 import { UsersTable } from '../components/users-table'
 
@@ -8,6 +9,7 @@ interface UsersPageProps {
 }
 
 export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
+  const t = await getTranslations('admin.users')
   const { page: pageParam, q: query } = await searchParams
   const page = Math.max(1, Number(pageParam) || 1)
 
@@ -16,8 +18,8 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   return (
     <div className='space-y-6'>
       <div>
-        <h1 className='text-2xl font-bold tracking-tight'>用户管理</h1>
-        <p className='text-muted-foreground text-sm'>共 {total} 位注册用户</p>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('title')}</h1>
+        <p className='text-muted-foreground text-sm'>{t('totalUsers', { total })}</p>
       </div>
       <UsersTable users={users} total={total} page={page} pageCount={pageCount} query={query} />
     </div>

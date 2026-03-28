@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { getAllTags, getPostsByTag } from '@/lib/blog/content-reader'
 import { generateMetadata as genSeoMetadata, siteConfig } from '@/lib/seo'
 import BlogPostCard from '@/components/blog/blog-post-card'
@@ -34,14 +35,16 @@ export default async function TagPage({ params }: TagPageProps) {
 
   const posts = getPostsByTag(decodedTag)
 
+  const t = await getTranslations('blog')
+
   return (
     <div className='mx-auto max-w-7xl px-4 py-24 sm:px-6'>
       <nav className='mb-6 text-sm text-muted-foreground'>
         <Link href='/blog' className='hover:text-foreground transition-colors'>
-          Blog
+          {t('title')}
         </Link>
         <span className='mx-2'>›</span>
-        <span>Tag: #{displayName}</span>
+        <span>{t('tag.title', { name: displayName })}</span>
       </nav>
 
       <div className='mb-10'>
@@ -52,18 +55,18 @@ export default async function TagPage({ params }: TagPageProps) {
           #{displayName}
         </h1>
         <p className='mt-2 text-muted-foreground'>
-          {posts.length} post{posts.length !== 1 ? 's' : ''} with this tag
+          {posts.length === 1 ? t('tag.countOne') : t('tag.count', { count: posts.length })}
         </p>
       </div>
 
       {posts.length === 0 ? (
         <div className='rounded-xl border border-[#E4E4E7] bg-[#F4F4F5] p-12 text-center'>
-          <p className='text-muted-foreground'>No posts with this tag yet.</p>
+          <p className='text-muted-foreground'>{t('tag.empty')}</p>
           <Link
             href='/blog'
             className='mt-4 inline-block text-sm font-medium text-primary hover:underline'
           >
-            ← Back to Blog
+            {t('backToBlog')}
           </Link>
         </div>
       ) : (
@@ -79,7 +82,7 @@ export default async function TagPage({ params }: TagPageProps) {
           href='/blog'
           className='text-sm font-medium text-primary transition-colors hover:underline'
         >
-          ← Back to Blog
+          {t('backToBlog')}
         </Link>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { Users, UserPlus, CreditCard, DollarSign } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardPanel } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -7,30 +8,32 @@ interface StatsCardsProps {
   stats: AdminStats
 }
 
-export const StatsCards = ({ stats }: StatsCardsProps) => {
+export const StatsCards = async ({ stats }: StatsCardsProps) => {
+  const t = await getTranslations('admin.stats')
+
   const cards = [
     {
-      title: '总用户数',
+      title: t('totalUsers'),
       value: stats.totalUsers.toLocaleString(),
-      description: '注册用户总量',
+      description: t('totalUsersDesc'),
       icon: Users,
     },
     {
-      title: '本月新增',
+      title: t('newThisMonth'),
       value: stats.newUsersThisMonth.toLocaleString(),
-      description: '本月新注册用户',
+      description: t('newThisMonthDesc'),
       icon: UserPlus,
     },
     {
-      title: '活跃订阅',
+      title: t('activeSubscriptions'),
       value: stats.activeSubscriptions.toLocaleString(),
-      description: '当前活跃订阅数',
+      description: t('activeSubscriptionsDesc'),
       icon: CreditCard,
     },
     {
-      title: '总收入',
+      title: t('totalRevenue'),
       value: stats.totalRevenue,
-      description: '累计成功付款',
+      description: t('totalRevenueDesc'),
       icon: DollarSign,
     },
   ]

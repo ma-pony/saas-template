@@ -64,7 +64,8 @@
       "faq": "常见问题",
       "docs": "文档",
       "toggleMenu": "切换菜单",
-      "supportDev": "支持开发者"
+      "supportDev": "支持开发者",
+      "blog": "博客"
     },
     "hero": {
       "title": "生产就绪的 Next.js 模板，助您快速盈利",
@@ -171,7 +172,39 @@
     "testimonials": {
       "sectionLabel": "用户评价",
       "title": "受开发者信赖",
-      "subtitle": "听听建设者们对我们平台的评价"
+      "subtitle": "听听建设者们对我们平台的评价",
+      "items": {
+        "alex": {
+          "quote": "这个模板为我们节省了数周的搭建时间。认证、支付和国际化开箱即用。",
+          "name": "Alex Chen",
+          "title": "CTO, Startup Co."
+        },
+        "sarah": {
+          "quote": "支付的适配器模式太妙了。我们只改了一个环境变量就从 Stripe 切换到了 Polar。",
+          "name": "Sarah Kim",
+          "title": "全栈开发者"
+        },
+        "jordan": {
+          "quote": "我毫不夸张——这为我节省了数周的工作。\n不用再和错误和配置搏斗，我真正开始构建功能了。",
+          "name": "Jordan Lee",
+          "title": "独立开发者"
+        },
+        "maria": {
+          "quote": "我用过的最好的 Next.js 启动模板。开箱即用的生产级 SEO、仪表盘流程和多语言支持。",
+          "name": "Maria Garcia",
+          "title": "产品工程师"
+        },
+        "ryan": {
+          "quote": "周五晚上开始，周日就有了一个上线的 SaaS。\n一切都顺畅无比——没有障碍，没有配置头疼。",
+          "name": "Ryan Park",
+          "title": "SaaS 创始人"
+        },
+        "emma": {
+          "quote": "终于有一个认真对待安全的模板了。认证、CSRF、速率限制——都处理得很好。",
+          "name": "Emma Wilson",
+          "title": "安全工程师"
+        }
+      }
     },
     "faq": {
       "sectionLabel": "常见问题",
@@ -391,11 +424,19 @@
       "sections": {
         "dataCollect": {
           "title": "1. 我们收集的数据",
-          "list": ["基本账户信息（邮箱、姓名等）", "使用数据（您与应用的交互方式）", "您分享的可选数据（如反馈或支持请求）"]
+          "list": [
+            "基本账户信息（邮箱、姓名等）",
+            "使用数据（您与应用的交互方式）",
+            "您分享的可选数据（如反馈或支持请求）"
+          ]
         },
         "howWeUse": {
           "title": "2. 我们如何使用",
-          "list": ["运营和改善我们的平台", "与您沟通有关更新或问题", "防止滥用或欺诈"]
+          "list": [
+            "运营和改善我们的平台",
+            "与您沟通有关更新或问题",
+            "防止滥用或欺诈"
+          ]
         },
         "cookies": {
           "title": "3. Cookie",
@@ -440,6 +481,81 @@
         },
         "save": "保存偏好"
       }
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "title": "管理后台",
+      "overview": "概览",
+      "users": "用户管理",
+      "signOut": "退出登录"
+    },
+    "overview": {
+      "title": "数据概览",
+      "subtitle": "查看平台关键运营指标"
+    },
+    "users": {
+      "title": "用户管理",
+      "totalUsers": "共 {total} 位注册用户",
+      "searchPlaceholder": "搜索姓名或邮箱...",
+      "table": {
+        "user": "用户",
+        "email": "邮箱",
+        "emailVerification": "邮箱验证",
+        "registeredAt": "注册时间",
+        "verified": "已验证",
+        "unverified": "未验证"
+      },
+      "empty": {
+        "title": "暂无用户",
+        "noResults": "没有找到与 \"{query}\" 相关的用户",
+        "noUsers": "还没有注册用户"
+      }
+    },
+    "stats": {
+      "totalUsers": "总用户数",
+      "totalUsersDesc": "注册用户总量",
+      "newThisMonth": "本月新增",
+      "newThisMonthDesc": "本月新注册用户",
+      "activeSubscriptions": "活跃订阅",
+      "activeSubscriptionsDesc": "当前活跃订阅数",
+      "totalRevenue": "总收入",
+      "totalRevenueDesc": "累计成功付款"
+    },
+    "error": {
+      "loadFailed": "数据加载失败",
+      "loadFailedDesc": "发生了意外错误，请稍后重试。",
+      "retry": "刷新重试",
+      "usersLoadFailed": "用户列表加载失败",
+      "usersLoadFailedDesc": "无法加载用户数据，请稍后重试。"
+    }
+  },
+  "blog": {
+    "title": "博客",
+    "subtitle": "来自我们团队的见解、教程和更新。",
+    "empty": "暂无已发布的文章，请稍后再来查看！",
+    "readMore": "阅读更多 →",
+    "backToBlog": "← 返回博客",
+    "onThisPage": "本页目录",
+    "tagsLabel": "标签：",
+    "categories": "分类",
+    "tags": "标签",
+    "pagination": {
+      "previous": "← 上一页",
+      "next": "下一页 →",
+      "page": "第 {current} 页，共 {total} 页"
+    },
+    "category": {
+      "title": "分类：{name}",
+      "count": "该分类下共 {count} 篇文章",
+      "countOne": "该分类下共 1 篇文章",
+      "empty": "该分类下暂无文章。"
+    },
+    "tag": {
+      "title": "标签：#{name}",
+      "count": "该标签下共 {count} 篇文章",
+      "countOne": "该标签下共 1 篇文章",
+      "empty": "该标签下暂无文章。"
     }
   }
 }

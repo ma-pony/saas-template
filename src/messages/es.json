@@ -64,7 +64,8 @@
       "faq": "Preguntas frecuentes",
       "docs": "Documentación",
       "toggleMenu": "Alternar menú",
-      "supportDev": "Apoyar al desarrollador"
+      "supportDev": "Apoyar al desarrollador",
+      "blog": "Blog"
     },
     "hero": {
       "title": "Una plantilla Next.js lista para producción, construida para ganar $$$",
@@ -171,7 +172,39 @@
     "testimonials": {
       "sectionLabel": "TESTIMONIOS",
       "title": "De confianza para desarrolladores",
-      "subtitle": "Mira lo que los builders dicen sobre nuestra plataforma"
+      "subtitle": "Mira lo que los builders dicen sobre nuestra plataforma",
+      "items": {
+        "alex": {
+          "quote": "Esta plantilla nos ahorró semanas de configuración. Auth, pagos e i18n funcionaron de inmediato.",
+          "name": "Alex Chen",
+          "title": "CTO, Startup Co."
+        },
+        "sarah": {
+          "quote": "El patrón adaptador para pagos es brillante. Cambiamos de Stripe a Polar con solo cambiar una variable de entorno.",
+          "name": "Sarah Kim",
+          "title": "Desarrolladora Full-Stack"
+        },
+        "jordan": {
+          "quote": "No exagero - esto me ahorró semanas de trabajo.\nEn lugar de pelear con errores y configuraciones, realmente construí funcionalidades.",
+          "name": "Jordan Lee",
+          "title": "Constructor Indie"
+        },
+        "maria": {
+          "quote": "El mejor starter de Next.js que he usado. Listo para producción con SEO, flujo de dashboard y soporte multiidioma.",
+          "name": "Maria Garcia",
+          "title": "Ingeniera de Producto"
+        },
+        "ryan": {
+          "quote": "Empecé un viernes por la noche y el domingo tenía un SaaS en producción.\nTodo encajó - sin obstáculos ni dolores de cabeza.",
+          "name": "Ryan Park",
+          "title": "Fundador SaaS"
+        },
+        "emma": {
+          "quote": "Por fin una plantilla que se toma la seguridad en serio. Auth, CSRF, rate limiting - todo bien manejado.",
+          "name": "Emma Wilson",
+          "title": "Ingeniera de Seguridad"
+        }
+      }
     },
     "faq": {
       "sectionLabel": "PREGUNTAS FRECUENTES",
@@ -391,11 +424,19 @@
       "sections": {
         "dataCollect": {
           "title": "1. datos que recopilamos",
-          "list": ["información básica de cuenta (correo, nombre, etc.)", "datos de uso (cómo interactúas con la app)", "datos opcionales que compartas (como comentarios o solicitudes de soporte)"]
+          "list": [
+            "información básica de cuenta (correo, nombre, etc.)",
+            "datos de uso (cómo interactúas con la app)",
+            "datos opcionales que compartas (como comentarios o solicitudes de soporte)"
+          ]
         },
         "howWeUse": {
           "title": "2. cómo los usamos",
-          "list": ["para operar y mejorar nuestra plataforma", "para comunicarnos contigo sobre actualizaciones o problemas", "para prevenir el abuso o fraude"]
+          "list": [
+            "para operar y mejorar nuestra plataforma",
+            "para comunicarnos contigo sobre actualizaciones o problemas",
+            "para prevenir el abuso o fraude"
+          ]
         },
         "cookies": {
           "title": "3. cookies",
@@ -440,6 +481,81 @@
         },
         "save": "Guardar preferencias"
       }
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "title": "Panel de Admin",
+      "overview": "Resumen",
+      "users": "Gestión de Usuarios",
+      "signOut": "Cerrar Sesión"
+    },
+    "overview": {
+      "title": "Resumen",
+      "subtitle": "Ver métricas clave de la plataforma"
+    },
+    "users": {
+      "title": "Gestión de Usuarios",
+      "totalUsers": "{total} usuarios registrados",
+      "searchPlaceholder": "Buscar nombre o email...",
+      "table": {
+        "user": "Usuario",
+        "email": "Email",
+        "emailVerification": "Verificación de Email",
+        "registeredAt": "Fecha de Registro",
+        "verified": "Verificado",
+        "unverified": "No Verificado"
+      },
+      "empty": {
+        "title": "Sin usuarios",
+        "noResults": "No se encontraron usuarios para \"{query}\"",
+        "noUsers": "Aún no hay usuarios registrados"
+      }
+    },
+    "stats": {
+      "totalUsers": "Total de Usuarios",
+      "totalUsersDesc": "Total de usuarios registrados",
+      "newThisMonth": "Nuevos Este Mes",
+      "newThisMonthDesc": "Nuevos registros este mes",
+      "activeSubscriptions": "Suscripciones Activas",
+      "activeSubscriptionsDesc": "Suscripciones activas actuales",
+      "totalRevenue": "Ingresos Totales",
+      "totalRevenueDesc": "Total de pagos exitosos"
+    },
+    "error": {
+      "loadFailed": "Error al cargar datos",
+      "loadFailedDesc": "Ocurrió un error inesperado. Por favor, inténtelo de nuevo más tarde.",
+      "retry": "Reintentar",
+      "usersLoadFailed": "Error al cargar lista de usuarios",
+      "usersLoadFailedDesc": "No se pudieron cargar los datos de usuarios. Por favor, inténtelo de nuevo más tarde."
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Perspectivas, tutoriales y actualizaciones de nuestro equipo.",
+    "empty": "Aún no hay publicaciones. ¡Vuelve pronto!",
+    "readMore": "Leer más →",
+    "backToBlog": "← Volver al Blog",
+    "onThisPage": "En esta página",
+    "tagsLabel": "Etiquetas:",
+    "categories": "Categorías",
+    "tags": "Etiquetas",
+    "pagination": {
+      "previous": "← Anterior",
+      "next": "Siguiente →",
+      "page": "Página {current} de {total}"
+    },
+    "category": {
+      "title": "Categoría: {name}",
+      "count": "{count} publicaciones en esta categoría",
+      "countOne": "1 publicación en esta categoría",
+      "empty": "No hay publicaciones en esta categoría aún."
+    },
+    "tag": {
+      "title": "Etiqueta: #{name}",
+      "count": "{count} publicaciones con esta etiqueta",
+      "countOne": "1 publicación con esta etiqueta",
+      "empty": "No hay publicaciones con esta etiqueta aún."
     }
   }
 }

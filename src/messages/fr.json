@@ -64,7 +64,8 @@
       "faq": "FAQ",
       "docs": "Documentation",
       "toggleMenu": "Basculer le menu",
-      "supportDev": "Soutenir le développeur"
+      "supportDev": "Soutenir le développeur",
+      "blog": "Blog"
     },
     "hero": {
       "title": "Un boilerplate Next.js prêt pour la production, conçu pour générer $$$",
@@ -171,7 +172,39 @@
     "testimonials": {
       "sectionLabel": "TÉMOIGNAGES",
       "title": "Approuvé par les développeurs",
-      "subtitle": "Voyez ce que les bâtisseurs disent de notre plateforme"
+      "subtitle": "Voyez ce que les bâtisseurs disent de notre plateforme",
+      "items": {
+        "alex": {
+          "quote": "Ce template nous a fait gagner des semaines de configuration. Auth, paiements et i18n ont fonctionné immédiatement.",
+          "name": "Alex Chen",
+          "title": "CTO, Startup Co."
+        },
+        "sarah": {
+          "quote": "Le pattern adaptateur pour les paiements est brillant. On est passé de Stripe à Polar en changeant une seule variable d'environnement.",
+          "name": "Sarah Kim",
+          "title": "Développeuse Full-Stack"
+        },
+        "jordan": {
+          "quote": "Je n'exagère pas - ça m'a fait gagner des semaines de travail.\nAu lieu de me battre avec les erreurs et les configs, j'ai vraiment construit des fonctionnalités.",
+          "name": "Jordan Lee",
+          "title": "Développeur Indie"
+        },
+        "maria": {
+          "quote": "Le meilleur starter Next.js que j'ai utilisé. Prêt pour la production avec SEO, flux dashboard et support multilingue.",
+          "name": "Maria Garcia",
+          "title": "Ingénieure Produit"
+        },
+        "ryan": {
+          "quote": "J'ai commencé un vendredi soir, et dimanche j'avais un SaaS en ligne.\nTout s'est mis en place - pas d'obstacles ni de prises de tête.",
+          "name": "Ryan Park",
+          "title": "Fondateur SaaS"
+        },
+        "emma": {
+          "quote": "Enfin un template qui prend la sécurité au sérieux. Auth, CSRF, rate limiting - tout est bien géré.",
+          "name": "Emma Wilson",
+          "title": "Ingénieure Sécurité"
+        }
+      }
     },
     "faq": {
       "sectionLabel": "FAQ",
@@ -391,11 +424,19 @@
       "sections": {
         "dataCollect": {
           "title": "1. données que nous collectons",
-          "list": ["informations de base du compte (email, nom, etc.)", "données d'utilisation (comment vous interagissez avec l'app)", "données optionnelles que vous partagez (comme les commentaires ou les demandes d'assistance)"]
+          "list": [
+            "informations de base du compte (email, nom, etc.)",
+            "données d'utilisation (comment vous interagissez avec l'app)",
+            "données optionnelles que vous partagez (comme les commentaires ou les demandes d'assistance)"
+          ]
         },
         "howWeUse": {
           "title": "2. comment nous les utilisons",
-          "list": ["pour exploiter et améliorer notre plateforme", "pour communiquer avec vous sur les mises à jour ou les problèmes", "pour prévenir les abus ou la fraude"]
+          "list": [
+            "pour exploiter et améliorer notre plateforme",
+            "pour communiquer avec vous sur les mises à jour ou les problèmes",
+            "pour prévenir les abus ou la fraude"
+          ]
         },
         "cookies": {
           "title": "3. cookies",
@@ -440,6 +481,81 @@
         },
         "save": "Enregistrer les préférences"
       }
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "title": "Panneau Admin",
+      "overview": "Aperçu",
+      "users": "Gestion des Utilisateurs",
+      "signOut": "Déconnexion"
+    },
+    "overview": {
+      "title": "Aperçu",
+      "subtitle": "Voir les métriques clés de la plateforme"
+    },
+    "users": {
+      "title": "Gestion des Utilisateurs",
+      "totalUsers": "{total} utilisateurs inscrits",
+      "searchPlaceholder": "Rechercher nom ou email...",
+      "table": {
+        "user": "Utilisateur",
+        "email": "Email",
+        "emailVerification": "Vérification Email",
+        "registeredAt": "Date d'Inscription",
+        "verified": "Vérifié",
+        "unverified": "Non Vérifié"
+      },
+      "empty": {
+        "title": "Aucun utilisateur",
+        "noResults": "Aucun utilisateur trouvé pour \"{query}\"",
+        "noUsers": "Aucun utilisateur inscrit pour le moment"
+      }
+    },
+    "stats": {
+      "totalUsers": "Total Utilisateurs",
+      "totalUsersDesc": "Total des utilisateurs inscrits",
+      "newThisMonth": "Nouveaux Ce Mois",
+      "newThisMonthDesc": "Nouvelles inscriptions ce mois-ci",
+      "activeSubscriptions": "Abonnements Actifs",
+      "activeSubscriptionsDesc": "Abonnements actifs actuels",
+      "totalRevenue": "Revenus Totaux",
+      "totalRevenueDesc": "Total des paiements réussis"
+    },
+    "error": {
+      "loadFailed": "Échec du chargement",
+      "loadFailedDesc": "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
+      "retry": "Réessayer",
+      "usersLoadFailed": "Échec du chargement des utilisateurs",
+      "usersLoadFailedDesc": "Impossible de charger les données utilisateurs. Veuillez réessayer plus tard."
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Perspectives, tutoriels et mises à jour de notre équipe.",
+    "empty": "Aucun article publié pour le moment. Revenez bientôt !",
+    "readMore": "Lire la suite →",
+    "backToBlog": "← Retour au Blog",
+    "onThisPage": "Sur cette page",
+    "tagsLabel": "Tags :",
+    "categories": "Catégories",
+    "tags": "Tags",
+    "pagination": {
+      "previous": "← Précédent",
+      "next": "Suivant →",
+      "page": "Page {current} sur {total}"
+    },
+    "category": {
+      "title": "Catégorie : {name}",
+      "count": "{count} articles dans cette catégorie",
+      "countOne": "1 article dans cette catégorie",
+      "empty": "Aucun article dans cette catégorie pour le moment."
+    },
+    "tag": {
+      "title": "Tag : #{name}",
+      "count": "{count} articles avec ce tag",
+      "countOne": "1 article avec ce tag",
+      "empty": "Aucun article avec ce tag pour le moment."
     }
   }
 }
