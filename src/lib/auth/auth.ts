@@ -27,7 +27,7 @@ export const auth = betterAuth({
     cookiePrefix: APP_COOKIE_NAME, // Change this to your cookie prefix
     crossSubDomainCookies: {
       enabled: isProd,
-      domain: '.your-domain.com', // TODO: Change this to your domain
+      domain: isProd ? new URL(env.BETTER_AUTH_URL).hostname.replace(/^[^.]+/, '') : undefined,
     },
     useSecureCookies: isProd,
   },
@@ -108,20 +108,25 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: isEmailVerificationEnabled,
     sendResetPassword: async ({ user, url }) => {
-      const username = user.name || ''
+      try {
+        const username = user.name || ''
 
-      const html = await renderPasswordResetEmail(username, url)
+        const html = await renderPasswordResetEmail(username, url)
 
-      const result = await sendEmail({
-        to: user.email,
-        subject: getEmailSubject('reset-password'),
-        html,
-        from: getFromEmailAddress(),
-        emailType: 'transactional',
-      })
+        const result = await sendEmail({
+          to: user.email,
+          subject: getEmailSubject('reset-password'),
+          html,
+          from: getFromEmailAddress(),
+          emailType: 'transactional',
+        })
 
-      if (!result.success) {
-        throw new Error(`Failed to send reset password email: ${result.message}`)
+        if (!result.success) {
+          throw new Error(`Failed to send reset password email: ${result.message}`)
+        }
+      } catch (error) {
+        console.error('Error sending password reset email:', { error, userId: user.id })
+        throw error
       }
     },
   },

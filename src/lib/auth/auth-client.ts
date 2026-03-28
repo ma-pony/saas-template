@@ -16,10 +16,9 @@ export const client = createAuthClient({
   plugins: [emailOTPClient(), organizationClient()],
   fetchOptions: {
     onError(error) {
-      console.error('Auth error:', error)
-    },
-    onSuccess(data) {
-      console.log('Auth action successful:', data)
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Auth error:', error)
+      }
     },
   },
 })

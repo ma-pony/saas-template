@@ -242,12 +242,6 @@ export const generateMetadata = (options: SEOOptions = {}): Metadata => {
         'max-snippet': -1,
       },
     },
-    ...(options.publishedTime && {
-      publicationDate: options.publishedTime,
-    }),
-    ...(options.modifiedTime && {
-      modificationDate: options.modifiedTime,
-    }),
   }
 }
 

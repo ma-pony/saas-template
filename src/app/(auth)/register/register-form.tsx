@@ -155,7 +155,13 @@ export default function RegisterForm({
           password: passwordValue,
           name: nameValue,
         },
-        {}
+        {
+          onError: (ctx) => {
+            const message = ctx.error.message || t('common.error.registrationFailed')
+            setPasswordErrors([message])
+            setShowValidationError(true)
+          },
+        }
       )
 
       if (!response || response.error) {
@@ -167,9 +173,11 @@ export default function RegisterForm({
         sessionStorage.setItem('verificationEmail', emailValue)
       }
 
-      router.push('/verify?fromSignup=true')
+      router.push(`/verify?fromSignup=true&callbackUrl=${encodeURIComponent(callbackUrl)}`)
     } catch (error) {
       console.error('Signup error:', error)
+      setPasswordErrors([t('common.error.registrationFailed')])
+      setShowValidationError(true)
     } finally {
       setIsLoading(false)
     }

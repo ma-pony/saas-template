@@ -7,18 +7,8 @@ import { auth } from '@/lib/auth'
 import { getPaymentAdapter } from '@/lib/payments/service'
 import { db } from '@/database'
 import { customer } from '@/database/schema'
-import { env } from '@/config/env'
 import { isBillingEnabled } from '@/config/feature-flags'
-
-function isSameOriginUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url)
-    const appUrl = new URL(env.NEXT_PUBLIC_APP_URL)
-    return parsed.origin === appUrl.origin
-  } catch {
-    return false
-  }
-}
+import { isSameOriginUrl } from '@/lib/url'
 
 const portalSchema = z.object({
   returnUrl: z.string().optional().refine((v) => !v || isSameOriginUrl(v), {
@@ -75,7 +65,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('Portal error:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal Server Error' },
+      { error: 'Failed to create portal session' },
       { status: 500 }
     )
   }

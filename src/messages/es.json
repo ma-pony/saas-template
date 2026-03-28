@@ -38,7 +38,8 @@
       "rateLimitExceeded": "Demasiadas solicitudes. Por favor espera un momento antes de intentar de nuevo.",
       "socialSignInFailed": "Error al iniciar sesión con {provider}",
       "accountExists": "Ya existe una cuenta con este correo. Por favor inicia sesión.",
-      "signInCancelled": "Inicio de sesión con {provider} cancelado. Por favor intenta de nuevo."
+      "signInCancelled": "Inicio de sesión con {provider} cancelado. Por favor intenta de nuevo.",
+      "registrationFailed": "Error en el registro. Por favor intenta de nuevo."
     },
     "label": {
       "email": "Correo electrónico",

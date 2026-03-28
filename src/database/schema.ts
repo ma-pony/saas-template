@@ -103,7 +103,7 @@ export const customer = pgTable(
   },
   (table) => [
     index('customer_userId_idx').on(table.userId),
-    uniqueIndex('customer_provider_customerId_idx').on(table.providerCustomerId),
+    uniqueIndex('customer_provider_customerId_idx').on(table.provider, table.providerCustomerId),
   ]
 )
 
@@ -137,7 +137,7 @@ export const subscription = pgTable(
   (table) => [
     index('subscription_userId_idx').on(table.userId),
     index('subscription_customerId_idx').on(table.customerId),
-    uniqueIndex('subscription_provider_subscriptionId_idx').on(table.providerSubscriptionId),
+    uniqueIndex('subscription_provider_subscriptionId_idx').on(table.provider, table.providerSubscriptionId),
     index('subscription_status_idx').on(table.status),
   ]
 )
@@ -170,7 +170,7 @@ export const payment = pgTable(
     index('payment_userId_idx').on(table.userId),
     index('payment_customerId_idx').on(table.customerId),
     index('payment_subscriptionId_idx').on(table.subscriptionId),
-    uniqueIndex('payment_provider_paymentId_idx').on(table.providerPaymentId),
+    uniqueIndex('payment_provider_paymentId_idx').on(table.provider, table.providerPaymentId),
   ]
 )
 

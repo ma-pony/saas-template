@@ -4,13 +4,14 @@ import { auth } from '@/lib/auth/auth'
 import { db } from '@/database'
 import { user } from '@/database/schema'
 import { eq } from 'drizzle-orm'
-import { DEFAULT_LOCALE } from '@/lib/i18n/config'
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/lib/i18n/config'
 import { AdminSidebar } from './components/admin-sidebar'
 import { AdminMobileNav } from './components/admin-mobile-nav'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()
-  const locale = cookieStore.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE
+  const rawLocale = cookieStore.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE
+  const locale = (SUPPORTED_LOCALES as readonly string[]).includes(rawLocale) ? rawLocale : DEFAULT_LOCALE
 
   const session = await auth.api.getSession({
     headers: await headers(),

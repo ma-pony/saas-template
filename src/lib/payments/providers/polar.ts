@@ -130,8 +130,8 @@ export class PolarAdapter implements PaymentAdapter {
         currentPeriodEnd: new Date((subscription as any).currentPeriodEnd),
         cancelAtPeriodEnd: subscription.cancelAtPeriodEnd || false,
         canceledAt: subscription.canceledAt ? new Date(subscription.canceledAt) : null,
-        trialStart: subscription.startedAt ? new Date(subscription.startedAt) : null,
-        trialEnd: subscription.endedAt ? new Date(subscription.endedAt) : null,
+        trialStart: (subscription as any).trialStartedAt ? new Date((subscription as any).trialStartedAt) : null,
+        trialEnd: (subscription as any).trialEndedAt ? new Date((subscription as any).trialEndedAt) : null,
       }
     } catch (error) {
       console.error('Failed to get Polar subscription:', error)
@@ -157,13 +157,16 @@ export class PolarAdapter implements PaymentAdapter {
   }
 
   async createPortal(customerId: string, returnUrl?: string): Promise<PortalResult> {
-    // Polar doesn't have a customer portal in the same way as Stripe
-    // We'll redirect to their customer page or provide a link to manage subscriptions
-    const polarCustomerId = customerId.replace('polar_', '')
-
-    // For now, return a placeholder - in production you'd integrate with Polar's customer management
-    return {
-      url: `https://polar.sh/customer/${polarCustomerId}`,
+    // Polar uses a customer portal session — request one via the API
+    try {
+      const session = await this.polar.customerSessions.create({
+        customerId: customerId.replace('polar_', ''),
+      })
+      return { url: (session as any).customerPortalUrl || `https://polar.sh/purchases/subscriptions` }
+    } catch (error) {
+      console.error('Polar portal session creation failed:', error)
+      // Fallback to generic subscriptions page
+      return { url: 'https://polar.sh/purchases/subscriptions' }
     }
   }
 
@@ -220,8 +223,8 @@ export class PolarAdapter implements PaymentAdapter {
               currentPeriodEnd: new Date(subscription.currentPeriodEnd),
               cancelAtPeriodEnd: subscription.cancelAtPeriodEnd || false,
               canceledAt: subscription.canceledAt ? new Date(subscription.canceledAt) : null,
-              trialStart: subscription.startedAt ? new Date(subscription.startedAt) : null,
-              trialEnd: subscription.endedAt ? new Date(subscription.endedAt) : null,
+              trialStart: subscription.trialStartedAt ? new Date(subscription.trialStartedAt) : null,
+              trialEnd: subscription.trialEndedAt ? new Date(subscription.trialEndedAt) : null,
             },
           }
         }
@@ -260,28 +263,45 @@ export class PolarAdapter implements PaymentAdapter {
 
   async validateWebhook(rawBody: string, signature: string): Promise<boolean> {
     if (!env.POLAR_WEBHOOK_SECRET) {
-      throw new Error('POLAR_WEBHOOK_SECRET is required for webhook validation')
+      console.error('POLAR_WEBHOOK_SECRET is required for webhook validation')
+      return false
     }
 
     try {
+      // Use standard webhooks HMAC-SHA256 verification
+      // Polar sends signature in format: "v1,<base64-encoded-signature>" or raw hex
       const encoder = new TextEncoder()
       const key = await crypto.subtle.importKey(
         'raw',
         encoder.encode(env.POLAR_WEBHOOK_SECRET),
         { name: 'HMAC', hash: 'SHA-256' },
         false,
-        ['sign'],
+        ['sign', 'verify'],
       )
+
+      // Strip common prefixes from the signature header
+      const cleanSignature = signature.replace(/^(v1,|sha256=)/, '')
+
       const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(rawBody))
       const expected = Array.from(new Uint8Array(sig))
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('')
 
+      // Try hex comparison first, then base64
+      let incoming = cleanSignature
+      if (!/^[0-9a-f]+$/i.test(cleanSignature)) {
+        // Convert base64 signature to hex for comparison
+        const decoded = Uint8Array.from(atob(cleanSignature), (c) => c.charCodeAt(0))
+        incoming = Array.from(decoded)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
+      }
+
       // Constant-time comparison
-      if (expected.length !== signature.length) return false
+      if (expected.length !== incoming.length) return false
       let mismatch = 0
       for (let i = 0; i < expected.length; i++) {
-        mismatch |= expected.charCodeAt(i) ^ signature.charCodeAt(i)
+        mismatch |= expected.charCodeAt(i) ^ incoming.charCodeAt(i)
       }
       return mismatch === 0
     } catch (error) {

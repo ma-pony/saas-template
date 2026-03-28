@@ -121,14 +121,19 @@ export class StripeAdapter implements PaymentAdapter {
     let customer: Stripe.Customer
 
     if (email) {
-      // Try to find existing customer by email
+      // Try to find existing customer by email + userId metadata match
       const existingCustomers = await this.stripe.customers.list({
         email,
-        limit: 1,
+        limit: 10,
       })
 
-      if (existingCustomers.data.length > 0) {
-        customer = existingCustomers.data[0]
+      // Only reuse a customer if it belongs to the same userId
+      const matchingCustomer = existingCustomers.data.find(
+        (c) => c.metadata?.userId === userId,
+      )
+
+      if (matchingCustomer) {
+        customer = matchingCustomer
       } else {
         // Create new customer
         customer = await this.stripe.customers.create({
@@ -288,23 +293,85 @@ export class StripeAdapter implements PaymentAdapter {
 
         case 'invoice.payment_succeeded': {
           const invoice = stripeEvent.data.object as Stripe.Invoice
-          const subscriptionId = (invoice as any).subscription
+          const subscriptionId = typeof (invoice as any).subscription === 'string' ? (invoice as any).subscription : undefined
+          // Resolve userId: check subscription metadata first, then look up customer metadata
+          let invoiceUserId = ''
+          if (subscriptionId) {
+            try {
+              const sub = await this.stripe.subscriptions.retrieve(subscriptionId)
+              invoiceUserId = sub.metadata?.userId || ''
+            } catch {
+              // Subscription lookup failed, fall back to customer metadata
+            }
+          }
+          if (!invoiceUserId && typeof invoice.customer === 'string') {
+            try {
+              const cust = await this.stripe.customers.retrieve(invoice.customer)
+              if (cust && !cust.deleted) {
+                invoiceUserId = cust.metadata?.userId || ''
+              }
+            } catch {
+              // Customer lookup failed
+            }
+          }
           if (subscriptionId) {
             return {
               processed: true,
               payment: {
                 id: `stripe_${invoice.id}`,
                 providerPaymentId: invoice.id,
-                userId: (invoice as any).customer_metadata?.userId || '',
+                userId: invoiceUserId,
                 customerId:
                   typeof invoice.customer === 'string' ? `stripe_${invoice.customer}` : undefined,
-                subscriptionId:
-                  typeof subscriptionId === 'string' ? `stripe_${subscriptionId}` : undefined,
+                subscriptionId: `stripe_${subscriptionId}`,
                 type: 'subscription',
                 status: 'succeeded',
-                amount: invoice.amount_paid / 100, // Convert cents to dollars
+                amount: invoice.amount_paid / 100,
                 currency: invoice.currency,
                 description: `Payment for ${invoice.period_end ? new Date(invoice.period_end * 1000).toLocaleDateString() : 'subscription'}`,
+                provider: 'stripe',
+              },
+            }
+          }
+          break
+        }
+
+        case 'invoice.payment_failed': {
+          const failedInvoice = stripeEvent.data.object as Stripe.Invoice
+          const failedSubId = typeof (failedInvoice as any).subscription === 'string' ? (failedInvoice as any).subscription : undefined
+          if (failedSubId) {
+            // Update subscription status to past_due
+            return {
+              processed: true,
+              subscription: {
+                id: `stripe_${failedSubId}`,
+                providerSubscriptionId: failedSubId,
+                userId: '',
+                status: 'past_due',
+                plan: 'free',
+                provider: 'stripe',
+                interval: null,
+                amount: null,
+                currency: null,
+                currentPeriodStart: null,
+                currentPeriodEnd: null,
+                cancelAtPeriodEnd: false,
+                canceledAt: null,
+                trialStart: null,
+                trialEnd: null,
+              },
+              payment: {
+                id: `stripe_${failedInvoice.id}`,
+                providerPaymentId: failedInvoice.id,
+                userId: '',
+                customerId:
+                  typeof failedInvoice.customer === 'string' ? `stripe_${failedInvoice.customer}` : undefined,
+                subscriptionId: `stripe_${failedSubId}`,
+                type: 'subscription',
+                status: 'failed',
+                amount: failedInvoice.amount_due / 100,
+                currency: failedInvoice.currency,
+                description: 'Payment failed',
                 provider: 'stripe',
               },
             }
@@ -334,7 +401,8 @@ export class StripeAdapter implements PaymentAdapter {
 
   async validateWebhook(rawBody: string, signature: string): Promise<boolean> {
     if (!env.STRIPE_WEBHOOK_SECRET) {
-      throw new Error('STRIPE_WEBHOOK_SECRET is required for webhook validation')
+      console.error('STRIPE_WEBHOOK_SECRET is required for webhook validation')
+      return false
     }
 
     try {

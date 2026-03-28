@@ -31,31 +31,37 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   // Blog posts (blog is not under [locale], so no locale prefix)
-  const posts = getAllPosts()
-  const postPages: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
-    changeFrequency: 'monthly',
-    priority: 0.7,
-  }))
+  let postPages: MetadataRoute.Sitemap = []
+  let categoryPages: MetadataRoute.Sitemap = []
+  let tagPages: MetadataRoute.Sitemap = []
 
-  // Category pages
-  const categories = getAllCategories()
-  const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
-    url: `${baseUrl}/blog/category/${encodeURIComponent(category.toLowerCase())}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.5,
-  }))
+  try {
+    const posts = getAllPosts()
+    postPages = posts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    }))
 
-  // Tag pages
-  const tags = getAllTags()
-  const tagPages: MetadataRoute.Sitemap = tags.map((tag) => ({
-    url: `${baseUrl}/blog/tag/${encodeURIComponent(tag.toLowerCase())}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.5,
-  }))
+    const categories = getAllCategories()
+    categoryPages = categories.map((category) => ({
+      url: `${baseUrl}/blog/category/${encodeURIComponent(category.toLowerCase())}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    }))
+
+    const tags = getAllTags()
+    tagPages = tags.map((tag) => ({
+      url: `${baseUrl}/blog/tag/${encodeURIComponent(tag.toLowerCase())}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    }))
+  } catch (error) {
+    console.error('Error generating blog sitemap entries:', error)
+  }
 
   return [
     ...staticPages,

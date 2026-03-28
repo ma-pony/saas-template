@@ -16,7 +16,7 @@ export interface EmailAttachment {
 
 export interface UnsubscribeInfo {
   token: string
-  writerId: string
+  userId: string
   baseUrl?: string
 }
 

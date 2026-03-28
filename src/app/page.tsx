@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
+import { getBrandConfig } from '@/config/branding'
 import Navbar from './(site)/navbar'
 import Hero from './(site)/hero'
 import Features from './(site)/features'
@@ -10,10 +11,12 @@ import CTA from './(site)/cta'
 import Footer from './(site)/footer'
 import { GridLayout, SectionDivider } from './(site)/grid-layout'
 
+const brand = getBrandConfig()
+
 export const metadata: Metadata = generateSEOMetadata({
   // TODO: Replace with your product title and description
-  title: 'My SaaS App - Launch Your SaaS Fast',
-  description:
+  title: `${brand.name} - Launch Your SaaS Fast`,
+  description: brand.geo?.aiDescription ||
     'A production-ready Next.js SaaS boilerplate with auth, payments, and everything you need to launch fast.',
   canonical: '/',
 })

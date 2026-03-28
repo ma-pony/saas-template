@@ -68,7 +68,7 @@ export class JobRunner {
     let durationMs = 0
 
     try {
-      let timeoutHandle: ReturnType<typeof setTimeout>
+      let timeoutHandle: ReturnType<typeof setTimeout> | undefined
       await Promise.race([
         job.handler(context),
         new Promise<never>((_, reject) => {
@@ -77,7 +77,7 @@ export class JobRunner {
             timeoutMs
           )
         }),
-      ]).finally(() => clearTimeout(timeoutHandle!))
+      ]).finally(() => clearTimeout(timeoutHandle))
 
       durationMs = Date.now() - startMs
 
@@ -92,7 +92,6 @@ export class JobRunner {
 
       logger.info(`Completed successfully in ${durationMs}ms`)
 
-      this.runningJobs.delete(job.name)
       return { success: true, executionId, jobName: job.name, durationMs }
     } catch (err) {
       durationMs = Date.now() - startMs
@@ -107,16 +106,20 @@ export class JobRunner {
         metadata.stack = err.stack.slice(0, 3000)
       }
 
-      await db
-        .update(jobExecutionLogs)
-        .set({
-          status,
-          finishedAt: new Date(),
-          durationMs,
-          errorMessage: truncatedMessage,
-          metadata,
-        })
-        .where(eq(jobExecutionLogs.id, executionId))
+      try {
+        await db
+          .update(jobExecutionLogs)
+          .set({
+            status,
+            finishedAt: new Date(),
+            durationMs,
+            errorMessage: truncatedMessage,
+            metadata,
+          })
+          .where(eq(jobExecutionLogs.id, executionId))
+      } catch (dbError) {
+        logger.error('Failed to update job execution log', dbError)
+      }
 
       logger.error(`Job ${status}: ${truncatedMessage}`, err)
 
@@ -133,7 +136,6 @@ export class JobRunner {
         }
       }
 
-      this.runningJobs.delete(job.name)
       return {
         success: false,
         executionId,
@@ -141,6 +143,8 @@ export class JobRunner {
         durationMs,
         error: truncatedMessage,
       }
+    } finally {
+      this.runningJobs.delete(job.name)
     }
   }
 }

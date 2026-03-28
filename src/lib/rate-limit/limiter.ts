@@ -6,7 +6,10 @@ interface WindowEntry {
   resetAt: number
 }
 
-// Global in-memory store (process-level)
+// Global in-memory store (process-level).
+// WARNING: This store is per-process. In serverless/multi-instance deployments (e.g. Vercel),
+// each instance has its own store — rate limiting is approximate, not globally enforced.
+// For strict rate limiting in production, replace with Redis/Upstash.
 const store = new Map<string, WindowEntry>()
 
 // Periodically clean up expired entries to prevent memory leaks
@@ -23,7 +26,8 @@ const DEFAULT_CONFIG: Required<RateLimitConfig> = {
   windowMs: 60_000,
   max: 60,
   keyGenerator: (req) => {
-    // Prefer platform-specific headers that cannot be spoofed by clients
+    // Platform-set headers (x-vercel-forwarded-for, cf-connecting-ip) are trustworthy.
+    // x-real-ip and x-forwarded-for are only reliable behind a trusted reverse proxy.
     const realIp =
       req.headers.get('x-real-ip') ||
       req.headers.get('x-vercel-forwarded-for') ||

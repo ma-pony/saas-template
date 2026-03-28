@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation'
 
 import { QueryProvider } from '@/app/_providers/query-provider'
 import { ToastProvider } from '@/components/ui/toast'
-import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 import { SUPPORTED_LOCALES, type SupportedLocale } from '@/lib/i18n/config'
 import { CookieConsentBanner } from '@/components/consent/cookie-consent-banner'
 import { AnalyticsScript } from '@/components/analytics/analytics-script'
@@ -20,12 +19,6 @@ export async function generateMetadata({
   const alternateLocales = SUPPORTED_LOCALES.filter((l) => l !== locale)
 
   return {
-    ...generateSEOMetadata({
-      title: 'My SaaS App - Turn Ideas Into Products, Fast',
-      description:
-        'Ship your startup in days, not weeks. A production-ready Next.js boilerplate with auth, payments, and everything you need to launch fast. Free forever, open source.',
-      isRootLayout: true,
-    }),
     alternates: {
       languages: Object.fromEntries(
         alternateLocales.map((l) => [l, `/${l}`]),

@@ -6,10 +6,8 @@ import localFont from 'next/font/local'
 
 import '@/app/_styles/globals.css'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
-import { DEFAULT_LOCALE } from '@/lib/i18n/config'
-
-const geistSans = GeistSans
-const geistMono = GeistMono
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/lib/i18n/config'
+import { getBrandConfig } from '@/config/branding'
 
 const bricolageGrotesque = localFont({
   src: '../../public/fonts/BricolageGrotesque-Variable.woff2',
@@ -17,11 +15,13 @@ const bricolageGrotesque = localFont({
   weight: '200 800',
 })
 
+const brand = getBrandConfig()
+
 export const metadata: Metadata = {
   ...generateSEOMetadata({
     // TODO: Replace with your product title and description
-    title: 'My SaaS App - Launch Your SaaS Fast',
-    description:
+    title: `${brand.name} - Launch Your SaaS Fast`,
+    description: brand.geo?.aiDescription ||
       'A production-ready Next.js boilerplate with auth, payments, and everything you need to launch your SaaS fast.',
     isRootLayout: true,
   }),
@@ -30,17 +30,19 @@ export const metadata: Metadata = {
     shortcut: '/image.png',
     apple: '/image.png',
   },
-  themeColor: '#701ffc',
+  themeColor: brand.theme?.primaryColor || '#701ffc',
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()
-  const locale = cookieStore.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE
+  const rawLocale = cookieStore.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE
+  // Validate locale from cookie to prevent injection
+  const locale = (SUPPORTED_LOCALES as readonly string[]).includes(rawLocale) ? rawLocale : DEFAULT_LOCALE
 
   return (
     <html lang={locale}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${bricolageGrotesque.variable} font-sans antialiased`}
+        className={`${GeistSans.variable} ${GeistMono.variable} ${bricolageGrotesque.variable} font-sans antialiased`}
       >
         {children}
       </body>

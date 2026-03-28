@@ -95,8 +95,6 @@ export const getBrandConfig = (): BrandConfig => {
 }
 
 /**
- * Hook to use brand configuration in React components
+ * @deprecated Use getBrandConfig() directly — this is not a real React hook.
  */
-export const useBrandConfig = () => {
-  return getBrandConfig()
-}
+export const useBrandConfig = getBrandConfig

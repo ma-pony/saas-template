@@ -124,8 +124,11 @@ export default function LoginPage({
   }, [searchParams])
 
   useEffect(() => {
+    if (!forgotPasswordOpen) return
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Enter' && forgotPasswordOpen) {
+      if (event.key === 'Enter') {
+        event.preventDefault()
         handleForgotPassword()
       }
     }
@@ -134,6 +137,7 @@ export default function LoginPage({
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forgotPasswordEmail, forgotPasswordOpen])
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,6 +194,10 @@ export default function LoginPage({
             const errorMessage: string[] = [t('common.error.invalidCredentials')]
 
             if (ctx.error.code?.includes('EMAIL_NOT_VERIFIED')) {
+              if (typeof window !== 'undefined') {
+                sessionStorage.setItem('verificationEmail', emailVal)
+              }
+              router.push('/verify')
               return
             }
             if (
@@ -323,7 +331,7 @@ export default function LoginPage({
     }
   }
 
-  const hasSocial = githubAvailable || googleAvailable
+  const hasSocial = githubAvailable || googleAvailable || facebookAvailable || microsoftAvailable
   const showDivider = hasSocial
 
   return (

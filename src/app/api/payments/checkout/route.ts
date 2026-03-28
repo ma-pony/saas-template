@@ -6,22 +6,11 @@ import { auth } from '@/lib/auth'
 import { getPaymentAdapter } from '@/lib/payments/service'
 import { getAvailablePlans } from '@/config/payments'
 import { createRateLimiter } from '@/lib/rate-limit'
-import { env } from '@/config/env'
 import { isBillingEnabled } from '@/config/feature-flags'
+import { isSameOriginUrl } from '@/lib/url'
 
 // Rate limit: 10 checkout requests per minute per IP
 const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 10 })
-
-/** Validate that a URL belongs to the same origin as the app */
-function isSameOriginUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url)
-    const appUrl = new URL(env.NEXT_PUBLIC_APP_URL)
-    return parsed.origin === appUrl.origin
-  } catch {
-    return false
-  }
-}
 
 const checkoutSchema = z.object({
   plan: z.enum(getAvailablePlans() as [string, ...string[]]),
@@ -78,7 +67,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('Checkout error:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal Server Error' },
+      { error: 'Failed to create checkout session' },
       { status: 500 }
     )
   }

@@ -34,14 +34,13 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
   public readonly provider: PaymentProvider = 'lemonsqueezy'
 
   constructor() {
-    // We access env vars directly here as they might be set at runtime
-    // Note: configure this in your entry point if possible, but safe here too
-    if (process.env.LEMONSQUEEZY_API_KEY) {
-      lemonSqueezySetup({
-        apiKey: process.env.LEMONSQUEEZY_API_KEY,
-        onError: (error: any) => console.error('Lemon Squeezy API Error:', error),
-      })
+    if (!process.env.LEMONSQUEEZY_API_KEY) {
+      throw new Error('LEMONSQUEEZY_API_KEY is required for LemonSqueezy adapter')
     }
+    lemonSqueezySetup({
+      apiKey: process.env.LEMONSQUEEZY_API_KEY,
+      onError: (error: any) => console.error('Lemon Squeezy API Error:', error),
+    })
   }
 
   async createCheckout(options: CheckoutOptions): Promise<CheckoutResult> {
@@ -162,8 +161,8 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
       interval: attrs.variant_name.toLowerCase().includes('year') ? 'year' : 'month', // Heuristic
       amount: null, // Needs variant lookup
       currency: null,
-      currentPeriodStart: new Date(attrs.renews_at), // Approximation
-      currentPeriodEnd: new Date(attrs.renews_at),
+      currentPeriodStart: new Date(attrs.updated_at || attrs.created_at),
+      currentPeriodEnd: attrs.renews_at ? new Date(attrs.renews_at) : null,
       cancelAtPeriodEnd: attrs.cancelled,
       canceledAt: attrs.ends_at ? new Date(attrs.ends_at) : null,
       trialStart: attrs.trial_ends_at ? new Date() : null, // Not directly available
@@ -175,8 +174,12 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
     providerSubscriptionId: string,
     cancelAtPeriodEnd = true
   ): Promise<void> {
-    // Lemon Squeezy only supports cancelling at period end via API easily
-    // Immediate cancellation might require different handling
+    // Note: LemonSqueezy API always cancels at period end.
+    // If cancelAtPeriodEnd=false is requested, we still cancel via the API
+    // but the subscription will remain active until the current period ends.
+    if (!cancelAtPeriodEnd) {
+      console.warn('LemonSqueezy does not support immediate cancellation — cancelling at period end instead')
+    }
     const { error } = await cancelSubscription(providerSubscriptionId)
     if (error) {
       throw new Error(`Failed to cancel subscription: ${error.message}`)
@@ -187,14 +190,26 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
     // Lemon Squeezy uses a magic link for customer portal
     // This is typically available on the subscription object or customer object
     // For now, we'll return a generic URL or throw if not available
-    const { data } = await listCustomers({
-      filter: { storeId: env.LEMONSQUEEZY_STORE_ID },
-    })
+    // Paginate through all customers to find the matching one
+    let matchedCustomer: any = null
+    let page = 1
+    const perPage = 50
 
-    // Find customer by provider customer ID (not email)
-    const matchedCustomer = data?.data.find(
-      (c) => c.id === customerId || c.attributes.email === customerId,
-    )
+    while (!matchedCustomer) {
+      const { data } = await listCustomers({
+        filter: { storeId: env.LEMONSQUEEZY_STORE_ID },
+        page: { number: page, size: perPage },
+      })
+
+      if (!data?.data?.length) break
+
+      matchedCustomer = data.data.find(
+        (c) => c.id === customerId || c.attributes.email === customerId,
+      )
+
+      if (data.data.length < perPage) break
+      page++
+    }
 
     const url = matchedCustomer?.attributes.urls?.customer_portal
     if (!url) {

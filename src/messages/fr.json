@@ -38,7 +38,8 @@
       "rateLimitExceeded": "Trop de requêtes. Veuillez attendre un moment avant de réessayer.",
       "socialSignInFailed": "Échec de la connexion avec {provider}",
       "accountExists": "Un compte existe déjà avec cet email. Veuillez vous connecter.",
-      "signInCancelled": "Connexion {provider} annulée. Veuillez réessayer."
+      "signInCancelled": "Connexion {provider} annulée. Veuillez réessayer.",
+      "registrationFailed": "Échec de l'inscription. Veuillez réessayer."
     },
     "label": {
       "email": "Email",

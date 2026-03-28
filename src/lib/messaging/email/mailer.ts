@@ -100,7 +100,7 @@ async function processEmailData(options: EmailOptions): Promise<ProcessedEmailDa
   // Add unsubscribe headers for marketing emails
   if (includeUnsubscribe && emailType !== 'transactional' && unsubscribeInfo) {
     const baseUrl = unsubscribeInfo.baseUrl
-    const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${unsubscribeInfo.token}&writer=${unsubscribeInfo.writerId}`
+    const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${unsubscribeInfo.token}&userId=${unsubscribeInfo.userId}`
 
     headers = {
       'List-Unsubscribe': `<${unsubscribeUrl}>`,

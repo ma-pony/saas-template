@@ -258,9 +258,9 @@ export function getPlanConfig(planName: PlanName) {
 }
 
 /** Get price configuration for a specific plan and provider */
-export function getPriceConfig(planName: PlanName, provider: PaymentProvider) {
+export function getPriceConfig(planName: PlanName, provider: PaymentProvider): readonly PriceConfig[] {
   const plan = paymentConfig.plans[planName]
-  return (plan.prices as any)[provider] || []
+  return (plan.prices as Record<string, readonly PriceConfig[]>)[provider] || []
 }
 
 /** Check if a plan is free */
