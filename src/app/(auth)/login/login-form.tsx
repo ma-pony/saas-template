@@ -239,16 +239,11 @@ export default function LoginPage({
         setIsLoading(false)
         return
       }
-    } catch (err: unknown) {
-      const errObj = err as { message?: string; code?: string }
-      if (errObj.message?.includes('not verified') || errObj.code?.includes('EMAIL_NOT_VERIFIED')) {
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('verificationEmail', emailVal)
-        }
-        router.push('/verify')
-        return
-      }
 
+      // Login successful — hard navigate to pick up new session cookie
+      window.location.href = safeCallbackUrl
+      return
+    } catch (err: unknown) {
       setFormError(t('common.error.networkError'))
     } finally {
       setIsLoading(false)

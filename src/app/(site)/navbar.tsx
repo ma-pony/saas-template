@@ -1,15 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { X, Menu } from 'lucide-react'
+import { X, Menu, LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { getGitHubStars } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useSession, signOut } from '@/lib/auth/auth-client'
 
 export default function Navbar() {
   const t = useTranslations('site.navbar')
+  const tc = useTranslations('common.button')
+  const { data: session } = useSession()
   const [stars, setStars] = useState<number | null>(null)
   const [isLoadingStars, setIsLoadingStars] = useState(true)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -107,6 +110,32 @@ export default function Navbar() {
                 )
               )}
             </a>
+            {session?.user ? (
+              <div className='hidden items-center gap-3 md:flex'>
+                <Link
+                  href='/dashboard'
+                  className='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90'
+                >
+                  Dashboard
+                </Link>
+                <button
+                  type='button'
+                  onClick={() => signOut({ fetchOptions: { onSuccess: () => { window.location.href = '/' } } })}
+                  className='text-muted-foreground transition-colors hover:text-foreground'
+                  aria-label='Sign out'
+                >
+                  <LogOut className='h-4 w-4' />
+                </button>
+              </div>
+            ) : (
+              <Link
+                href='/login'
+                className='hidden rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 md:inline-flex'
+              >
+                {tc('signIn')}
+              </Link>
+            )}
+
             <button
               type='button'
               onClick={toggleMenu}
@@ -149,6 +178,26 @@ export default function Navbar() {
                 </svg>
                 GitHub
               </a>
+              <div className='border-t border-border mx-3 my-1' />
+              {session?.user ? (
+                <>
+                  <Link href='/dashboard' className='block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
+                    Dashboard
+                  </Link>
+                  <button
+                    type='button'
+                    onClick={() => { toggleMenu(); signOut({ fetchOptions: { onSuccess: () => { window.location.href = '/' } } }) }}
+                    className='flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground'
+                  >
+                    <LogOut className='h-4 w-4' />
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <Link href='/login' className='block rounded-md px-3 py-2 text-sm font-medium text-primary transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
+                  {tc('signIn')}
+                </Link>
+              )}
             </div>
           </div>
         )}
