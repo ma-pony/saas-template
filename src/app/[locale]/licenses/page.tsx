@@ -7,9 +7,10 @@ import { getBaseUrl } from '@/lib/utils'
 import Navbar from '@/app/(site)/navbar'
 import Footer from '@/app/(site)/footer'
 import { GridLayout } from '@/app/(site)/grid-layout'
+import type { LocaleParams } from '@/lib/i18n/config'
 
 interface PageProps {
-  params: Promise<{ locale: string }>
+  params: Promise<LocaleParams>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

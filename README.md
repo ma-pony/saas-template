@@ -51,6 +51,8 @@ A production-ready Next.js SaaS template built with modern web technologies. Clo
 - [Rate Limiting](#rate-limiting)
 - [Cookie Consent (GDPR)](#cookie-consent-gdpr)
 - [GEO Components](#geo-components)
+- [Logging](#logging)
+- [Error Handling](#error-handling)
 - [Monitoring (Sentry)](#monitoring-sentry)
 - [Deployment](#deployment)
   - [Vercel](#vercel)
@@ -74,6 +76,8 @@ A production-ready Next.js SaaS template built with modern web technologies. Clo
 - **Blog** — MDX-based blog with categories, tags, RSS, and syntax highlighting
 - **Storage** — Cloudflare R2 integration for file uploads and signed URLs
 - **Rate Limiting** — In-memory sliding window limiter with IP detection
+- **Structured Logging** — Unified 4-level logger with module scoping and `LOG_LEVEL` filtering
+- **Error Handling** — `AppError` hierarchy, API route wrappers, Sentry integration, auth guards
 - **Cookie Consent** — GDPR-compliant banner for EU users with granular consent categories
 - **Docker** — Multi-stage production Dockerfile included
 
@@ -90,6 +94,8 @@ A production-ready Next.js SaaS template built with modern web technologies. Clo
 | Styling | TailwindCSS 4 + Radix UI primitives |
 | i18n | next-intl (en, es, fr, zh) |
 | Validation | Zod + @t3-oss/env-nextjs |
+| Logging | Unified structured logger (4-level, scoped) |
+| Error Handling | AppError hierarchy + Sentry |
 | Linting | Biome |
 | Monitoring | Sentry |
 
@@ -180,6 +186,8 @@ src/
 │   ├── jobs/                  # Background job framework
 │   ├── i18n/                  # Locale detection, currency, hreflang
 │   ├── rate-limit/            # Rate limiter
+│   ├── logger/                # Structured logging (4-level, scoped)
+│   ├── errors/                # Unified error handling + Sentry
 │   ├── storage.ts             # Cloudflare R2 client
 │   ├── seo.ts                 # SEO metadata + JSON-LD generators
 │   └── consent/               # Cookie consent store (Zustand)
@@ -673,7 +681,7 @@ registry.register(myJob)
 
 **Provider auto-detection:** Uses `vercel` adapter when `VERCEL` env var is present, otherwise `node-cron`.
 
-Jobs include: in-memory lock (prevents concurrent runs), execution logging to database, timeout enforcement, error reporting to Sentry.
+Jobs include: in-memory lock (prevents concurrent runs), execution logging to database, timeout enforcement, automatic retries with exponential backoff (`retries`, `retryDelayMs`), error reporting to Sentry.
 
 ### Job Pipeline
 
@@ -821,6 +829,68 @@ SEO-optimized components for AI engine optimization, in `src/components/geo/`:
 - **`FAQSchema`** — FAQ structured data component
 
 These generate rich snippets and improve search visibility for landing pages.
+
+---
+
+## Logging
+
+Unified structured logging system in `src/lib/logger/`. All application code uses this logger — no direct `console.*` calls.
+
+```ts
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'payments' })
+
+log.info('Checkout created', { userId, plan })
+log.error('Payment failed', { error: err.message, provider: 'stripe' })
+log.debug('Webhook payload', { event })
+
+// Child logger for further scoping
+const scoped = log.child({ job: 'cleanup', executionId: '123' })
+scoped.info('Starting cleanup')
+```
+
+**Log levels:** `debug` | `info` | `warn` | `error`
+
+**Output format:** `[LEVEL] [module:payments] Checkout created userId=abc plan=pro`
+
+**Filtering:** Set `LOG_LEVEL` env var to control minimum level (default: all levels in dev, `info` recommended for production).
+
+> Note: `LOG_LEVEL` reads `process.env` directly (not via t3-env) to support runtime re-evaluation without server restart.
+
+---
+
+## Error Handling
+
+Unified error system in `src/lib/errors/`.
+
+```ts
+import { NotFoundError, UnauthorizedError } from '@/lib/errors'
+import { withApiErrors } from '@/lib/errors'
+import { requireSession } from '@/lib/errors'
+import { captureError } from '@/lib/errors'
+
+// Throw typed errors
+throw new NotFoundError('User not found')
+throw new UnauthorizedError('Invalid credentials')
+
+// Wrap API routes with automatic error handling
+export const POST = withApiErrors(async (req) => {
+  const session = await requireSession()  // Throws 401 if not authenticated
+  // ... handle request
+})
+
+// Report errors to Sentry
+captureError(error, { context: 'payment-webhook' })
+```
+
+**`AppError` hierarchy:** Base class with error code, HTTP status, and operational flag. Subclasses: `BadRequestError` (400), `UnauthorizedError` (401), `ForbiddenError` (403), `NotFoundError` (404), `BillingDisabledError` (422), `PaymentProviderError` (502).
+
+**`withApiErrors(handler)`:** Wraps API route handlers to catch errors, log them, and return consistent JSON error responses.
+
+**Auth guards:**
+- `requireSession()` — returns session or throws 401
+- `requireAdmin()` — returns session or throws 403 if not admin
 
 ---
 

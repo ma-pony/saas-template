@@ -9,7 +9,7 @@ A generic Next.js SaaS boilerplate/template using Bun runtime, PostgreSQL, Drizz
 ## Commands
 
 - `bun dev` — start dev server
-- `bun build` — production build (note: `typescript.ignoreBuildErrors: true` in next.config)
+- `bun build` — production build
 - `bun lint` — run Biome linter
 - `bun format` — format with Biome
 - `bun run typecheck` — run `tsc --noEmit`
@@ -61,9 +61,17 @@ PostgreSQL via `postgres-js` driver + Drizzle ORM. Schema in `schema.ts` uses te
 
 Adapter pattern supporting Plausible, Umami, and Google Analytics. Provider selected via `NEXT_PUBLIC_ANALYTICS_PROVIDER` env var. Client-side hooks in `hooks.ts`, script injection via `AnalyticsScript` component in root layout. Consent-aware — respects cookie consent before loading.
 
+### Structured Logging (`src/lib/logger/`)
+
+Unified 4-level logger (debug/info/warn/error) wrapping `console.*`. Level filtering via `LOG_LEVEL` env var (reads `process.env` directly, not t3-env, to avoid module caching). Scoped child loggers via `createLogger({ module: 'auth' })` and `logger.child({ job, executionId })`. Output format: `[LEVEL] [module:x] message key=value`. All application code uses this logger — no direct `console.*` calls outside `logger.ts`.
+
+### Error Handling (`src/lib/errors/`)
+
+Unified error system: `AppError` class hierarchy (`app-error.ts`), `withApiErrors()` route wrapper, `apiError()` response helper, `captureError()`/`captureErrorSync()` for Sentry reporting, `requireSession()`/`requireAdmin()` auth guards.
+
 ### Background Jobs (`src/lib/jobs/`)
 
-Cron job framework with two providers: `node-cron` (local) and `vercel-cron` (production). Jobs defined in `src/app/api/jobs/`. Execution logs stored in `job_execution_logs` table. Config: `CRON_PROVIDER`, `CRON_SECRET`, `JOB_LOG_RETENTION_DAYS`.
+Cron job framework with two providers: `node-cron` (local) and `vercel-cron` (production). Jobs defined in `src/app/api/jobs/`. Execution logs stored in `job_execution_logs` table. Supports automatic retries with exponential backoff (`retries`, `retryDelayMs` in job config). Config: `CRON_PROVIDER`, `CRON_SECRET`, `JOB_LOG_RETENTION_DAYS`.
 
 ### SEO & GEO (`src/lib/seo.ts`, `src/components/geo/`)
 

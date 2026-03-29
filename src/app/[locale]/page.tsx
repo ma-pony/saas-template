@@ -12,9 +12,10 @@ import type { Metadata } from 'next'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { getBaseUrl } from '@/lib/utils'
+import type { LocaleParams } from '@/lib/i18n/config'
 
 interface PageProps {
-  params: Promise<{ locale: string }>
+  params: Promise<LocaleParams>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

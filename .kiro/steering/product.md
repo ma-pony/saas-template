@@ -14,6 +14,8 @@
 - **Analytics**：适配器模式支持 Plausible / Umami / Google Analytics
 - **后台任务**：定时任务框架，支持 node-cron 和 Vercel Cron
 - **Admin 后台**：基础管理面板，用户管理和数据概览
+- **结构化日志**：统一 4 级日志系统，带模块作用域，`LOG_LEVEL` 环境变量控制过滤
+- **统一错误处理**：AppError 层级、API 路由错误包装、Sentry 上报集成、认证守卫
 - **完整基础设施**：PostgreSQL + Drizzle ORM、Cloudflare R2 存储、Sentry 监控、Vercel 部署配置
 
 ## 目标场景

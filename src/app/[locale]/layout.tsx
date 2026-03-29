@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 
 import { QueryProvider } from '@/app/_providers/query-provider'
 import { ToastProvider } from '@/components/ui/toast'
-import { SUPPORTED_LOCALES, type SupportedLocale } from '@/lib/i18n/config'
+import { SUPPORTED_LOCALES, type SupportedLocale, type LocaleParams } from '@/lib/i18n/config'
 import { CookieConsentBanner } from '@/components/consent/cookie-consent-banner'
 import { AnalyticsScript } from '@/components/analytics/analytics-script'
 import { AnalyticsProvider } from '@/components/analytics/analytics-provider'
@@ -13,7 +13,7 @@ import { AnalyticsProvider } from '@/components/analytics/analytics-provider'
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>
+  params: Promise<LocaleParams>
 }): Promise<Metadata> {
   const { locale } = await params
   const alternateLocales = SUPPORTED_LOCALES.filter((l) => l !== locale)
@@ -29,7 +29,7 @@ export async function generateMetadata({
 
 interface LocaleLayoutProps {
   children: React.ReactNode
-  params: Promise<{ locale: string }>
+  params: Promise<LocaleParams>
 }
 
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
@@ -40,10 +40,10 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     notFound()
   }
 
-  const messages = await getMessages()
+  const messages = await getMessages({ locale })
 
   return (
-    <NextIntlClientProvider messages={messages}>
+    <NextIntlClientProvider locale={locale} messages={messages}>
       <QueryProvider>
         <AnalyticsProvider>
           <AnalyticsScript />

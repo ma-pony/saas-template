@@ -24,6 +24,8 @@
 - `auth/`：Better-Auth 配置，`auth.ts`（服务端）和 `auth-client.ts`（客户端，计费操作用独立 client）
 - `payments/`：适配器模式，`types.ts`（接口）、`service.ts`（单例工厂）、`hooks.ts`（TanStack Query hooks）
 - `messaging/email/`：同样的适配器模式，含自动发现逻辑
+- `logger/`：统一结构化日志，`createLogger()` 工厂 + `child()` 作用域链
+- `errors/`：统一错误处理，`AppError` 层级、`withApiErrors()` 路由包装、`captureError()` Sentry 上报、认证守卫
 - `utils/`：通用工具函数，`css.ts` 导出 `cn()`
 
 ### UI 组件（`src/components/`）
@@ -67,7 +69,8 @@ import { stripeAdapter } from './stripe'
 
 - **服务端优先**：默认 Server Component，只在必要时 `'use client'`
 - **适配器隔离**：外部服务（支付/邮件）通过接口抽象，实现可替换
-- **环境变量集中**：所有环境变量必须在 `src/config/env.ts` 注册，不直接读 `process.env`
+- **环境变量集中**：所有环境变量必须在 `src/config/env.ts` 注册，不直接读 `process.env`（例外：`LOG_LEVEL` 直接读 `process.env` 以避免模块缓存）
+- **日志统一**：所有业务代码使用 `createLogger()` from `@/lib/logger`，不直接调用 `console.*`
 - **级联删除**：数据库外键从用户级联，Schema 变更后必须生成并运行迁移
 - **翻译覆盖**：新增用户可见文本必须同步添加到所有语言的翻译文件
 

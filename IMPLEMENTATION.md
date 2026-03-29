@@ -50,7 +50,7 @@
 | Landing Page 转化优化 | ✅ 强项 | ✅ | ✅ | ✅ 有但一般 | 可优化 |
 | 多租户/团队 | ❌ | ✅ | ❌ | ❌ | 暂不需要 |
 | AI 集成模板 | ✅ | ❌ | ✅ OpenAI 示例 | ❌ | 按项目需要 |
-| Logging | ❌ | ✅ Pino.js + Better Stack | ❌ | ❌ | 可选 |
+| Logging | ❌ | ✅ Pino.js + Better Stack | ❌ | ✅ 统一结构化日志 | 可选 |
 | GEO（AI 引擎优化） | ❌ | ❌ | ❌ | ❌ | **必补（差异化）** |
 
 **核心结论**：ShipFree 最大短板集中在 **SEO/GEO 全家桶**和**后台任务**，恰好是 listing-predictor 的核心需求。所有竞品都没有 GEO 支持——这是差异化机会。

@@ -3,10 +3,11 @@ import { getOAuthProviderStatus } from '@/app/(auth)/components/oauth-provider-c
 import RegisterForm from '@/app/(auth)/register/register-form'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 import { getBrandConfig } from '@/config/branding'
+import type { LocaleParams } from '@/lib/i18n/config'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<LocaleParams> }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'auth.register' })
   const brand = getBrandConfig()
