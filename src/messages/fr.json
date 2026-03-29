@@ -39,7 +39,8 @@
       "socialSignInFailed": "Échec de la connexion avec {provider}",
       "accountExists": "Un compte existe déjà avec cet email. Veuillez vous connecter.",
       "signInCancelled": "Connexion {provider} annulée. Veuillez réessayer.",
-      "registrationFailed": "Échec de l'inscription. Veuillez réessayer."
+      "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+      "userAlreadyExists": "Un compte avec cet e-mail existe déjà."
     },
     "label": {
       "email": "Email",
@@ -54,6 +55,11 @@
       "email": "Entrez votre email",
       "password": "Entrez votre mot de passe",
       "name": "Entrez votre nom"
+    },
+    "pageError": {
+      "title": "Une erreur est survenue",
+      "description": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+      "retry": "Réessayer"
     }
   },
   "site": {

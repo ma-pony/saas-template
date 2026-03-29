@@ -7,6 +7,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { SubscriptionData, CheckoutResult, PortalResult } from './types'
 import type { PlanName } from '@/config/payments'
+import type { ApiErrorBody } from '@/lib/errors'
+
+async function throwIfError(res: Response): Promise<void> {
+  if (res.ok) return
+  const body: ApiErrorBody | null = await res.json().catch(() => null)
+  throw new Error(body?.message || `Request failed (${res.status})`)
+}
 
 export function useSubscription() {
   const {
@@ -18,7 +25,7 @@ export function useSubscription() {
     queryKey: ['subscription'],
     queryFn: async () => {
       const res = await fetch('/api/payments/subscription')
-      if (!res.ok) throw new Error('Failed to fetch subscription')
+      await throwIfError(res)
       const data = await res.json()
       return data.subscription as SubscriptionData | null
     },
@@ -43,10 +50,7 @@ export function useCheckout() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(options),
       })
-      if (!res.ok) {
-        const errorData = await res.json()
-        throw new Error(errorData.error || 'Failed to initiate checkout')
-      }
+      await throwIfError(res)
       const data: CheckoutResult = await res.json()
       return data
     },
@@ -75,10 +79,7 @@ export function usePortal() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ returnUrl }),
       })
-      if (!res.ok) {
-        const errorData = await res.json()
-        throw new Error(errorData.error || 'Failed to open portal')
-      }
+      await throwIfError(res)
       const data: PortalResult = await res.json()
       return data
     },

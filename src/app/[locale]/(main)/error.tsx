@@ -10,17 +10,17 @@ interface ErrorProps {
   reset: () => void
 }
 
-export default function AdminUsersError({ error, reset }: ErrorProps) {
-  const t = useTranslations('admin.error')
+export default function MainError({ error, reset }: ErrorProps) {
+  const t = useTranslations('common.pageError')
 
   useEffect(() => {
     captureErrorSync(error)
   }, [error])
 
   return (
-    <div className='flex flex-col items-center justify-center gap-4 py-20 text-center'>
-      <h2 className='text-xl font-semibold'>{t('usersLoadFailed')}</h2>
-      <p className='text-muted-foreground text-sm'>{t('usersLoadFailedDesc')}</p>
+    <div className='flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center'>
+      <h2 className='text-xl font-semibold'>{t('title')}</h2>
+      <p className='text-muted-foreground text-sm'>{t('description')}</p>
       <Button onClick={reset}>{t('retry')}</Button>
     </div>
   )

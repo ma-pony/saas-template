@@ -39,7 +39,8 @@
       "socialSignInFailed": "Error al iniciar sesión con {provider}",
       "accountExists": "Ya existe una cuenta con este correo. Por favor inicia sesión.",
       "signInCancelled": "Inicio de sesión con {provider} cancelado. Por favor intenta de nuevo.",
-      "registrationFailed": "Error en el registro. Por favor intenta de nuevo."
+      "registrationFailed": "Error en el registro. Por favor intenta de nuevo.",
+      "userAlreadyExists": "Ya existe una cuenta con este correo electrónico."
     },
     "label": {
       "email": "Correo electrónico",
@@ -54,6 +55,11 @@
       "email": "Ingresa tu correo",
       "password": "Ingresa tu contraseña",
       "name": "Ingresa tu nombre"
+    },
+    "pageError": {
+      "title": "Algo salió mal",
+      "description": "Se produjo un error inesperado. Inténtalo de nuevo.",
+      "retry": "Reintentar"
     }
   },
   "site": {

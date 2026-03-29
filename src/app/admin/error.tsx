@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
+import { captureErrorSync } from '@/lib/errors'
 
 interface ErrorProps {
   error: Error & { digest?: string }
@@ -13,7 +14,7 @@ export default function AdminError({ error, reset }: ErrorProps) {
   const t = useTranslations('admin.error')
 
   useEffect(() => {
-    console.error('[AdminError]', error)
+    captureErrorSync(error)
   }, [error])
 
   return (

@@ -13,7 +13,7 @@ import {
   renderPasswordResetEmail,
   renderWelcomeEmail,
 } from '@/components/emails'
-import { getFromEmailAddress, quickValidateEmail, sendEmail } from '@/lib/messaging/email'
+import { getFromEmailAddress, quickValidateEmail, sendEmail, hasEmailService } from '@/lib/messaging/email'
 import { isEmailVerificationEnabled } from '@/config/feature-flags'
 
 export const auth = betterAuth({
@@ -166,8 +166,8 @@ export const auth = betterAuth({
             emailType: 'transactional',
           })
 
-          if (!result.success && result.message.includes('no email service configured')) {
-            // Only log OTP in non-production when no email service is configured
+          if (!hasEmailService()) {
+            // No real email provider — print OTP to console in dev, warn in production
             if (process.env.NODE_ENV !== 'production') {
               console.info('🔑 [DEV] VERIFICATION CODE', {
                 email: data.email,
@@ -194,7 +194,7 @@ export const auth = betterAuth({
           throw error
         }
       },
-      sendVerificationOnSignUp: false,
+      sendVerificationOnSignUp: isEmailVerificationEnabled,
       otpLength: 6, // Explicitly set the OTP length
       expiresIn: 15 * 60, // 15 minutes in seconds
     }),

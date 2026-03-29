@@ -11,6 +11,7 @@ import { generateHreflangMetadata } from '@/lib/i18n/hreflang'
 import type { Metadata } from 'next'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
+import { getBaseUrl } from '@/lib/utils'
 
 interface PageProps {
   params: Promise<{ locale: string }>
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }),
     alternates: {
       ...hreflang,
-      canonical: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${locale}`,
+      canonical: `${getBaseUrl()}/${locale}`,
     },
   }
 }

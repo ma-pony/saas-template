@@ -10,6 +10,13 @@ import { customer } from '@/database/schema'
 import { isBillingEnabled } from '@/config/feature-flags'
 import { isSameOriginUrl } from '@/lib/url'
 import { createRateLimiter } from '@/lib/rate-limit'
+import {
+  withApiErrors,
+  BillingDisabledError,
+  UnauthorizedError,
+  BadRequestError,
+  NotFoundError,
+} from '@/lib/errors'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,60 +28,33 @@ const portalSchema = z.object({
   }),
 })
 
-export async function POST(req: Request) {
-  if (!isBillingEnabled) {
-    return NextResponse.json({ error: 'Billing is not enabled' }, { status: 404 })
-  }
+export const POST = withApiErrors(async (req: Request) => {
+  if (!isBillingEnabled) throw new BillingDisabledError()
 
-  try {
-    const rateLimitResult = await rateLimiter(req)
-    if (rateLimitResult instanceof NextResponse) return rateLimitResult
+  const limitResult = await rateLimiter(req)
+  if (limitResult instanceof NextResponse) return limitResult
 
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session) throw new UnauthorizedError()
 
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  const body = await req.json().catch(() => ({}))
+  const result = portalSchema.safeParse(body)
+  if (!result.success) throw new BadRequestError('Invalid request body')
 
-    const body = await req.json().catch(() => ({}))
-    const result = portalSchema.safeParse(body)
+  const { returnUrl } = result.data
+  const adapter = getPaymentAdapter()
 
-    if (!result.success) {
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
-    }
+  const userCustomer = await db.query.customer.findFirst({
+    where: eq(customer.userId, session.user.id),
+  })
+  if (!userCustomer) throw new NotFoundError('No customer found')
 
-    const { returnUrl } = result.data
-    const adapter = getPaymentAdapter()
-
-    // Find customer for this user
-    const userCustomer = await db.query.customer.findFirst({
-      where: eq(customer.userId, session.user.id),
-    })
-
-    if (!userCustomer) {
-      return NextResponse.json({ error: 'No customer found' }, { status: 404 })
-    }
-
-    // Ensure customer matches active provider
-    if (userCustomer.provider !== adapter.provider) {
-      return NextResponse.json(
-        {
-          error: `Customer provider (${userCustomer.provider}) does not match active provider (${adapter.provider})`,
-        },
-        { status: 400 }
-      )
-    }
-
-    const portalSession = await adapter.createPortal(userCustomer.providerCustomerId, returnUrl)
-
-    return NextResponse.json(portalSession)
-  } catch (error) {
-    console.error('Portal error:', error)
-    return NextResponse.json(
-      { error: 'Failed to create portal session' },
-      { status: 500 }
+  if (userCustomer.provider !== adapter.provider) {
+    throw new BadRequestError(
+      `Customer provider (${userCustomer.provider}) does not match active provider (${adapter.provider})`
     )
   }
-}
+
+  const portalSession = await adapter.createPortal(userCustomer.providerCustomerId, returnUrl)
+  return NextResponse.json(portalSession)
+})

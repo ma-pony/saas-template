@@ -1,6 +1,12 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { and, eq, gte, lte, desc, count } from 'drizzle-orm'
 import { env } from '@/config/env'
+import {
+  withApiErrors,
+  AppError,
+  UnauthorizedError,
+  BadRequestError,
+} from '@/lib/errors'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,19 +18,8 @@ const VALID_STATUSES: JobStatus[] = ['pending', 'running', 'success', 'failed', 
  * GET /api/jobs/logs
  *
  * Paginated query of job execution logs with optional filters.
- *
- * Query Parameters:
- * - jobName?   - Filter by job name slug
- * - status?    - Filter by status (pending|running|success|failed|timeout)
- * - from?      - ISO date string, filter logs with startedAt >= from
- * - to?        - ISO date string, filter logs with startedAt <= to
- * - page?      - Page number (default: 1)
- * - limit?     - Results per page (default: 20, max: 100)
- *
- * Response:
- * { data: JobExecutionLog[], total: number, page: number, totalPages: number }
  */
-export const GET = async (request: NextRequest): Promise<NextResponse> => {
+export const GET = withApiErrors(async (request: NextRequest): Promise<NextResponse> => {
   const isDevelopment = env.NODE_ENV === 'development'
 
   // ─── Authentication ────────────────────────────────────────────────────────
@@ -32,13 +27,7 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 
   if (!cronSecret) {
     if (!isDevelopment) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'CRON_SECRET is not configured. Requests are rejected in production.',
-        },
-        { status: 401 }
-      )
+      throw new AppError('INTERNAL_ERROR', 'CRON_SECRET is not configured', false)
     }
     console.warn(
       '[jobs] WARNING: CRON_SECRET is not set. Allowing unauthenticated request for job logs in development.'
@@ -46,10 +35,7 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
   } else {
     const authHeader = request.headers.get('authorization')
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
-
-    if (token !== cronSecret) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
-    }
+    if (token !== cronSecret) throw new UnauthorizedError()
   }
 
   const { searchParams } = request.nextUrl
@@ -62,48 +48,36 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
   const pageParam = searchParams.get('page') ?? '1'
   const limitParam = searchParams.get('limit') ?? '20'
 
-  // Validate status
   if (statusParam && !VALID_STATUSES.includes(statusParam as JobStatus)) {
-    return NextResponse.json(
-      { error: `Invalid status. Must be one of: ${VALID_STATUSES.join(', ')}` },
-      { status: 400 }
-    )
+    throw new BadRequestError(`Invalid status. Must be one of: ${VALID_STATUSES.join(', ')}`)
   }
 
-  // Validate and parse dates
   let fromDate: Date | undefined
   let toDate: Date | undefined
 
   if (fromParam) {
     fromDate = new Date(fromParam)
     if (Number.isNaN(fromDate.getTime())) {
-      return NextResponse.json(
-        { error: 'Invalid "from" date format. Use ISO 8601.' },
-        { status: 400 }
-      )
+      throw new BadRequestError('Invalid "from" date format. Use ISO 8601.')
     }
   }
 
   if (toParam) {
     toDate = new Date(toParam)
     if (Number.isNaN(toDate.getTime())) {
-      return NextResponse.json(
-        { error: 'Invalid "to" date format. Use ISO 8601.' },
-        { status: 400 }
-      )
+      throw new BadRequestError('Invalid "to" date format. Use ISO 8601.')
     }
   }
 
-  // Validate and parse pagination
   const page = Number.parseInt(pageParam, 10)
   const limit = Number.parseInt(limitParam, 10)
 
   if (Number.isNaN(page) || page < 1) {
-    return NextResponse.json({ error: '"page" must be a positive integer.' }, { status: 400 })
+    throw new BadRequestError('"page" must be a positive integer.')
   }
 
   if (Number.isNaN(limit) || limit < 1 || limit > 100) {
-    return NextResponse.json({ error: '"limit" must be between 1 and 100.' }, { status: 400 })
+    throw new BadRequestError('"limit" must be between 1 and 100.')
   }
 
   // ─── Build where conditions ───────────────────────────────────────────────
@@ -111,22 +85,10 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
   const { jobExecutionLogs } = await import('@/database/schema')
 
   const conditions = []
-
-  if (jobName) {
-    conditions.push(eq(jobExecutionLogs.jobName, jobName))
-  }
-
-  if (statusParam) {
-    conditions.push(eq(jobExecutionLogs.status, statusParam as JobStatus))
-  }
-
-  if (fromDate) {
-    conditions.push(gte(jobExecutionLogs.startedAt, fromDate))
-  }
-
-  if (toDate) {
-    conditions.push(lte(jobExecutionLogs.startedAt, toDate))
-  }
+  if (jobName) conditions.push(eq(jobExecutionLogs.jobName, jobName))
+  if (statusParam) conditions.push(eq(jobExecutionLogs.status, statusParam as JobStatus))
+  if (fromDate) conditions.push(gte(jobExecutionLogs.startedAt, fromDate))
+  if (toDate) conditions.push(lte(jobExecutionLogs.startedAt, toDate))
 
   const where = conditions.length > 0 ? and(...conditions) : undefined
 
@@ -148,4 +110,4 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
   const totalPages = Math.ceil(total / limit)
 
   return NextResponse.json({ data, total, page, totalPages })
-}
+})

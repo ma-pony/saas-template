@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 import { client, useSession } from '@/lib/auth/auth-client'
+import { getLocaleFromCookie } from '../components/use-locale-path'
 
 interface UseVerificationParams {
   isProduction: boolean
@@ -34,6 +35,7 @@ export function useVerification({ isProduction }: UseVerificationParams): UseVer
   const [isInvalidOtp, setIsInvalidOtp] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null)
+  const fromSignup = searchParams.get('fromSignup') === 'true'
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -74,10 +76,15 @@ export function useVerification({ isProduction }: UseVerificationParams): UseVer
 
     try {
       const normalizedEmail = email.trim().toLowerCase()
-      const response = await client.signIn.emailOtp({
-        email: normalizedEmail,
-        otp,
-      })
+      const response = fromSignup
+        ? await client.emailOtp.verifyEmail({
+            email: normalizedEmail,
+            otp,
+          })
+        : await client.signIn.emailOtp({
+            email: normalizedEmail,
+            otp,
+          })
 
       if (response && !response.error) {
         setIsVerified(true)
@@ -92,7 +99,8 @@ export function useVerification({ isProduction }: UseVerificationParams): UseVer
           if (redirectUrl) {
             window.location.href = redirectUrl
           } else {
-            window.location.href = '/dashboard'
+            const locale = getLocaleFromCookie()
+            window.location.href = `/${locale}/dashboard`
           }
         }, 1000)
       } else {
@@ -131,7 +139,7 @@ export function useVerification({ isProduction }: UseVerificationParams): UseVer
     client.emailOtp
       .sendVerificationOtp({
         email: normalizedEmail,
-        type: 'sign-in',
+        type: fromSignup ? 'email-verification' : 'sign-in',
       })
       .then(() => {})
       .catch(() => {

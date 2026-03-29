@@ -116,15 +116,10 @@ export type WebhookEventType =
   | 'customer.deleted'
   | 'subscription.created'
   | 'subscription.updated'
-  | 'subscription.deleted'
   | 'subscription.canceled'
   | 'payment.succeeded'
   | 'payment.failed'
   | 'checkout.completed'
-  | 'invoice.payment_succeeded'
-  | 'invoice.payment_failed'
-  | 'checkout.session.completed'
-  | 'order.paid'
 
 /**
  * Webhook event data

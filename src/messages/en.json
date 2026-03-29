@@ -39,7 +39,8 @@
       "socialSignInFailed": "Failed to sign in with {provider}",
       "accountExists": "An account with this email already exists. Please sign in instead.",
       "signInCancelled": "{provider} sign in was cancelled. Please try again.",
-      "registrationFailed": "Registration failed. Please try again."
+      "registrationFailed": "Registration failed. Please try again.",
+      "userAlreadyExists": "An account with this email already exists."
     },
     "label": {
       "email": "Email",
@@ -54,6 +55,11 @@
       "email": "Enter your email",
       "password": "Enter your password",
       "name": "Enter your name"
+    },
+    "pageError": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "retry": "Try again"
     }
   },
   "site": {

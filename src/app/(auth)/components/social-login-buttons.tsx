@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { GitHubIcon, GoogleIcon, MicrosoftIcon, FacebookIcon } from './icons'
 import { Button } from '@/components/ui/button'
 import { client } from '@/lib/auth/auth-client'
+import { localePath } from './use-locale-path'
 
 interface SocialLoginButtonsProps {
   githubAvailable: boolean
@@ -21,7 +22,7 @@ export function SocialLoginButtons({
   googleAvailable,
   microsoftAvailable,
   facebookAvailable,
-  callbackURL = '/dashboard',
+  callbackURL = localePath('/dashboard'),
   children,
 }: SocialLoginButtonsProps) {
   const t = useTranslations()

@@ -5,7 +5,8 @@
  */
 
 import type { Metadata } from 'next'
-import { SUPPORTED_LOCALES, LOCALE_TO_LANG_TAG } from './config'
+import { SUPPORTED_LOCALES, LOCALE_TO_LANG_TAG, DEFAULT_LOCALE } from './config'
+import { getBaseUrl } from '@/lib/utils'
 
 /**
  * Generates hreflang metadata for a given pathname.
@@ -18,10 +19,7 @@ export function generateHreflangMetadata(
   pathname: string,
   baseUrl?: string
 ): Metadata['alternates'] {
-  const appUrl = (baseUrl || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(
-    /\/$/,
-    ''
-  )
+  const appUrl = (baseUrl || getBaseUrl()).replace(/\/$/, '')
   const languages: Record<string, string> = {}
 
   for (const locale of SUPPORTED_LOCALES) {
@@ -29,8 +27,8 @@ export function generateHreflangMetadata(
     languages[langTag] = `${appUrl}/${locale}${pathname}`
   }
 
-  // x-default points to the English version
-  languages['x-default'] = `${appUrl}/en${pathname}`
+  // x-default points to the default locale version
+  languages['x-default'] = `${appUrl}/${DEFAULT_LOCALE}${pathname}`
 
   return { languages }
 }

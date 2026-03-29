@@ -19,12 +19,16 @@ export interface JobDefinition {
   handler: JobHandler
   /** Timeout in milliseconds. Defaults to 30000ms */
   timeoutMs?: number
+  /** Number of retry attempts on failure. Defaults to 0 (no retries). */
+  retries?: number
+  /** Base delay between retries in milliseconds. Defaults to 1000ms. Uses exponential backoff. */
+  retryDelayMs?: number
 }
 
 /**
  * The function that implements the job's work.
  */
-export type JobHandler = (context: JobContext) => Promise<void>
+export type JobHandler = (context: JobContext) => Promise<Record<string, unknown> | void>
 
 /**
  * Runtime context passed to every job handler execution.
@@ -56,6 +60,8 @@ export interface ExecutionResult {
   jobName: string
   durationMs: number
   error?: string
+  /** Number of retry attempts made before final result */
+  attempts: number
 }
 
 // ─── Scheduler Adapter ────────────────────────────────────────────────────────

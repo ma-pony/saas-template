@@ -14,6 +14,8 @@ import { client } from '@/lib/auth/auth-client'
 import { cn } from '@/lib/utils'
 import { quickValidateEmail } from '@/lib/messaging/email/validation'
 import { SocialLoginButtons } from '../components/social-login-buttons'
+import { AuthAlert } from '../components/auth-alert'
+import { localePath } from '../components/use-locale-path'
 
 export default function RegisterForm({
   githubAvailable,
@@ -47,7 +49,9 @@ export default function RegisterForm({
   const [emailErrors, setEmailErrors] = useState<string[]>([])
   const [showEmailValidationError, setShowEmailValidationError] = useState(false)
 
-  const [callbackUrl, setCallbackUrl] = useState('/dashboard')
+  const [formError, setFormError] = useState('')
+
+  const [callbackUrl, setCallbackUrl] = useState(() => localePath('/dashboard'))
 
   const validateEmailField = (emailValue: string): string[] => {
     const errors: string[] = []
@@ -117,6 +121,7 @@ export default function RegisterForm({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setIsLoading(true)
+    setFormError('')
 
     const formData = new FormData(event.currentTarget)
     const emailRaw = formData.get('email') as string
@@ -157,9 +162,18 @@ export default function RegisterForm({
         },
         {
           onError: (ctx) => {
-            const message = ctx.error.message || t('common.error.registrationFailed')
-            setPasswordErrors([message])
-            setShowValidationError(true)
+            const code = ctx.error.code || ''
+            const message = ctx.error.message || ''
+
+            if (code.includes('USER_ALREADY_EXISTS') || message.includes('already exists')) {
+              setFormError(t('common.error.userAlreadyExists'))
+            } else if (code.includes('INVALID_EMAIL') || message.includes('invalid email')) {
+              setFormError(t('common.error.emailInvalid'))
+            } else if (message.includes('rate limit')) {
+              setFormError(t('common.error.rateLimitExceeded'))
+            } else {
+              setFormError(message || t('common.error.registrationFailed'))
+            }
           },
         }
       )
@@ -175,9 +189,7 @@ export default function RegisterForm({
 
       router.push(`/verify?fromSignup=true&callbackUrl=${encodeURIComponent(callbackUrl)}`)
     } catch (error) {
-      console.error('Signup error:', error)
-      setPasswordErrors([t('common.error.registrationFailed')])
-      setShowValidationError(true)
+      setFormError(t('common.error.registrationFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -192,6 +204,8 @@ export default function RegisterForm({
         <h1 className='font-medium text-[32px] text-black tracking-tight'>{t('auth.register.title')}</h1>
         <p className='font-[380] text-[16px] text-muted-foreground'>{t('auth.register.subtitle')}</p>
       </div>
+
+      {formError && <AuthAlert type='error' message={formError} className='mt-4' />}
 
       <form onSubmit={handleSubmit} className='mt-8 space-y-8'>
         <div className='space-y-6'>

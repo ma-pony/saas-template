@@ -15,9 +15,13 @@ export const client = createAuthClient({
   baseURL: getBaseUrl(),
   plugins: [emailOTPClient(), organizationClient()],
   fetchOptions: {
-    onError(error) {
+    onError(ctx) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Auth error:', error)
+        console.error('Auth error:', {
+          message: ctx.error?.message,
+          code: ctx.error?.code,
+          status: ctx.error?.status,
+        })
       }
     },
   },

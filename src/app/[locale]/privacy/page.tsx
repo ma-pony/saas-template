@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 import { generateHreflangMetadata } from '@/lib/i18n/hreflang'
 import { getBrandConfig } from '@/config/branding'
+import { getBaseUrl } from '@/lib/utils'
 import Navbar from '@/app/(site)/navbar'
 import Footer from '@/app/(site)/footer'
 import { GridLayout } from '@/app/(site)/grid-layout'
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }),
     alternates: {
       ...hreflang,
-      canonical: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${locale}/privacy`,
+      canonical: `${getBaseUrl()}/${locale}/privacy`,
     },
   }
 }

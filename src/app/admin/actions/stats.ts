@@ -1,8 +1,7 @@
-import { headers } from 'next/headers'
-import { auth } from '@/lib/auth/auth'
 import { db } from '@/database'
 import { user, subscription, payment } from '@/database/schema'
 import { count, sum, gte, eq } from 'drizzle-orm'
+import { requireAdmin } from '@/lib/errors'
 
 export interface AdminStats {
   totalUsers: number
@@ -12,10 +11,7 @@ export interface AdminStats {
 }
 
 export async function getAdminStats(): Promise<AdminStats> {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session) throw new Error('Unauthorized')
-  const [dbUser] = await db.select({ role: user.role }).from(user).where(eq(user.id, session.user.id))
-  if (!dbUser || dbUser.role !== 'admin') throw new Error('Forbidden')
+  await requireAdmin()
 
   const now = new Date()
   const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)

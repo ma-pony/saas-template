@@ -1,5 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { env } from '@/config/env'
+import {
+  withApiErrors,
+  AppError,
+  UnauthorizedError,
+  NotFoundError,
+} from '@/lib/errors'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,7 +19,7 @@ export const dynamic = 'force-dynamic'
  * - Production: requires `Authorization: Bearer <CRON_SECRET>` header
  * - Development: if CRON_SECRET is not configured, allows unauthenticated access with a warning
  */
-const handleJobRequest = async (
+const handleJobRequest = withApiErrors(async (
   request: NextRequest,
   { params }: { params: Promise<{ jobName: string }> }
 ): Promise<NextResponse> => {
@@ -25,13 +31,7 @@ const handleJobRequest = async (
 
   if (!cronSecret) {
     if (!isDevelopment) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'CRON_SECRET is not configured. Requests are rejected in production.',
-        },
-        { status: 401 }
-      )
+      throw new AppError('INTERNAL_ERROR', 'CRON_SECRET is not configured', false)
     }
     console.warn(
       `[jobs] WARNING: CRON_SECRET is not set. Allowing unauthenticated request for job "${jobName}" in development.`
@@ -39,10 +39,7 @@ const handleJobRequest = async (
   } else {
     const authHeader = request.headers.get('authorization')
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
-
-    if (token !== cronSecret) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
-    }
+    if (token !== cronSecret) throw new UnauthorizedError()
   }
 
   // ─── Job Lookup ───────────────────────────────────────────────────────────
@@ -51,12 +48,7 @@ const handleJobRequest = async (
   const registry = getJobRegistry()
   const job = registry.findJob(jobName)
 
-  if (!job) {
-    return NextResponse.json(
-      { success: false, error: `Job "${jobName}" not found` },
-      { status: 404 }
-    )
-  }
+  if (!job) throw new NotFoundError(`Job "${jobName}" not found`)
 
   // ─── Execution ────────────────────────────────────────────────────────────
   const { getJobRunner } = await import('@/lib/jobs/job-runner')
@@ -64,7 +56,7 @@ const handleJobRequest = async (
   const result = await runner.execute(job)
 
   return NextResponse.json(result, { status: result.success ? 200 : 500 })
-}
+})
 
 export const GET = handleJobRequest
 export const POST = handleJobRequest

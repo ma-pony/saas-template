@@ -20,9 +20,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { client } from '@/lib/auth/auth-client'
-import { cn, getBaseUrl } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { quickValidateEmail } from '@/lib/messaging/email/validation'
 import { SocialLoginButtons } from '../components/social-login-buttons'
+import { AuthAlert } from '../components/auth-alert'
+import { localePath } from '../components/use-locale-path'
 
 const validateCallbackUrl = (url: string): boolean => {
   try {
@@ -65,7 +67,7 @@ export default function LoginPage({
   const [showValidationError, setShowValidationError] = useState(false)
   const [isButtonHovered, setIsButtonHovered] = useState(false)
 
-  const [callbackUrl, setCallbackUrl] = useState('/dashboard')
+  const [callbackUrl, setCallbackUrl] = useState(() => localePath('/dashboard'))
 
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false)
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('')
@@ -75,6 +77,8 @@ export default function LoginPage({
     type: 'success' | 'error' | null
     message: string
   }>({ type: null, message: '' })
+
+  const [formError, setFormError] = useState('')
 
   const [email, setEmail] = useState('')
   const [emailErrors, setEmailErrors] = useState<string[]>([])
@@ -161,6 +165,7 @@ export default function LoginPage({
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsLoading(true)
+    setFormError('')
 
     const formData = new FormData(e.currentTarget)
     const emailRaw = formData.get('email') as string
@@ -180,7 +185,7 @@ export default function LoginPage({
     }
 
     try {
-      const safeCallbackUrl = validateCallbackUrl(callbackUrl) ? callbackUrl : '/dashboard'
+      const safeCallbackUrl = validateCallbackUrl(callbackUrl) ? callbackUrl : localePath('/dashboard')
 
       const result = await client.signIn.email(
         {
@@ -190,9 +195,6 @@ export default function LoginPage({
         },
         {
           onError: (ctx) => {
-            console.error('Login error:', ctx.error)
-            const errorMessage: string[] = [t('common.error.invalidCredentials')]
-
             if (ctx.error.code?.includes('EMAIL_NOT_VERIFIED')) {
               if (typeof window !== 'undefined') {
                 sessionStorage.setItem('verificationEmail', emailVal)
@@ -200,39 +202,32 @@ export default function LoginPage({
               router.push('/verify')
               return
             }
-            if (
-              ctx.error.code?.includes('BAD_REQUEST') ||
-              ctx.error.message?.includes('Email and password sign in is not enabled')
-            ) {
-              errorMessage.push(t('common.error.emailSignInDisabled'))
-            } else if (
-              ctx.error.code?.includes('INVALID_CREDENTIALS') ||
-              ctx.error.message?.includes('invalid password')
-            ) {
-              errorMessage.push(t('common.error.invalidEmailOrPassword'))
-            } else if (
-              ctx.error.code?.includes('USER_NOT_FOUND') ||
-              ctx.error.message?.includes('not found')
-            ) {
-              errorMessage.push(t('common.error.noAccountFound'))
-            } else if (ctx.error.code?.includes('MISSING_CREDENTIALS')) {
-              errorMessage.push(t('common.error.enterEmailAndPassword'))
-            } else if (ctx.error.code?.includes('EMAIL_PASSWORD_DISABLED')) {
-              errorMessage.push(t('common.error.emailPasswordDisabled'))
-            } else if (ctx.error.code?.includes('FAILED_TO_CREATE_SESSION')) {
-              errorMessage.push(t('common.error.failedToCreateSession'))
-            } else if (ctx.error.code?.includes('too many attempts')) {
-              errorMessage.push(t('common.error.tooManyAttempts'))
-            } else if (ctx.error.code?.includes('account locked')) {
-              errorMessage.push(t('common.error.accountLocked'))
-            } else if (ctx.error.code?.includes('network')) {
-              errorMessage.push(t('common.error.networkError'))
-            } else if (ctx.error.message?.includes('rate limit')) {
-              errorMessage.push(t('common.error.rateLimitExceeded'))
+
+            let msg = t('common.error.invalidCredentials')
+            const code = ctx.error.code || ''
+            const message = ctx.error.message || ''
+
+            if (code.includes('INVALID_CREDENTIALS') || message.includes('invalid password')) {
+              msg = t('common.error.invalidEmailOrPassword')
+            } else if (code.includes('USER_NOT_FOUND') || message.includes('not found')) {
+              msg = t('common.error.noAccountFound')
+            } else if (code.includes('BAD_REQUEST') || message.includes('Email and password sign in is not enabled')) {
+              msg = t('common.error.emailSignInDisabled')
+            } else if (code.includes('MISSING_CREDENTIALS')) {
+              msg = t('common.error.enterEmailAndPassword')
+            } else if (code.includes('EMAIL_PASSWORD_DISABLED')) {
+              msg = t('common.error.emailPasswordDisabled')
+            } else if (code.includes('FAILED_TO_CREATE_SESSION')) {
+              msg = t('common.error.failedToCreateSession')
+            } else if (code.includes('too many attempts')) {
+              msg = t('common.error.tooManyAttempts')
+            } else if (code.includes('account locked')) {
+              msg = t('common.error.accountLocked')
+            } else if (message.includes('rate limit')) {
+              msg = t('common.error.rateLimitExceeded')
             }
 
-            setPasswordErrors(errorMessage)
-            setShowValidationError(true)
+            setFormError(msg)
           },
         }
       )
@@ -251,7 +246,7 @@ export default function LoginPage({
         return
       }
 
-      console.error('Uncaught login error:', err)
+      setFormError(t('common.error.networkError'))
     } finally {
       setIsLoading(false)
     }
@@ -279,36 +274,22 @@ export default function LoginPage({
       setIsSubmittingReset(true)
       setResetStatus({ type: null, message: '' })
 
-      const response = await fetch('/api/auth/forget-password', {
+      const response = await fetch('/api/auth/request-password-reset', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: forgotPasswordEmail,
-          redirectTo: `${getBaseUrl()}/reset-password`,
+          email: forgotPasswordEmail.trim().toLowerCase(),
+          redirectTo: `${window.location.origin}/reset-password`,
         }),
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        let errorMsg = errorData.message || t('common.error.networkError')
-
-        if (
-          errorMsg.includes('Invalid body parameters') ||
-          errorMsg.includes('invalid email')
-        ) {
-          errorMsg = t('auth.login.resetPassword.resetStatus.emailInvalid')
-        } else if (errorMsg.includes('Email is required')) {
-          errorMsg = t('auth.login.resetPassword.resetStatus.emailRequired')
-        } else if (
-          errorMsg.includes('user not found') ||
-          errorMsg.includes('User not found')
-        ) {
-          errorMsg = t('auth.login.resetPassword.resetStatus.noAccountFound')
+        const errorData = await response.json().catch(() => ({}))
+        const msg = errorData.message || ''
+        if (msg.includes('user not found') || msg.includes('User not found')) {
+          throw new Error(t('auth.login.resetPassword.resetStatus.noAccountFound'))
         }
-
-        throw new Error(errorMsg)
+        throw new Error(msg || t('common.error.networkError'))
       }
 
       setResetStatus({
@@ -340,6 +321,8 @@ export default function LoginPage({
         <h1 className='font-medium text-[32px] text-black tracking-tight'>{t('auth.login.title')}</h1>
         <p className='font-[380] text-[16px] text-muted-foreground'>{t('auth.login.subtitle')}</p>
       </div>
+
+      {formError && <AuthAlert type='error' message={formError} className='mt-4' />}
 
       <form onSubmit={onSubmit} className={`mt-8 space-y-8`}>
         <div className='space-y-6'>
@@ -529,15 +512,11 @@ export default function LoginPage({
                 )}
               />
               {resetStatus.type === 'error' && (
-                <div className='mt-1 space-y-1 text-xs text-red-400'>
-                  <p>{resetStatus.message}</p>
-                </div>
+                <AuthAlert type='error' message={resetStatus.message} className='mt-1' />
               )}
             </div>
             {resetStatus.type === 'success' && (
-              <div className='mt-1 space-y-1 text-xs text-[#4CAF50]'>
-                <p>{resetStatus.message}</p>
-              </div>
+              <AuthAlert type='success' message={resetStatus.message} />
             )}
           </DialogPanel>
           <DialogFooter>

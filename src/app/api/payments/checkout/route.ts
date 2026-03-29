@@ -8,6 +8,14 @@ import { getAvailablePlans } from '@/config/payments'
 import { createRateLimiter } from '@/lib/rate-limit'
 import { isBillingEnabled } from '@/config/feature-flags'
 import { isSameOriginUrl } from '@/lib/url'
+import {
+  withApiErrors,
+  BillingDisabledError,
+  UnauthorizedError,
+  BadRequestError,
+} from '@/lib/errors'
+
+export const dynamic = 'force-dynamic'
 
 // Rate limit: 10 checkout requests per minute per IP
 const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 10 })
@@ -22,53 +30,34 @@ const checkoutSchema = z.object({
   }),
 })
 
-export async function POST(req: Request) {
-  if (!isBillingEnabled) {
-    return NextResponse.json({ error: 'Billing is not enabled' }, { status: 404 })
-  }
+export const POST = withApiErrors(async (req: Request) => {
+  if (!isBillingEnabled) throw new BillingDisabledError()
 
   const limitResult = await rateLimiter(req)
   if (limitResult instanceof NextResponse) return limitResult
 
-  try {
-    const requestHeaders = await headers()
-    const session = await auth.api.getSession({
-      headers: requestHeaders,
-    })
+  const requestHeaders = await headers()
+  const session = await auth.api.getSession({ headers: requestHeaders })
+  if (!session) throw new UnauthorizedError()
 
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  const body = await req.json()
+  const result = checkoutSchema.safeParse(body)
+  if (!result.success) throw new BadRequestError('Invalid request body')
 
-    const body = await req.json()
-    const result = checkoutSchema.safeParse(body)
+  const { plan, successUrl, cancelUrl } = result.data
+  const adapter = getPaymentAdapter()
 
-    if (!result.success) {
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
-    }
+  const country =
+    requestHeaders.get('x-vercel-ip-country') ?? requestHeaders.get('cf-ipcountry') ?? undefined
 
-    const { plan, successUrl, cancelUrl } = result.data
-    const adapter = getPaymentAdapter()
+  const checkoutSession = await adapter.createCheckout({
+    plan: plan as any,
+    userId: session.user.id,
+    email: session.user.email,
+    successUrl,
+    cancelUrl,
+    country,
+  })
 
-    // Extract country from geo headers written by middleware
-    const country =
-      requestHeaders.get('x-vercel-ip-country') ?? requestHeaders.get('cf-ipcountry') ?? undefined
-
-    const checkoutSession = await adapter.createCheckout({
-      plan: plan as any,
-      userId: session.user.id,
-      email: session.user.email,
-      successUrl,
-      cancelUrl,
-      country,
-    })
-
-    return NextResponse.json(checkoutSession)
-  } catch (error) {
-    console.error('Checkout error:', error)
-    return NextResponse.json(
-      { error: 'Failed to create checkout session' },
-      { status: 500 }
-    )
-  }
-}
+  return NextResponse.json(checkoutSession)
+})
