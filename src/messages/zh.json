@@ -16,7 +16,9 @@
       "sending": "发送中...",
       "backToSignup": "返回注册",
       "learnMore": "了解更多",
-      "connecting": "连接中..."
+      "connecting": "连接中...",
+      "signOut": "退出登录",
+      "dashboard": "控制台"
     },
     "error": {
       "emailRequired": "邮箱不能为空。",

@@ -16,7 +16,9 @@
       "sending": "Envoi en cours...",
       "backToSignup": "Retour à l'inscription",
       "learnMore": "En savoir plus",
-      "connecting": "Connexion..."
+      "connecting": "Connexion...",
+      "signOut": "Se déconnecter",
+      "dashboard": "Tableau de bord"
     },
     "error": {
       "emailRequired": "L'email est obligatoire.",

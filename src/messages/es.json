@@ -16,7 +16,9 @@
       "sending": "Enviando...",
       "backToSignup": "Volver al registro",
       "learnMore": "Saber más",
-      "connecting": "Conectando..."
+      "connecting": "Conectando...",
+      "signOut": "Cerrar sesión",
+      "dashboard": "Panel"
     },
     "error": {
       "emailRequired": "El correo es obligatorio.",

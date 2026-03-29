@@ -16,7 +16,9 @@
       "sending": "Sending...",
       "backToSignup": "Back to signup",
       "learnMore": "Learn more",
-      "connecting": "Connecting..."
+      "connecting": "Connecting...",
+      "signOut": "Sign out",
+      "dashboard": "Dashboard"
     },
     "error": {
       "emailRequired": "Email is required.",

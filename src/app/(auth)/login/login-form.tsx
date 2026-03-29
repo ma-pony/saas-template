@@ -240,12 +240,11 @@ export default function LoginPage({
         return
       }
 
-      // Login successful — hard navigate to pick up new session cookie
+      // Login successful — hard navigate to pick up new session cookie.
+      // Keep isLoading=true so button stays in loading state during navigation.
       window.location.href = safeCallbackUrl
-      return
     } catch (err: unknown) {
       setFormError(t('common.error.networkError'))
-    } finally {
       setIsLoading(false)
     }
   }

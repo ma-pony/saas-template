@@ -116,7 +116,7 @@ export default function Navbar() {
                   href='/dashboard'
                   className='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90'
                 >
-                  Dashboard
+                  {tc('dashboard')}
                 </Link>
                 <button
                   type='button'
@@ -182,7 +182,7 @@ export default function Navbar() {
               {session?.user ? (
                 <>
                   <Link href='/dashboard' className='block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
-                    Dashboard
+                    {tc('dashboard')}
                   </Link>
                   <button
                     type='button'
@@ -190,7 +190,7 @@ export default function Navbar() {
                     className='flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground'
                   >
                     <LogOut className='h-4 w-4' />
-                    Sign out
+                    {tc('signOut')}
                   </button>
                 </>
               ) : (
