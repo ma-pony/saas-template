@@ -23,6 +23,7 @@
 import type nodemailer from 'nodemailer'
 
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
 import type {
   EmailOptions,
   EmailProvider,
@@ -31,6 +32,8 @@ import type {
   BatchSendEmailResult,
 } from '../types'
 import { getFromEmailAddress, hasNonEmpty } from '../utils'
+
+const log = createLogger({ module: 'email', provider: 'nodemailer' })
 
 let transporter: nodemailer.Transporter | null = null
 
@@ -59,7 +62,7 @@ function getTransporter(): nodemailer.Transporter | null {
     })
     return transporter
   } catch (error) {
-    console.warn('Nodemailer transporter creation failed:', error)
+    log.warn('Nodemailer transporter creation failed', { error })
     return null
   }
 }

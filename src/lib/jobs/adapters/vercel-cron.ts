@@ -1,5 +1,8 @@
+import { createLogger } from '@/lib/logger'
 import type { JobSchedulerAdapter } from '../types'
 import type { JobRegistry } from '../job-registry'
+
+const log = createLogger({ module: 'jobs', adapter: 'vercel-cron' })
 
 /**
  * VercelCronAdapter - No-op adapter for Vercel Cron Jobs.
@@ -14,7 +17,7 @@ export class VercelCronAdapter implements JobSchedulerAdapter {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async start(_registry: JobRegistry): Promise<void> {
     // No-op: Vercel manages scheduling via vercel.json crons
-    console.info('[vercel-cron] Adapter ready. Scheduling is managed by Vercel platform.')
+    log.info('Adapter ready. Scheduling is managed by Vercel platform.')
   }
 
   async stop(): Promise<void> {

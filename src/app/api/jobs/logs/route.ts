@@ -1,12 +1,15 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { and, eq, gte, lte, desc, count } from 'drizzle-orm'
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
 import {
   withApiErrors,
   AppError,
   UnauthorizedError,
   BadRequestError,
 } from '@/lib/errors'
+
+const log = createLogger({ module: 'jobs' })
 
 export const dynamic = 'force-dynamic'
 
@@ -29,9 +32,7 @@ export const GET = withApiErrors(async (request: NextRequest): Promise<NextRespo
     if (!isDevelopment) {
       throw new AppError('INTERNAL_ERROR', 'CRON_SECRET is not configured', false)
     }
-    console.warn(
-      '[jobs] WARNING: CRON_SECRET is not set. Allowing unauthenticated request for job logs in development.'
-    )
+    log.warn('CRON_SECRET is not set, allowing unauthenticated request for job logs in development')
   } else {
     const authHeader = request.headers.get('authorization')
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null

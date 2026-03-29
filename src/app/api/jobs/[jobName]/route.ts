@@ -1,11 +1,14 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
 import {
   withApiErrors,
   AppError,
   UnauthorizedError,
   NotFoundError,
 } from '@/lib/errors'
+
+const log = createLogger({ module: 'jobs' })
 
 export const dynamic = 'force-dynamic'
 
@@ -33,9 +36,7 @@ const handleJobRequest = withApiErrors(async (
     if (!isDevelopment) {
       throw new AppError('INTERNAL_ERROR', 'CRON_SECRET is not configured', false)
     }
-    console.warn(
-      `[jobs] WARNING: CRON_SECRET is not set. Allowing unauthenticated request for job "${jobName}" in development.`
-    )
+    log.warn('CRON_SECRET is not set, allowing unauthenticated request in development', { jobName })
   } else {
     const authHeader = request.headers.get('authorization')
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null

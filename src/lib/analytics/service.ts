@@ -1,5 +1,8 @@
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
 import type { AnalyticsAdapter, AnalyticsProvider } from './types'
+
+const log = createLogger({ module: 'analytics' })
 import { GoogleAnalyticsAdapter } from './providers/google'
 import { NoopAdapter } from './providers/noop'
 import { PlausibleAdapter } from './providers/plausible'
@@ -26,7 +29,7 @@ export function getAnalyticsAdapter(): AnalyticsAdapter {
       adapterInstance = new NoopAdapter()
       break
     default:
-      console.warn(`[Analytics] Unknown provider: "${provider}". Falling back to NoopAdapter.`)
+      log.warn('Unknown provider, falling back to NoopAdapter', { provider })
       adapterInstance = new NoopAdapter()
       break
   }

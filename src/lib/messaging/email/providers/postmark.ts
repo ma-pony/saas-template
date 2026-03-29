@@ -19,6 +19,7 @@
 import type { ServerClient as PostmarkClient } from 'postmark'
 
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
 import type {
   EmailOptions,
   EmailProvider,
@@ -27,6 +28,8 @@ import type {
   BatchSendEmailResult,
 } from '../types'
 import { getFromEmailAddress, hasNonEmpty } from '../utils'
+
+const log = createLogger({ module: 'email', provider: 'postmark' })
 
 let client: PostmarkClient | null = null
 
@@ -43,7 +46,7 @@ function getClient(): PostmarkClient | null {
     client = new ServerClient(apiToken)
     return client
   } catch (error) {
-    console.warn('Postmark client creation failed:', error)
+    log.warn('Postmark client creation failed', { error })
     return null
   }
 }

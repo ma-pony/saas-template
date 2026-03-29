@@ -1,5 +1,8 @@
 import { AwsClient } from 'aws4fetch'
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'storage' })
 
 const fetchWithTimeout = async (
   input: RequestInfo | URL,
@@ -107,7 +110,7 @@ class StorageClient {
         url: `${env.R2_BUCKET_URL}/${key}`,
       }
     } catch (error) {
-      console.error('storage.upload failed', error)
+      log.error('upload failed', { error })
       throw new Error('Failed to upload file. Please try again later.')
     }
   }
@@ -125,7 +128,7 @@ class StorageClient {
         throw new Error(response.statusText)
       }
     } catch (error) {
-      console.error('storage.delete failed', error)
+      log.error('delete failed', { error })
       throw new Error('Failed to delete file. Please try again later.')
     }
   }
@@ -156,7 +159,7 @@ class StorageClient {
 
       return response.url
     } catch (error) {
-      console.error('storage.getSignedUrl failed', error)
+      log.error('getSignedUrl failed', { error })
       throw new Error('Failed to generate signed url. Please try again later.')
     }
   }

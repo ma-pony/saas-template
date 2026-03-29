@@ -2,6 +2,9 @@ import { emailOTPClient, organizationClient } from 'better-auth/client/plugins'
 import { createAuthClient } from 'better-auth/react'
 
 import { getBaseUrl } from '../utils'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'auth' })
 
 /**
  * Auth Client
@@ -16,13 +19,11 @@ export const client = createAuthClient({
   plugins: [emailOTPClient(), organizationClient()],
   fetchOptions: {
     onError(ctx) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('Auth error:', {
-          message: ctx.error?.message,
-          code: ctx.error?.code,
-          status: ctx.error?.status,
-        })
-      }
+      log.debug('Auth client error', {
+        message: ctx.error?.message,
+        code: ctx.error?.code,
+        status: ctx.error?.status,
+      })
     },
   },
 })

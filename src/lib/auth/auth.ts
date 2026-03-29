@@ -4,6 +4,7 @@ import { nextCookies } from 'better-auth/next-js'
 import { emailOTP, organization } from 'better-auth/plugins'
 
 import { db } from '@/database'
+import { createLogger } from '@/lib/logger'
 import { APP_COOKIE_NAME, isProd } from '@/lib/constants'
 import { env } from '@/config/env'
 import { getBaseUrl } from '@/lib/utils'
@@ -15,6 +16,8 @@ import {
 } from '@/components/emails'
 import { getFromEmailAddress, quickValidateEmail, sendEmail, hasEmailService } from '@/lib/messaging/email'
 import { isEmailVerificationEnabled } from '@/config/feature-flags'
+
+const log = createLogger({ module: 'auth' })
 
 export const auth = betterAuth({
   baseURL: getBaseUrl(),
@@ -92,11 +95,11 @@ export const auth = betterAuth({
             emailType: 'transactional',
           })
 
-          console.info('[emailVerification.afterEmailVerification] Welcome email sent', {
+          log.info('Welcome email sent', {
             userId: user.id,
           })
         } catch (error) {
-          console.error('[emailVerification.afterEmailVerification] Failed to send welcome email', {
+          log.error('Failed to send welcome email', {
             userId: user.id,
             error,
           })
@@ -125,7 +128,7 @@ export const auth = betterAuth({
           throw new Error(`Failed to send reset password email: ${result.message}`)
         }
       } catch (error) {
-        console.error('Error sending password reset email:', { error, userId: user.id })
+        log.error('Error sending password reset email', { error, userId: user.id })
         throw error
       }
     },
@@ -145,7 +148,7 @@ export const auth = betterAuth({
 
           const validation = quickValidateEmail(data.email)
           if (!validation.isValid) {
-            console.warn('Email validation failed', {
+            log.warn('Email validation failed', {
               email: data.email,
               reason: validation.reason,
               checks: validation.checks,
@@ -169,13 +172,13 @@ export const auth = betterAuth({
           if (!hasEmailService()) {
             // No real email provider — print OTP to console in dev, warn in production
             if (process.env.NODE_ENV !== 'production') {
-              console.info('🔑 [DEV] VERIFICATION CODE', {
+              log.info('Verification OTP code (dev)', {
                 email: data.email,
                 otp: data.otp,
                 type: data.type,
               })
             } else {
-              console.warn('No email service configured in production — OTP cannot be delivered', {
+              log.warn('No email service configured in production', {
                 email: data.email,
                 type: data.type,
               })
@@ -187,7 +190,7 @@ export const auth = betterAuth({
             throw new Error(`Failed to send verification code: ${result.message}`)
           }
         } catch (error) {
-          console.error('Error sending verification code:', {
+          log.error('Error sending verification code', {
             error,
             email: data.email,
           })
@@ -214,7 +217,7 @@ export const auth = betterAuth({
       // },
       organizationCreation: {
         afterCreate: async ({ organization, user }) => {
-          console.info('[organizationCreation.afterCreate] Organization created', {
+          log.info('Organization created', {
             organizationId: organization.id,
             creatorId: user.id,
           })

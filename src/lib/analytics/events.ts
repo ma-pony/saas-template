@@ -1,4 +1,7 @@
 import type { AnalyticsEventProperties } from './types'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'analytics' })
 
 export const AnalyticsEvents = {
   SIGNUP: 'signup',
@@ -16,9 +19,7 @@ export type AnalyticsEventName = (typeof AnalyticsEvents)[keyof typeof Analytics
  * Fails silently if no analytics provider is loaded.
  */
 export function trackEvent(name: AnalyticsEventName, properties?: AnalyticsEventProperties): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.debug('[Analytics]', name, properties)
-  }
+  log.debug('Track event', { name, ...properties })
 
   if (typeof window === 'undefined') return
 

@@ -1,8 +1,11 @@
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
 import type { JobSchedulerAdapter, CronProvider } from './types'
 import { getJobRegistry } from './job-registry'
 import { NodeCronAdapter } from './adapters/node-cron'
 import { VercelCronAdapter } from './adapters/vercel-cron'
+
+const log = createLogger({ module: 'jobs' })
 
 /**
  * Determines which cron provider to use.
@@ -32,7 +35,7 @@ export const getJobAdapter = (): JobSchedulerAdapter => {
   if (!_adapter) {
     const provider = detectProvider()
     _adapter = provider === 'vercel' ? new VercelCronAdapter() : new NodeCronAdapter()
-    console.info(`[job-service] Using cron provider: ${provider}`)
+    log.info('Using cron provider', { provider })
   }
   return _adapter
 }

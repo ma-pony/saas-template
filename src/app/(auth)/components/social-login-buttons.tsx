@@ -6,6 +6,9 @@ import { GitHubIcon, GoogleIcon, MicrosoftIcon, FacebookIcon } from './icons'
 import { Button } from '@/components/ui/button'
 import { client } from '@/lib/auth/auth-client'
 import { localePath } from './use-locale-path'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'auth' })
 
 interface SocialLoginButtonsProps {
   githubAvailable: boolean
@@ -43,15 +46,15 @@ export function SocialLoginButtons({
   const handleSocialError = (err: unknown, provider: string) => {
     const errMsg = err instanceof Error ? err.message : ''
     if (errMsg.includes('account exists')) {
-      console.error(`[social-auth] ${t('common.error.accountExists')}`)
+      log.warn('Social sign-in account already exists', { provider })
     } else if (errMsg.includes('cancelled')) {
-      console.error(`[social-auth] ${t('common.error.signInCancelled', { provider })}`)
+      log.warn('Social sign-in cancelled', { provider })
     } else if (errMsg.includes('network')) {
-      console.error(`[social-auth] ${t('common.error.networkError')}`)
+      log.error('Social sign-in network error', { provider })
     } else if (errMsg.includes('rate limit')) {
-      console.error(`[social-auth] ${t('common.error.rateLimitExceeded')}`)
+      log.warn('Social sign-in rate limited', { provider })
     } else {
-      console.error(`[social-auth] ${t('common.error.socialSignInFailed', { provider })}`, err)
+      log.error('Social sign-in failed', { provider, error: err })
     }
   }
 

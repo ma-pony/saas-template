@@ -2,6 +2,9 @@ import type { MetadataRoute } from 'next'
 import { getAllPosts, getAllCategories, getAllTags } from '@/lib/blog/content-reader'
 import { getBaseUrl } from '@/lib/utils'
 import { SUPPORTED_LOCALES } from '@/lib/i18n/config'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'sitemap' })
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = getBaseUrl()
@@ -60,7 +63,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     }))
   } catch (error) {
-    console.error('Error generating blog sitemap entries:', error)
+    log.error('Error generating blog sitemap entries', { error })
   }
 
   return [

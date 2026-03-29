@@ -5,6 +5,9 @@ import { useSearchParams } from 'next/navigation'
 
 import { client, useSession } from '@/lib/auth/auth-client'
 import { getLocaleFromCookie } from '../components/use-locale-path'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'auth' })
 
 interface UseVerificationParams {
   isProduction: boolean
@@ -92,7 +95,7 @@ export function useVerification({ isProduction }: UseVerificationParams): UseVer
         try {
           await refetchSession()
         } catch (e) {
-          console.warn('Failed to refetch session after verification', e)
+          log.warn('Failed to refetch session after verification', { error: e })
         }
 
         setTimeout(() => {

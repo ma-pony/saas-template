@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
+import { createLogger } from '@/lib/logger'
 import { AppError } from './app-error'
 import { captureError } from './report'
+
+const log = createLogger({ module: 'api' })
 
 export interface ApiErrorBody {
   message: string
@@ -29,7 +32,7 @@ export function apiError(
   // Unknown error — always report
   const err = error instanceof Error ? error : new Error(String(error))
   captureError(err)
-  console.error('[api]', err)
+  log.error('Unhandled error', { error: err.message, stack: err.stack })
   return NextResponse.json(
     { message: fallbackMessage, code: 'INTERNAL_ERROR', statusCode: 500 },
     { status: 500 }

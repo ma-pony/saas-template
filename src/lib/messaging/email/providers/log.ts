@@ -17,6 +17,8 @@
  * provider is configured.
  */
 
+import { createLogger } from '@/lib/logger'
+
 import type {
   EmailOptions,
   EmailProvider,
@@ -25,14 +27,17 @@ import type {
   BatchSendEmailResult,
 } from '../types'
 
+const log = createLogger({ module: 'email', provider: 'log' })
+
 async function send(data: ProcessedEmailData): Promise<SendEmailResult> {
-  console.info('📧 Email not sent (log provider):', {
-    to: data.to,
-    subject: data.subject,
-    from: data.senderEmail,
-    hasHtml: !!data.html,
-    hasText: !!data.text,
-    attachments: data.attachments?.length || 0,
+  const { to, subject, senderEmail: from, html, text, attachments } = data
+  log.info('Email logged (no real provider)', {
+    to,
+    subject,
+    from,
+    hasHtml: !!html,
+    hasText: !!text,
+    attachments: attachments?.length || 0,
   })
 
   return {
@@ -43,7 +48,7 @@ async function send(data: ProcessedEmailData): Promise<SendEmailResult> {
 }
 
 async function sendBatch(emails: EmailOptions[]): Promise<BatchSendEmailResult> {
-  console.info('📧 Batch email not sent (log provider):', {
+  log.info('Batch email logged (no real provider)', {
     count: emails.length,
     subjects: emails.map((e) => e.subject),
   })

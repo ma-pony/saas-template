@@ -3,6 +3,9 @@
 import { Suspense, useEffect, useState } from 'react'
 import { useRouter } from '@/i18n/navigation'
 import { useSearchParams } from 'next/navigation'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'auth' })
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 
@@ -62,7 +65,7 @@ function ResetPasswordContent() {
         router.push('/login?resetSuccess=true')
       }, 1500)
     } catch (error) {
-      console.error('Error resetting password:', error)
+      log.error('Error resetting password', { error })
       setStatusMessage({
         type: 'error',
         text: error instanceof Error ? error.message : t('auth.resetPassword.failed'),

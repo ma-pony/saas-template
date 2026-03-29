@@ -19,6 +19,9 @@ import type {
 import type { PaymentProvider, PlanName } from '@/config/payments'
 import { getPriceConfig, paymentConfig, getRegionalPaymentMethods } from '@/config/payments'
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'payments', provider: 'stripe' })
 
 export class StripeAdapter implements PaymentAdapter {
   public readonly provider: PaymentProvider = 'stripe'
@@ -197,7 +200,7 @@ export class StripeAdapter implements PaymentAdapter {
         trialEnd: subscription.trial_end ? new Date(subscription.trial_end * 1000) : null,
       }
     } catch (error) {
-      console.error('Failed to get Stripe subscription:', error)
+      log.error('Failed to get subscription', { error })
       return null
     }
   }
@@ -391,7 +394,7 @@ export class StripeAdapter implements PaymentAdapter {
 
       return { processed: true }
     } catch (error) {
-      console.error('Stripe webhook processing error:', error)
+      log.error('Webhook processing error', { error })
       return {
         processed: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -401,7 +404,7 @@ export class StripeAdapter implements PaymentAdapter {
 
   async validateWebhook(rawBody: string, signature: string): Promise<boolean> {
     if (!env.STRIPE_WEBHOOK_SECRET) {
-      console.error('STRIPE_WEBHOOK_SECRET is required for webhook validation')
+      log.error('STRIPE_WEBHOOK_SECRET is required for webhook validation')
       return false
     }
 
@@ -409,7 +412,7 @@ export class StripeAdapter implements PaymentAdapter {
       this.stripe.webhooks.constructEvent(rawBody, signature, env.STRIPE_WEBHOOK_SECRET)
       return true
     } catch (error) {
-      console.error('Stripe webhook signature validation failed:', error)
+      log.error('Webhook signature validation failed', { error })
       return false
     }
   }

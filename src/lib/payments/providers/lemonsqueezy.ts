@@ -29,6 +29,9 @@ import type { PaymentProvider, PlanName } from '@/config/payments'
 import { getPriceConfig, paymentConfig } from '@/config/payments'
 import { env } from '@/config/env'
 import crypto from 'crypto'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'payments', provider: 'lemonsqueezy' })
 
 export class LemonSqueezyAdapter implements PaymentAdapter {
   public readonly provider: PaymentProvider = 'lemonsqueezy'
@@ -39,7 +42,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
     }
     lemonSqueezySetup({
       apiKey: process.env.LEMONSQUEEZY_API_KEY,
-      onError: (error: any) => console.error('Lemon Squeezy API Error:', error),
+      onError: (error: any) => log.error('Lemon Squeezy API error', { error }),
     })
   }
 
@@ -93,7 +96,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
     )
 
     if (error || !data) {
-      console.error('Lemon Squeezy checkout creation error:', error)
+      log.error('Checkout creation error', { error })
       throw new Error('Failed to create Lemon Squeezy checkout session')
     }
 
@@ -178,7 +181,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
     // If cancelAtPeriodEnd=false is requested, we still cancel via the API
     // but the subscription will remain active until the current period ends.
     if (!cancelAtPeriodEnd) {
-      console.warn('LemonSqueezy does not support immediate cancellation — cancelling at period end instead')
+      log.warn('LemonSqueezy does not support immediate cancellation — cancelling at period end instead')
     }
     const { error } = await cancelSubscription(providerSubscriptionId)
     if (error) {
@@ -234,7 +237,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
         const plan = this.mapVariantToPlan(attrs.variant_id.toString())
         const userId = body.meta.custom_data?.user_id || ''
         if (!userId) {
-          console.warn('[LemonSqueezy] Webhook received subscription event without userId in custom_data')
+          log.warn('Webhook received subscription event without userId in custom_data')
         }
 
         return {

@@ -1,8 +1,11 @@
 import { db } from '@/database'
 import { jobExecutionLogs } from '@/database/schema'
 import { captureError } from '@/lib/errors'
+import { createLogger as createAppLogger } from '@/lib/logger'
 import { eq } from 'drizzle-orm'
 import type { JobDefinition, ExecutionResult, JobContext, JobLogger } from './types'
+
+const log = createAppLogger({ module: 'jobs' })
 
 /**
  * Generates a simple unique ID (nanoid-style using crypto).
@@ -12,19 +15,24 @@ const generateId = (): string => {
 }
 
 /**
- * Creates a job logger that prefixes messages with the job name and execution ID.
+ * Creates a job-scoped logger backed by the unified logger.
  */
-const createLogger = (jobName: string, executionId: string): JobLogger => ({
-  info(message, meta) {
-    console.info(`[job:${jobName}][${executionId}] ${message}`, meta ?? '')
-  },
-  warn(message, meta) {
-    console.warn(`[job:${jobName}][${executionId}] ${message}`, meta ?? '')
-  },
-  error(message, error) {
-    console.error(`[job:${jobName}][${executionId}] ${message}`, error ?? '')
-  },
-})
+const createJobLogger = (jobName: string, executionId: string): JobLogger => {
+  const scoped = log.child({ job: jobName, executionId })
+  return {
+    info: (message, meta) => scoped.info(message, meta),
+    warn: (message, meta) => scoped.warn(message, meta),
+    error: (message, error) => {
+      const meta: Record<string, unknown> = {}
+      if (error instanceof Error) {
+        meta.error = error.message
+      } else if (error !== undefined) {
+        meta.error = error
+      }
+      scoped.error(message, meta)
+    },
+  }
+}
 
 /**
  * JobRunner - Executes a job definition with timeout, error handling, and DB logging.
@@ -59,7 +67,7 @@ export class JobRunner {
    */
   async execute(job: JobDefinition): Promise<ExecutionResult> {
     if (this.runningJobs.has(job.name)) {
-      console.info(`[job-runner] Skipping "${job.name}" — already running`)
+      log.info('Skipping job — already running', { job: job.name })
       return { success: true, executionId: '', jobName: job.name, durationMs: 0, attempts: 0 }
     }
     this.runningJobs.add(job.name)
@@ -69,7 +77,7 @@ export class JobRunner {
     const maxRetries = job.retries ?? 0
     const baseDelay = job.retryDelayMs ?? 1_000
 
-    const logger = createLogger(job.name, executionId)
+    const logger = createJobLogger(job.name, executionId)
 
     // Insert running record
     await db.insert(jobExecutionLogs).values({

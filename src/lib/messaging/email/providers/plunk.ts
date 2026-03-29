@@ -19,8 +19,11 @@
 import Plunk from '@plunk/node'
 
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
 import type { EmailProvider, ProcessedEmailData, SendEmailResult } from '../types'
 import { hasNonEmpty } from '../utils'
+
+const log = createLogger({ module: 'email', provider: 'plunk' })
 
 let client: Plunk | null = null
 
@@ -34,7 +37,7 @@ function getClient(): Plunk | null {
     client = new Plunk(apiKey)
     return client
   } catch (error) {
-    console.warn('Plunk client creation failed:', error)
+    log.warn('Plunk client creation failed', { error })
     return null
   }
 }

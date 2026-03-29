@@ -77,6 +77,9 @@ export const env = createEnv({
     FACEBOOK_CLIENT_ID: z.string().optional(),
     FACEBOOK_CLIENT_SECRET: z.string().optional(),
 
+    // Logging
+    LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional(),
+
     // Background Jobs / Cron
     // CRON_PROVIDER: set to 'node-cron' for local/self-hosted, 'vercel' for Vercel deployment
     // If not set, auto-detected: uses 'vercel' when VERCEL env var is present, else 'node-cron'
@@ -194,6 +197,7 @@ export const env = createEnv({
     NEXT_PUBLIC_POLAR_PRODUCT_PRO_MONTHLY: process.env.NEXT_PUBLIC_POLAR_PRODUCT_PRO_MONTHLY,
     NEXT_PUBLIC_POLAR_PRODUCT_ENTERPRISE_MONTHLY:
       process.env.NEXT_PUBLIC_POLAR_PRODUCT_ENTERPRISE_MONTHLY,
+    LOG_LEVEL: process.env.LOG_LEVEL,
     CRON_PROVIDER: process.env.CRON_PROVIDER,
     CRON_SECRET: process.env.CRON_SECRET,
     JOB_LOG_RETENTION_DAYS: process.env.JOB_LOG_RETENTION_DAYS,

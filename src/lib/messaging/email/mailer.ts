@@ -26,6 +26,7 @@
  */
 
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
 
 import type {
   EmailOptions,
@@ -45,6 +46,8 @@ import {
   providerPreferenceOrder,
   createLogProvider,
 } from './providers'
+
+const log = createLogger({ module: 'email' })
 
 /**
  * Resolve the provider name from environment configuration.
@@ -67,9 +70,7 @@ function getConfiguredProvider(): EmailProvider {
   if (explicitName) {
     const explicitProvider = getProvider(explicitName)
     if (explicitProvider) return explicitProvider
-    console.warn(
-      `Configured provider "${explicitName}" is not available, falling back to auto-discovery`
-    )
+    log.warn('Configured provider is not available', { provider: explicitName })
   }
 
   // Auto-discover first available provider
@@ -141,11 +142,11 @@ export async function sendEmail(options: EmailOptions): Promise<SendEmailResult>
     try {
       return await provider.send(processedData)
     } catch (error) {
-      console.error(`Primary email provider "${provider.name}" failed:`, error)
+      log.error('Primary email provider failed', { provider: provider.name, error })
 
       // If not already using log provider, fall back to it
       if (provider.name !== 'log') {
-        console.info('Falling back to log provider')
+        log.info('Falling back to log provider')
         const logProvider = createLogProvider()
         return logProvider.send(processedData)
       }
@@ -153,7 +154,7 @@ export async function sendEmail(options: EmailOptions): Promise<SendEmailResult>
       throw error
     }
   } catch (error) {
-    console.error('Error sending email:', error)
+    log.error('Error sending email', { error })
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Failed to send email',
@@ -179,10 +180,10 @@ export async function sendBatchEmails(options: BatchEmailOptions): Promise<Batch
       try {
         return await provider.sendBatch(options.emails)
       } catch (error) {
-        console.warn(
-          `Provider "${provider.name}" batch send failed, falling back to sequential:`,
-          error
-        )
+        log.warn('Provider batch send failed, falling back to sequential', {
+          provider: provider.name,
+          error,
+        })
       }
     }
 
@@ -212,7 +213,7 @@ export async function sendBatchEmails(options: BatchEmailOptions): Promise<Batch
       data: { count: successCount },
     }
   } catch (error) {
-    console.error('Error in batch email sending:', error)
+    log.error('Error in batch email sending', { error })
     return {
       success: false,
       message: 'Failed to send batch emails',

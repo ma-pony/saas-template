@@ -1,3 +1,7 @@
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'email' })
+
 export interface EmailValidationResult {
   isValid: boolean
   reason?: string
@@ -54,7 +58,7 @@ async function checkMXRecord(domain: string): Promise<boolean> {
     const mxRecords = await resolveMx(domain)
     return mxRecords && mxRecords.length > 0
   } catch (error) {
-    console.debug('MX record check failed', { domain, error })
+    log.debug('MX record check failed', { domain, error })
     return false
   }
 }
@@ -155,7 +159,7 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
 
       checks.mxRecord = await Promise.race([mxCheckPromise, timeoutPromise])
     } catch (error) {
-      console.debug('MX record check failed or timed out', { domain, error })
+      log.debug('MX record check failed or timed out', { domain, error })
       checks.mxRecord = false
     }
 
@@ -175,7 +179,7 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
       checks,
     }
   } catch (error) {
-    console.error('Email validation error', { email, error })
+    log.error('Email validation error', { email, error })
     return {
       isValid: false,
       reason: 'Validation service temporarily unavailable',

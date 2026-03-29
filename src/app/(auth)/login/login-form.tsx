@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { ArrowRight, ChevronRight, Eye, EyeOff } from 'lucide-react'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'auth' })
 import { Link } from '@/i18n/navigation'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from '@/i18n/navigation'
@@ -39,7 +42,7 @@ const validateCallbackUrl = (url: string): boolean => {
 
     return false
   } catch (error) {
-    console.error('Error validating callback URL:', { error, url })
+    log.error('Error validating callback URL', { error, url })
     return false
   }
 }
@@ -123,7 +126,7 @@ export default function LoginPage({
     if (validateCallbackUrl(callback)) {
       setCallbackUrl(callback)
     } else {
-      console.warn('Invalid callback URL detected and blocked:', { url: callback })
+      log.warn('Invalid callback URL blocked', { url: callback })
     }
   }, [searchParams])
 
@@ -302,7 +305,7 @@ export default function LoginPage({
         setResetStatus({ type: null, message: '' })
       }, 2000)
     } catch (error) {
-      console.error('Error requesting password reset:', { error })
+      log.error('Error requesting password reset', { error })
       setResetStatus({
         type: 'error',
         message: error instanceof Error ? error.message : t('common.error.networkError'),

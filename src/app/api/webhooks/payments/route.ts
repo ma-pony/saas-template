@@ -6,6 +6,9 @@ import { getPaymentAdapter } from '@/lib/payments/service'
 import { db } from '@/database'
 import { customer, subscription, payment } from '@/database/schema'
 import type { WebhookEvent } from '@/lib/payments/types'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'webhook' })
 
 /**
  * Map provider-specific event type names to canonical WebhookEventType.
@@ -108,7 +111,7 @@ export async function POST(req: Request) {
 
     if (result.error) {
       // Log but return 200 to prevent provider from retrying indefinitely
-      console.error('Webhook processing error:', result.error)
+      log.error('Webhook processing error', { error: result.error })
       return NextResponse.json({ received: true, error: result.error })
     }
 
@@ -239,7 +242,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error('Webhook handler error:', error)
+    log.error('Webhook handler error', { error })
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

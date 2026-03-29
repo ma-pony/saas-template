@@ -1,6 +1,9 @@
+import { createLogger } from '@/lib/logger'
 import type { JobSchedulerAdapter } from '../types'
 import type { JobRegistry } from '../job-registry'
 import { getJobRunner } from '../job-runner'
+
+const log = createLogger({ module: 'jobs', adapter: 'node-cron' })
 
 /**
  * NodeCronAdapter - Uses the `node-cron` package to schedule jobs in-process.
@@ -24,14 +27,14 @@ export class NodeCronAdapter implements JobSchedulerAdapter {
         try {
           await runner.execute(job)
         } catch (err) {
-          console.error(`[node-cron] Unhandled error executing job "${job.name}":`, err)
+          log.error('Unhandled error executing job', { job: job.name, error: err })
         }
       })
       this.tasks.push(task)
-      console.info(`[node-cron] Scheduled job "${job.name}" with expression: ${job.schedule}`)
+      log.info('Scheduled job', { job: job.name, schedule: job.schedule })
     }
 
-    console.info(`[node-cron] Started ${this.tasks.length} job(s)`)
+    log.info('Started jobs', { count: this.tasks.length })
   }
 
   async stop(): Promise<void> {
@@ -39,6 +42,6 @@ export class NodeCronAdapter implements JobSchedulerAdapter {
       task.stop()
     }
     this.tasks = []
-    console.info('[node-cron] All cron tasks stopped')
+    log.info('All cron tasks stopped')
   }
 }

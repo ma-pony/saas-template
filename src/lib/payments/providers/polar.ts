@@ -20,6 +20,9 @@ import type {
 import type { PaymentProvider, PlanName } from '@/config/payments'
 import { getPriceConfig, paymentConfig } from '@/config/payments'
 import { env } from '@/config/env'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger({ module: 'payments', provider: 'polar' })
 
 export class PolarAdapter implements PaymentAdapter {
   public readonly provider: PaymentProvider = 'polar'
@@ -74,7 +77,7 @@ export class PolarAdapter implements PaymentAdapter {
         sessionId: checkout.id,
       }
     } catch (error) {
-      console.error('Polar checkout creation error:', error)
+      log.error('Checkout creation error', { error })
       throw new Error('Failed to create Polar checkout session')
     }
   }
@@ -93,7 +96,7 @@ export class PolarAdapter implements PaymentAdapter {
         provider: 'polar',
       }
     } catch (error) {
-      console.error('Polar customer creation error:', error)
+      log.error('Customer creation error', { error })
       throw new Error('Failed to create Polar customer')
     }
   }
@@ -134,7 +137,7 @@ export class PolarAdapter implements PaymentAdapter {
         trialEnd: (subscription as any).trialEndedAt ? new Date((subscription as any).trialEndedAt) : null,
       }
     } catch (error) {
-      console.error('Failed to get Polar subscription:', error)
+      log.error('Failed to get subscription', { error })
       return null
     }
   }
@@ -151,7 +154,7 @@ export class PolarAdapter implements PaymentAdapter {
         },
       })
     } catch (error) {
-      console.error('Polar subscription cancellation error:', error)
+      log.error('Subscription cancellation error', { error })
       throw new Error('Failed to cancel Polar subscription')
     }
   }
@@ -164,7 +167,7 @@ export class PolarAdapter implements PaymentAdapter {
       })
       return { url: (session as any).customerPortalUrl || `https://polar.sh/purchases/subscriptions` }
     } catch (error) {
-      console.error('Polar portal session creation failed:', error)
+      log.error('Portal session creation failed', { error })
       // Fallback to generic subscriptions page
       return { url: 'https://polar.sh/purchases/subscriptions' }
     }
@@ -198,7 +201,7 @@ export class PolarAdapter implements PaymentAdapter {
 
           const userId = subscription.customerMetadata?.userId || ''
           if (!userId) {
-            console.warn('[Polar] Webhook received subscription event without userId in customerMetadata')
+            log.warn('Webhook received subscription event without userId in customerMetadata')
           }
 
           return {
@@ -253,7 +256,7 @@ export class PolarAdapter implements PaymentAdapter {
           return { processed: true }
       }
     } catch (error) {
-      console.error('Polar webhook processing error:', error)
+      log.error('Webhook processing error', { error })
       return {
         processed: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -263,7 +266,7 @@ export class PolarAdapter implements PaymentAdapter {
 
   async validateWebhook(rawBody: string, signature: string): Promise<boolean> {
     if (!env.POLAR_WEBHOOK_SECRET) {
-      console.error('POLAR_WEBHOOK_SECRET is required for webhook validation')
+      log.error('POLAR_WEBHOOK_SECRET is required for webhook validation')
       return false
     }
 
@@ -305,7 +308,7 @@ export class PolarAdapter implements PaymentAdapter {
       }
       return mismatch === 0
     } catch (error) {
-      console.error('Polar webhook signature validation failed:', error)
+      log.error('Webhook signature validation failed', { error })
       return false
     }
   }
