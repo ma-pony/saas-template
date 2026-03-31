@@ -52,13 +52,10 @@ export const env = createEnv({
     // Stripe
     STRIPE_SECRET_KEY: z.string().optional(),
     STRIPE_WEBHOOK_SECRET: z.string().optional(),
-    STRIPE_PRICE_ID: z.string().optional(),
 
     // Polar
     POLAR_ACCESS_TOKEN: z.string().optional(),
     POLAR_WEBHOOK_SECRET: z.string().optional(),
-    POLAR_ORGANIZATION_ID: z.string().optional(),
-    POLAR_PRODUCT_ID: z.string().optional(),
     POLAR_ENVIRONMENT: z.enum(['production', 'sandbox']).default('production'),
 
     // Lemon Squeezy
@@ -85,6 +82,7 @@ export const env = createEnv({
     // If not set, auto-detected: uses 'vercel' when VERCEL env var is present, else 'node-cron'
     CRON_PROVIDER: z.enum(['node-cron', 'vercel']).optional(),
     // CRON_SECRET: Bearer token for HTTP job trigger endpoint. Recommended min 32 chars in production
+    // Recommended: use a secret of at least 32 characters in production
     CRON_SECRET: z.string().optional(),
     // JOB_LOG_RETENTION_DAYS: how many days to retain job execution logs (default: 30)
     JOB_LOG_RETENTION_DAYS: z.coerce.number().default(30),
@@ -167,11 +165,8 @@ export const env = createEnv({
     PAYMENT_PROVIDER: process.env.PAYMENT_PROVIDER,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-    STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID,
     POLAR_ACCESS_TOKEN: process.env.POLAR_ACCESS_TOKEN,
     POLAR_WEBHOOK_SECRET: process.env.POLAR_WEBHOOK_SECRET,
-    POLAR_ORGANIZATION_ID: process.env.POLAR_ORGANIZATION_ID,
-    POLAR_PRODUCT_ID: process.env.POLAR_PRODUCT_ID,
     POLAR_ENVIRONMENT: process.env.POLAR_ENVIRONMENT,
     LEMONSQUEEZY_API_KEY: process.env.LEMONSQUEEZY_API_KEY,
     LEMONSQUEEZY_STORE_ID: process.env.LEMONSQUEEZY_STORE_ID,
@@ -216,6 +211,3 @@ export const env = createEnv({
 export const isTruthy = (value: string | boolean | number | undefined) =>
   typeof value === 'string' ? value.toLowerCase() === 'true' || value === '1' : Boolean(value)
 
-// Utility to check if a value is explicitly false (defaults to false only if explicitly set)
-export const isFalsy = (value: string | boolean | number | undefined) =>
-  typeof value === 'string' ? value.toLowerCase() === 'false' || value === '0' : value === false

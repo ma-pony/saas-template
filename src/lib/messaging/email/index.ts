@@ -73,7 +73,7 @@ export {
 } from './providers'
 
 // Validation utilities
-export { validateEmail, quickValidateEmail } from './validation'
+export { quickValidateEmail } from './validation'
 export type { EmailValidationResult } from './validation'
 
 // Utility functions

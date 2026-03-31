@@ -24,11 +24,4 @@ export class VercelCronAdapter implements JobSchedulerAdapter {
     // No-op: nothing to stop
   }
 
-  /**
-   * Returns the names of all HTTP-triggered job routes.
-   * Used by the `/api/jobs/[jobName]` endpoint to validate requests.
-   */
-  getJobNames(registry: JobRegistry): string[] {
-    return registry.getAllJobs().map((j) => j.name)
-  }
 }

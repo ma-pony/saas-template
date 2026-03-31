@@ -187,29 +187,3 @@ export interface PaymentAdapter {
    */
   validateWebhook(rawBody: string, signature: string): Promise<boolean>
 }
-
-/**
- * Payment service configuration
- */
-export interface PaymentServiceConfig {
-  provider: PaymentProvider
-  adapter: PaymentAdapter
-}
-
-/**
- * Database operation results
- */
-export interface CreateCustomerResult {
-  customer: CustomerData
-  created: boolean // true if new, false if existing
-}
-
-export interface CreateSubscriptionResult {
-  subscription: SubscriptionData
-  created: boolean
-}
-
-export interface CreatePaymentResult {
-  payment: PaymentData
-  created: boolean
-}

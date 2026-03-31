@@ -119,8 +119,9 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     }
 
     // 2. Check for disposable email first (more specific)
-    checks.disposable = !isDisposableEmail(email)
-    if (!checks.disposable) {
+    // 2. Check for disposable email (true = is disposable)
+    checks.disposable = isDisposableEmail(email)
+    if (checks.disposable) {
       return {
         isValid: false,
         reason: 'Disposable email addresses are not allowed',
@@ -220,8 +221,9 @@ export function quickValidateEmail(email: string): EmailValidationResult {
     }
   }
 
-  checks.disposable = !isDisposableEmail(email)
-  if (!checks.disposable) {
+  // true = is disposable
+  checks.disposable = isDisposableEmail(email)
+  if (checks.disposable) {
     return {
       isValid: false,
       reason: 'Disposable email addresses are not allowed',

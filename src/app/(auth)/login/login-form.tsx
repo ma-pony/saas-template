@@ -310,7 +310,6 @@ export default function LoginPage({
   }
 
   const hasSocial = githubAvailable || googleAvailable || facebookAvailable || microsoftAvailable
-  const showDivider = hasSocial
 
   return (
     <>
@@ -425,7 +424,7 @@ export default function LoginPage({
       </form>
 
       {/* Divider - show when we have multiple auth methods */}
-      {showDivider && (
+      {hasSocial && (
         <div className='relative my-6 font-light'>
           <div className='absolute inset-0 flex items-center'>
             <div className='w-full border-t border-gray-200' />

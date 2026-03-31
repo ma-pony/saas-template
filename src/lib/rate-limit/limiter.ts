@@ -14,12 +14,14 @@ const store = new Map<string, WindowEntry>()
 
 // Periodically clean up expired entries to prevent memory leaks
 if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
+  const handle = setInterval(() => {
     const now = Date.now()
     for (const [key, entry] of store.entries()) {
       if (entry.resetAt < now) store.delete(key)
     }
   }, 60_000)
+  // Allow Node.js process to exit naturally (e.g., during tests or hot-reload)
+  if (handle.unref) handle.unref()
 }
 
 const DEFAULT_CONFIG: Required<RateLimitConfig> = {

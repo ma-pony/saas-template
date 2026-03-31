@@ -27,6 +27,7 @@ const LEMONSQUEEZY_EVENT_MAP: Record<string, WebhookEvent['type']> = {
   subscription_created: 'subscription.created',
   subscription_updated: 'subscription.updated',
   subscription_cancelled: 'subscription.canceled',
+  subscription_expired: 'subscription.canceled',
   order_created: 'payment.succeeded',
 }
 

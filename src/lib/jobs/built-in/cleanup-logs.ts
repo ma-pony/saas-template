@@ -1,7 +1,7 @@
 import { db } from '@/database'
 import { jobExecutionLogs } from '@/database/schema'
 import { env } from '@/config/env'
-import { lt } from 'drizzle-orm'
+import { lt, sql } from 'drizzle-orm'
 import type { JobDefinition, JobContext } from '../types'
 
 /**
@@ -17,12 +17,18 @@ const cleanupLogsHandler = async (context: JobContext): Promise<void> => {
   const cutoffDate = new Date()
   cutoffDate.setDate(cutoffDate.getDate() - retentionDays)
 
-  const deleted = await db
-    .delete(jobExecutionLogs)
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(jobExecutionLogs)
     .where(lt(jobExecutionLogs.startedAt, cutoffDate))
-    .returning({ id: jobExecutionLogs.id })
 
-  const deletedCount = deleted.length
+  if (count > 0) {
+    await db
+      .delete(jobExecutionLogs)
+      .where(lt(jobExecutionLogs.startedAt, cutoffDate))
+  }
+
+  const deletedCount = count
   context.logger.info(`Deleted ${deletedCount} expired log entries`, {
     cutoffDate: cutoffDate.toISOString(),
     deletedCount,

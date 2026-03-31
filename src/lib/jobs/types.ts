@@ -56,6 +56,8 @@ export interface JobLogger {
  */
 export interface ExecutionResult {
   success: boolean
+  /** true when the job was already running and this invocation was skipped */
+  skipped?: boolean
   executionId: string
   jobName: string
   durationMs: number

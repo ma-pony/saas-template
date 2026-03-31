@@ -68,7 +68,7 @@ export class JobRunner {
   async execute(job: JobDefinition): Promise<ExecutionResult> {
     if (this.runningJobs.has(job.name)) {
       log.info('Skipping job — already running', { job: job.name })
-      return { success: true, executionId: '', jobName: job.name, durationMs: 0, attempts: 0 }
+      return { success: true, skipped: true, executionId: '', jobName: job.name, durationMs: 0, attempts: 0 }
     }
     this.runningJobs.add(job.name)
     const executionId = generateId()

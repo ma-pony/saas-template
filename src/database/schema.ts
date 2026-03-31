@@ -92,7 +92,7 @@ export const customer = pgTable(
     userId: text('user_id')
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
-    provider: text('provider').notNull(), // 'stripe', 'polar', 'dodo', 'creem', 'autumn'
+    provider: text('provider').notNull(), // 'stripe', 'polar', 'lemonsqueezy'
     providerCustomerId: text('provider_customer_id').notNull(), // Customer ID from payment provider
     email: text('email'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -115,7 +115,7 @@ export const subscription = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     customerId: text('customer_id').references(() => customer.id, { onDelete: 'set null' }),
-    provider: text('provider').notNull(), // 'stripe', 'polar', 'dodo', 'creem', 'autumn'
+    provider: text('provider').notNull(), // 'stripe', 'polar', 'lemonsqueezy'
     providerSubscriptionId: text('provider_subscription_id').notNull(), // Subscription ID from payment provider
     status: text('status').notNull(), // 'active', 'canceled', 'past_due', 'trialing', 'incomplete'
     plan: text('plan').notNull(), // 'free', 'starter', 'pro', 'enterprise', etc.
@@ -153,7 +153,7 @@ export const payment = pgTable(
     subscriptionId: text('subscription_id').references(() => subscription.id, {
       onDelete: 'set null',
     }),
-    provider: text('provider').notNull(), // 'stripe', 'polar', 'dodo', 'creem', 'autumn'
+    provider: text('provider').notNull(), // 'stripe', 'polar', 'lemonsqueezy'
     providerPaymentId: text('provider_payment_id').notNull(), // Payment ID from provider
     type: text('type').notNull(), // 'subscription', 'one_time', 'refund'
     status: text('status').notNull(), // 'succeeded', 'pending', 'failed', 'canceled'

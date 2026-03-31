@@ -44,11 +44,11 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
   public readonly provider: PaymentProvider = 'lemonsqueezy'
 
   constructor() {
-    if (!process.env.LEMONSQUEEZY_API_KEY) {
+    if (!env.LEMONSQUEEZY_API_KEY) {
       throw new Error('LEMONSQUEEZY_API_KEY is required for LemonSqueezy adapter')
     }
     lemonSqueezySetup({
-      apiKey: process.env.LEMONSQUEEZY_API_KEY,
+      apiKey: env.LEMONSQUEEZY_API_KEY,
       onError: (error: any) => log.error('Lemon Squeezy API error', { error }),
     })
   }
@@ -70,7 +70,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
     }
 
     // We use variant ID for checkouts in Lemon Squeezy (productId in config acts as variant ID)
-    const storeId = process.env.LEMONSQUEEZY_STORE_ID
+    const storeId = env.LEMONSQUEEZY_STORE_ID
     if (!storeId) {
       throw new Error('LEMONSQUEEZY_STORE_ID is required')
     }
@@ -117,7 +117,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
   async createCustomer(userId: string, email?: string): Promise<CustomerData> {
     // Lemon Squeezy customers are typically created via checkout, but can be created manually
     // We'll try to find an existing one or create a new one
-    const storeId = process.env.LEMONSQUEEZY_STORE_ID
+    const storeId = env.LEMONSQUEEZY_STORE_ID
     if (!storeId) throw new Error('LEMONSQUEEZY_STORE_ID is required')
 
     if (email) {
@@ -176,7 +176,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
       currentPeriodEnd: attrs.renews_at ? new Date(attrs.renews_at) : null,
       cancelAtPeriodEnd: attrs.cancelled,
       canceledAt: attrs.ends_at ? new Date(attrs.ends_at) : null,
-      trialStart: attrs.trial_ends_at ? new Date() : null, // Not directly available
+      trialStart: null, // LemonSqueezy does not expose trial_started_at
       trialEnd: attrs.trial_ends_at ? new Date(attrs.trial_ends_at) : null,
     }
   }
@@ -296,11 +296,12 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
   }
 
   async validateWebhook(rawBody: string, signature: string): Promise<boolean> {
-    if (!process.env.LEMONSQUEEZY_WEBHOOK_SECRET) {
-      throw new Error('LEMONSQUEEZY_WEBHOOK_SECRET is required')
+    if (!env.LEMONSQUEEZY_WEBHOOK_SECRET) {
+      log.error('LEMONSQUEEZY_WEBHOOK_SECRET is required for webhook validation')
+      return false
     }
 
-    const hmac = crypto.createHmac('sha256', process.env.LEMONSQUEEZY_WEBHOOK_SECRET)
+    const hmac = crypto.createHmac('sha256', env.LEMONSQUEEZY_WEBHOOK_SECRET)
     const digest = Buffer.from(hmac.update(rawBody).digest('hex'), 'utf8')
     const signatureBuffer = Buffer.from(signature.trim(), 'utf8')
 

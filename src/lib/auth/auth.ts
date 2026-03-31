@@ -171,8 +171,8 @@ export const auth = betterAuth({
 
           if (!hasEmailService()) {
             // No real email provider — print OTP to console in dev, warn in production
-            if (process.env.NODE_ENV !== 'production') {
-              log.info('Verification OTP code (dev)', {
+            if (process.env.NODE_ENV === 'development') {
+              log.info('Verification OTP code (dev only)', {
                 email: data.email,
                 otp: data.otp,
                 type: data.type,

@@ -196,7 +196,6 @@ export default function RegisterForm({
   }
 
   const hasSocial = githubAvailable || googleAvailable || facebookAvailable || microsoftAvailable
-  const showDivider = hasSocial
 
   return (
     <>
@@ -333,7 +332,7 @@ export default function RegisterForm({
         </Button>
       </form>
 
-      {showDivider && (
+      {hasSocial && (
         <div className='relative my-6 font-light'>
           <div className='absolute inset-0 flex items-center'>
             <div className='w-full border-t border-gray-200' />
