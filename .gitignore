@@ -43,6 +43,10 @@ next-env.d.ts
 
 opencode.json
 
+# Claude Code local settings (may contain machine-specific paths)
+.claude/settings.json
+.claude/settings.local.json
+
 # migrations
 /migrations
 # Sentry Config File
