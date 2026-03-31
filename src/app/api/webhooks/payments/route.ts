@@ -1,6 +1,6 @@
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 
 import { getPaymentAdapter } from '@/lib/payments/service'
 import { db } from '@/database'
@@ -121,7 +121,10 @@ export async function POST(req: Request) {
         // Handle customer updates
         if (result.customer) {
           const existingCustomer = await tx.query.customer.findFirst({
-            where: eq(customer.providerCustomerId, result.customer.providerCustomerId),
+            where: and(
+              eq(customer.provider, result.customer.provider),
+              eq(customer.providerCustomerId, result.customer.providerCustomerId)
+            ),
           })
 
           if (existingCustomer) {
@@ -146,9 +149,12 @@ export async function POST(req: Request) {
         // Handle subscription updates
         if (result.subscription) {
           const existingSub = await tx.query.subscription.findFirst({
-            where: eq(
-              subscription.providerSubscriptionId,
-              result.subscription.providerSubscriptionId,
+            where: and(
+              eq(subscription.provider, result.subscription.provider),
+              eq(
+                subscription.providerSubscriptionId,
+                result.subscription.providerSubscriptionId
+              )
             ),
           })
 
@@ -159,7 +165,10 @@ export async function POST(req: Request) {
 
           if (!dbCustomerId && result.customer?.providerCustomerId) {
             const linkedCustomer = await tx.query.customer.findFirst({
-              where: eq(customer.providerCustomerId, result.customer.providerCustomerId),
+              where: and(
+                eq(customer.provider, result.customer.provider),
+                eq(customer.providerCustomerId, result.customer.providerCustomerId)
+              ),
             })
             dbCustomerId = linkedCustomer?.id
           }
@@ -207,7 +216,10 @@ export async function POST(req: Request) {
         // Handle payment updates
         if (result.payment) {
           const existingPayment = await tx.query.payment.findFirst({
-            where: eq(payment.providerPaymentId, result.payment.providerPaymentId),
+            where: and(
+              eq(payment.provider, result.payment.provider),
+              eq(payment.providerPaymentId, result.payment.providerPaymentId)
+            ),
           })
 
           const dbCustomerId = result.payment.customerId
@@ -227,7 +239,7 @@ export async function POST(req: Request) {
               userId: result.payment.userId,
               customerId: dbCustomerId,
               subscriptionId: dbSubscriptionId,
-              provider: result.payment.provider as any,
+              provider: result.payment.provider,
               providerPaymentId: result.payment.providerPaymentId,
               type: result.payment.type,
               status: result.payment.status,

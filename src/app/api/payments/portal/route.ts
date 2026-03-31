@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { auth } from '@/lib/auth'
@@ -45,15 +45,9 @@ export const POST = withApiErrors(async (req: Request) => {
   const adapter = getPaymentAdapter()
 
   const userCustomer = await db.query.customer.findFirst({
-    where: eq(customer.userId, session.user.id),
+    where: and(eq(customer.userId, session.user.id), eq(customer.provider, adapter.provider)),
   })
   if (!userCustomer) throw new NotFoundError('No customer found')
-
-  if (userCustomer.provider !== adapter.provider) {
-    throw new BadRequestError(
-      `Customer provider (${userCustomer.provider}) does not match active provider (${adapter.provider})`
-    )
-  }
 
   const portalSession = await adapter.createPortal(userCustomer.providerCustomerId, returnUrl)
   return NextResponse.json(portalSession)

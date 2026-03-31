@@ -33,6 +33,13 @@ import { createLogger } from '@/lib/logger'
 
 const log = createLogger({ module: 'payments', provider: 'lemonsqueezy' })
 
+const getWebhookCustomUserId = (body: any): string =>
+  body?.meta?.custom_data?.user_id ??
+  body?.meta?.custom_data?.userId ??
+  body?.meta?.custom?.user_id ??
+  body?.meta?.custom?.userId ??
+  ''
+
 export class LemonSqueezyAdapter implements PaymentAdapter {
   public readonly provider: PaymentProvider = 'lemonsqueezy'
 
@@ -78,6 +85,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
         email,
         custom: {
           userId,
+          user_id: userId,
           plan,
           provider: 'lemonsqueezy',
         },
@@ -235,7 +243,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
       case 'subscription_expired': {
         const attrs = data.attributes
         const plan = this.mapVariantToPlan(attrs.variant_id.toString())
-        const userId = body.meta.custom_data?.user_id || ''
+        const userId = getWebhookCustomUserId(body)
         if (!userId) {
           log.warn('Webhook received subscription event without userId in custom_data')
         }
@@ -270,7 +278,7 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
           payment: {
             id: `ls_${data.id}`,
             providerPaymentId: data.id,
-            userId: body.meta.custom_data?.user_id || '',
+            userId: getWebhookCustomUserId(body),
             customerId: `ls_${attrs.customer_id}`,
             type: 'one_time',
             status: attrs.status === 'paid' ? 'succeeded' : 'pending',
@@ -294,7 +302,11 @@ export class LemonSqueezyAdapter implements PaymentAdapter {
 
     const hmac = crypto.createHmac('sha256', process.env.LEMONSQUEEZY_WEBHOOK_SECRET)
     const digest = Buffer.from(hmac.update(rawBody).digest('hex'), 'utf8')
-    const signatureBuffer = Buffer.from(signature, 'utf8')
+    const signatureBuffer = Buffer.from(signature.trim(), 'utf8')
+
+    if (digest.length !== signatureBuffer.length) {
+      return false
+    }
 
     return crypto.timingSafeEqual(digest, signatureBuffer)
   }

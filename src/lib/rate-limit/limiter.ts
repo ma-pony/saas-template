@@ -26,12 +26,12 @@ const DEFAULT_CONFIG: Required<RateLimitConfig> = {
   windowMs: 60_000,
   max: 60,
   keyGenerator: (req) => {
-    // Platform-set headers (x-vercel-forwarded-for, cf-connecting-ip) are trustworthy.
-    // x-real-ip and x-forwarded-for are only reliable behind a trusted reverse proxy.
+    // Prefer platform-set headers first; proxy-provided headers are only reliable
+    // when the app is known to be behind a trusted reverse proxy.
     const realIp =
-      req.headers.get('x-real-ip') ||
       req.headers.get('x-vercel-forwarded-for') ||
       req.headers.get('cf-connecting-ip') ||
+      req.headers.get('x-real-ip') ||
       req.headers.get('x-forwarded-for')?.split(',')[0].trim()
     return realIp || 'unknown'
   },
