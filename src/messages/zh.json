@@ -51,7 +51,8 @@
       "orContinueWith": "或通过以下方式继续",
       "hidePassword": "隐藏密码",
       "showPassword": "显示密码",
-      "loading": "加载中..."
+      "loading": "加载中...",
+      "switchLanguage": "切换语言"
     },
     "placeholder": {
       "email": "请输入您的邮箱",
@@ -73,7 +74,10 @@
       "docs": "文档",
       "toggleMenu": "切换菜单",
       "supportDev": "支持开发者",
-      "blog": "博客"
+      "blog": "博客",
+      "mainNav": "主导航",
+      "signOut": "退出登录",
+      "appLogo": "应用图标"
     },
     "hero": {
       "title": "生产就绪的 Next.js 模板，助您快速盈利",
@@ -285,7 +289,9 @@
         "heading": "社区"
       },
       "tagline": "将想法转化为产品，快速实现",
-      "copyright": "版权所有 © {year} -"
+      "copyright": "版权所有 © {year} -",
+      "appLogo": "应用图标",
+      "companyName": "您的公司"
     }
   },
   "auth": {
@@ -557,13 +563,15 @@
       "title": "分类：{name}",
       "count": "该分类下共 {count} 篇文章",
       "countOne": "该分类下共 1 篇文章",
-      "empty": "该分类下暂无文章。"
+      "empty": "该分类下暂无文章。",
+      "description": "浏览 {site} 博客中「{name}」分类下的所有文章。"
     },
     "tag": {
       "title": "标签：#{name}",
       "count": "该标签下共 {count} 篇文章",
       "countOne": "该标签下共 1 篇文章",
-      "empty": "该标签下暂无文章。"
+      "empty": "该标签下暂无文章。",
+      "description": "浏览 {site} 博客中带有 #{name} 标签的所有文章。"
     }
   }
 }

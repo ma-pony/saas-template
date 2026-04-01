@@ -211,7 +211,7 @@ export default function Footer() {
           <div className='flex flex-col gap-4'>
             <div className='flex items-center gap-2'>
               {/* TODO: Replace /image.png with your logo file */}
-              <img src='/image.png' alt='App Logo' className='h-6 w-6 object-contain' />
+              <img src='/image.png' alt={t('appLogo')} className='h-6 w-6 object-contain' />
               <span
                 className='text-base font-semibold text-foreground'
                 style={{ fontFamily: 'var(--font-bricolage-grotesque)' }}
@@ -225,7 +225,7 @@ export default function Footer() {
             <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
               <p className='text-sm text-muted-foreground'>
                 {/* TODO: Replace with your company name and website */}
-                {t('copyright', { year: new Date().getFullYear() })} Your Company
+                {t('copyright', { year: new Date().getFullYear() })} {t('companyName')}
               </p>
             </div>
           </div>

@@ -51,7 +51,8 @@
       "orContinueWith": "O continúa con",
       "hidePassword": "Ocultar contraseña",
       "showPassword": "Mostrar contraseña",
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+      "switchLanguage": "Cambiar idioma"
     },
     "placeholder": {
       "email": "Ingresa tu correo",
@@ -73,7 +74,10 @@
       "docs": "Documentación",
       "toggleMenu": "Alternar menú",
       "supportDev": "Apoyar al desarrollador",
-      "blog": "Blog"
+      "blog": "Blog",
+      "mainNav": "Navegación principal",
+      "signOut": "Cerrar sesión",
+      "appLogo": "Logo de la app"
     },
     "hero": {
       "title": "Una plantilla Next.js lista para producción, construida para ganar $$$",
@@ -285,7 +289,9 @@
         "heading": "Comunidad"
       },
       "tagline": "Convierte ideas en productos, rápido",
-      "copyright": "Copyright © {year} -"
+      "copyright": "Copyright © {year} -",
+      "appLogo": "Logo de la app",
+      "companyName": "Tu Empresa"
     }
   },
   "auth": {
@@ -557,13 +563,15 @@
       "title": "Categoría: {name}",
       "count": "{count} publicaciones en esta categoría",
       "countOne": "1 publicación en esta categoría",
-      "empty": "No hay publicaciones en esta categoría aún."
+      "empty": "No hay publicaciones en esta categoría aún.",
+      "description": "Explora todas las publicaciones en la categoría {name} del blog de {site}."
     },
     "tag": {
       "title": "Etiqueta: #{name}",
       "count": "{count} publicaciones con esta etiqueta",
       "countOne": "1 publicación con esta etiqueta",
-      "empty": "No hay publicaciones con esta etiqueta aún."
+      "empty": "No hay publicaciones con esta etiqueta aún.",
+      "description": "Explora todas las publicaciones etiquetadas con #{name} en el blog de {site}."
     }
   }
 }

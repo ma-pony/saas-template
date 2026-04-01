@@ -50,14 +50,14 @@ export default function Navbar() {
   return (
     <>
       <nav
-        aria-label='Main navigation'
+        aria-label={t('mainNav')}
         className='fixed inset-x-0 top-0 z-30 border-b border-[#E4E4E7] bg-[#F4F4F5]'
       >
         <div className='mx-auto max-w-7xl flex h-14 items-center justify-between gap-8 px-4 sm:px-6'>
           <div className='flex items-center gap-3'>
             <Link href='/' className='flex items-center gap-2'>
               {/* TODO: Replace /image.png with your logo file */}
-              <img src='/image.png' alt='App Logo' className='h-6 w-6 object-contain' />
+              <img src='/image.png' alt={t('appLogo')} className='h-6 w-6 object-contain' />
               <span
                 className='text-base font-semibold text-foreground'
                 style={{ fontFamily: 'var(--font-bricolage-grotesque)' }}
@@ -129,7 +129,7 @@ export default function Navbar() {
                   type='button'
                   onClick={() => signOut({ fetchOptions: { onSuccess: () => { window.location.href = '/' } } })}
                   className='text-muted-foreground transition-colors hover:text-foreground'
-                  aria-label='Sign out'
+                  aria-label={t('signOut')}
                 >
                   <LogOut className='h-4 w-4' />
                 </button>

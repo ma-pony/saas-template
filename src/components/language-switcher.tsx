@@ -2,6 +2,7 @@
 
 import { Globe } from 'lucide-react'
 import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { usePathname, useRouter } from '@/i18n/navigation'
 import {
   SUPPORTED_LOCALES,
@@ -30,6 +31,7 @@ export const LanguageSwitcher = ({ className, size = 'default' }: LanguageSwitch
   const pathname = usePathname()
   const router = useRouter()
 
+  const t = useTranslations('common.label')
   const currentLocale = (params?.locale as SupportedLocale) || 'en'
   const iconSize = size === 'sm' ? 'h-4 w-4' : 'h-5 w-5'
 
@@ -45,7 +47,7 @@ export const LanguageSwitcher = ({ className, size = 'default' }: LanguageSwitch
         <button
           type='button'
           className={`inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground ${className || ''}`}
-          aria-label='Switch language'
+          aria-label={t('switchLanguage')}
         >
           <Globe className={iconSize} />
         </button>

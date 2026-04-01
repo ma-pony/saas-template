@@ -31,7 +31,7 @@ export const generateMetadata = async ({ params }: TagPageProps): Promise<Metada
   return {
     ...genSeoMetadata({
       title: `#${displayName} - ${t('title')}`,
-      description: `Browse all posts tagged with #${displayName} on the ${siteConfig.name} blog.`,
+      description: t('tag.description', { name: displayName, site: siteConfig.name }),
       canonical: `/${locale}/blog/tag/${tag}`,
     }),
     alternates: { ...hreflang },

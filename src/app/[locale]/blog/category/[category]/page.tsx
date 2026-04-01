@@ -31,7 +31,7 @@ export const generateMetadata = async ({ params }: CategoryPageProps): Promise<M
   return {
     ...genSeoMetadata({
       title: `${displayName} - ${t('title')}`,
-      description: `Browse all posts in the ${displayName} category on the ${siteConfig.name} blog.`,
+      description: t('category.description', { name: displayName, site: siteConfig.name }),
       canonical: `/${locale}/blog/category/${category}`,
     }),
     alternates: { ...hreflang },

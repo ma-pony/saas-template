@@ -51,7 +51,8 @@
       "orContinueWith": "Or continue with",
       "hidePassword": "Hide password",
       "showPassword": "Show password",
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "switchLanguage": "Switch language"
     },
     "placeholder": {
       "email": "Enter your email",
@@ -73,7 +74,10 @@
       "docs": "Docs",
       "toggleMenu": "Toggle menu",
       "supportDev": "Support Dev",
-      "blog": "Blog"
+      "blog": "Blog",
+      "mainNav": "Main navigation",
+      "signOut": "Sign out",
+      "appLogo": "App Logo"
     },
     "hero": {
       "title": "A production-ready Next.js boilerplate built to make $$$",
@@ -285,7 +289,9 @@
         "heading": "Community"
       },
       "tagline": "Turn ideas into products, fast",
-      "copyright": "Copyright © {year} -"
+      "copyright": "Copyright © {year} -",
+      "appLogo": "App Logo",
+      "companyName": "Your Company"
     }
   },
   "auth": {
@@ -557,13 +563,15 @@
       "title": "Category: {name}",
       "count": "{count} posts in this category",
       "countOne": "1 post in this category",
-      "empty": "No posts in this category yet."
+      "empty": "No posts in this category yet.",
+      "description": "Browse all posts in the {name} category on the {site} blog."
     },
     "tag": {
       "title": "Tag: #{name}",
       "count": "{count} posts with this tag",
       "countOne": "1 post with this tag",
-      "empty": "No posts with this tag yet."
+      "empty": "No posts with this tag yet.",
+      "description": "Browse all posts tagged with #{name} on the {site} blog."
     }
   }
 }

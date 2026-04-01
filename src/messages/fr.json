@@ -51,7 +51,8 @@
       "orContinueWith": "Ou continuer avec",
       "hidePassword": "Masquer le mot de passe",
       "showPassword": "Afficher le mot de passe",
-      "loading": "Chargement..."
+      "loading": "Chargement...",
+      "switchLanguage": "Changer de langue"
     },
     "placeholder": {
       "email": "Entrez votre email",
@@ -73,7 +74,10 @@
       "docs": "Documentation",
       "toggleMenu": "Basculer le menu",
       "supportDev": "Soutenir le développeur",
-      "blog": "Blog"
+      "blog": "Blog",
+      "mainNav": "Navigation principale",
+      "signOut": "Se déconnecter",
+      "appLogo": "Logo de l'application"
     },
     "hero": {
       "title": "Un boilerplate Next.js prêt pour la production, conçu pour générer $$$",
@@ -285,7 +289,9 @@
         "heading": "Communauté"
       },
       "tagline": "Transformez les idées en produits, rapidement",
-      "copyright": "Copyright © {year} -"
+      "copyright": "Copyright © {year} -",
+      "appLogo": "Logo de l'application",
+      "companyName": "Votre Entreprise"
     }
   },
   "auth": {
@@ -557,13 +563,15 @@
       "title": "Catégorie : {name}",
       "count": "{count} articles dans cette catégorie",
       "countOne": "1 article dans cette catégorie",
-      "empty": "Aucun article dans cette catégorie pour le moment."
+      "empty": "Aucun article dans cette catégorie pour le moment.",
+      "description": "Parcourez tous les articles de la catégorie {name} sur le blog de {site}."
     },
     "tag": {
       "title": "Tag : #{name}",
       "count": "{count} articles avec ce tag",
       "countOne": "1 article avec ce tag",
-      "empty": "Aucun article avec ce tag pour le moment."
+      "empty": "Aucun article avec ce tag pour le moment.",
+      "description": "Parcourez tous les articles tagués #{name} sur le blog de {site}."
     }
   }
 }
