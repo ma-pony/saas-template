@@ -4,9 +4,12 @@ import Link from 'next/link'
 import { FaGithub, FaDiscord, FaXTwitter } from 'react-icons/fa6'
 import { SiProducthunt, SiYcombinator, SiPeerlist } from 'react-icons/si'
 import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 
 export default function Footer() {
   const t = useTranslations('site.footer')
+  const params = useParams()
+  const locale = (params?.locale as string) || 'en'
 
   return (
     <footer aria-label='Site footer' className='border-t border-[#E4E4E7] bg-[#F4F4F5] py-12'>
@@ -23,7 +26,7 @@ export default function Footer() {
             <ul className='space-y-3'>
               <li>
                 <Link
-                  href='/#pricing'
+                  href={`/${locale}/#pricing`}
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
                   {t('links.pricing')}
@@ -31,7 +34,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href='/docs'
+                  href={`/${locale}/docs`}
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
                   {t('links.docs')}
@@ -39,7 +42,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href='/changelog'
+                  href={`/${locale}/changelog`}
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
                   {t('links.changelog')}
@@ -47,7 +50,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href='/demo'
+                  href={`/${locale}/demo`}
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
                   {t('links.demo')}
@@ -55,7 +58,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href='/support'
+                  href={`/${locale}/support`}
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
                   {t('links.support')}
@@ -75,7 +78,7 @@ export default function Footer() {
             <ul className='space-y-3'>
               <li>
                 <Link
-                  href='/terms'
+                  href={`/${locale}/terms`}
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
                   {t('legal.terms')}
@@ -83,7 +86,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href='/privacy'
+                  href={`/${locale}/privacy`}
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
                   {t('legal.privacy')}
@@ -91,7 +94,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href='/licenses'
+                  href={`/${locale}/licenses`}
                   className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'
                 >
                   {t('legal.licenses')}

@@ -114,3 +114,10 @@ Uses [spex](https://github.com/github/spec-kit) for spec-driven development. Pro
 - `/spex:ship` — autonomous full-cycle workflow
 - `/spex:review-code` — review code against spec compliance
 - `/spex:deep-review` — multi-perspective code review
+
+## Active Technologies
+- TypeScript 5.x / Next.js 15 (App Router) + next-intl、lucide-react、@radix-ui/react-dropdown-menu (via Shadcn) (001-language-switcher)
+- 无数据库变更（cookie 持久化） (001-language-switcher)
+
+## Recent Changes
+- 001-language-switcher: Added TypeScript 5.x / Next.js 15 (App Router) + next-intl、lucide-react、@radix-ui/react-dropdown-menu (via Shadcn)

@@ -24,3 +24,14 @@ export const LOCALE_TO_LANG_TAG: Record<SupportedLocale, string> = {
   fr: 'fr',
   zh: 'zh-Hans',
 }
+
+/**
+ * Display names for each locale in its own language.
+ * Used in the LanguageSwitcher so users can always identify their language.
+ */
+export const LOCALE_DISPLAY_NAMES: Record<SupportedLocale, string> = {
+  en: 'English',
+  es: 'Español',
+  fr: 'Français',
+  zh: '中文',
+}

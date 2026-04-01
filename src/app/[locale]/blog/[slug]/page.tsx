@@ -5,13 +5,13 @@ import remarkGfm from 'remark-gfm'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeHighlight from 'rehype-highlight'
-import { cookies } from 'next/headers'
 import { getTranslations } from 'next-intl/server'
 import { getAllPosts, getPostBySlug } from '@/lib/blog/content-reader'
 import { generateArticleJsonLd } from '@/lib/blog/json-ld'
 import { generateMetadata as genSeoMetadata } from '@/lib/seo'
 import { getBaseUrl } from '@/lib/utils'
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/lib/i18n/config'
+import { SUPPORTED_LOCALES, type LocaleParams } from '@/lib/i18n/config'
+import { generateHreflangMetadata } from '@/lib/i18n/hreflang'
 import { getMDXComponents } from '@/components/blog/mdx-components'
 import JsonLdScript from '@/components/blog/json-ld-script'
 import TableOfContents from '@/components/blog/table-of-contents'
@@ -27,32 +27,39 @@ const LOCALE_TO_DATE_LOCALE: Record<string, string> = {
 }
 
 interface BlogPostPageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<LocaleParams & { slug: string }>
 }
 
 export const generateStaticParams = () => {
   const posts = getAllPosts()
-  return posts.map((post) => ({ slug: post.slug }))
+  return SUPPORTED_LOCALES.flatMap((locale) =>
+    posts.map((post) => ({ locale, slug: post.slug }))
+  )
 }
 
 export const generateMetadata = async ({ params }: BlogPostPageProps): Promise<Metadata> => {
-  const { slug } = await params
+  const { slug, locale } = await params
   const post = getPostBySlug(slug)
 
   if (!post) {
-    return {}
+    notFound()
   }
+
+  const hreflang = generateHreflangMetadata(`/blog/${post.slug}`)
 
   return {
     ...genSeoMetadata({
       title: post.title,
       description: post.description,
-      canonical: `/blog/${post.slug}`,
+      canonical: `/${locale}/blog/${post.slug}`,
       type: 'article',
       publishedTime: post.date,
       authors: [post.author],
       ...(post.coverImage && { image: post.coverImage }),
     }),
+    alternates: {
+      ...hreflang,
+    },
   }
 }
 
@@ -65,7 +72,6 @@ const extractHeadings = (content: string): TocItem[] => {
   while ((match = headingRegex.exec(content)) !== null) {
     const level = match[1].length as 2 | 3
     const text = match[2].trim()
-    // Derive ID the same way rehype-slug does
     const id = text
       .toLowerCase()
       .replace(/[^\w\s-]/g, '')
@@ -80,7 +86,7 @@ const extractHeadings = (content: string): TocItem[] => {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params
+  const { slug, locale } = await params
   const post = getPostBySlug(slug)
 
   if (!post) {
@@ -96,13 +102,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     description: post.description,
     author: post.author,
     datePublished: post.date,
-    url: `${baseUrl}/blog/${post.slug}`,
+    url: `${baseUrl}/${locale}/blog/${post.slug}`,
     ...(post.coverImage && { image: `${baseUrl}${post.coverImage}` }),
   })
 
-  const cookieStore = await cookies()
-  const rawLocale = cookieStore.get('NEXT_LOCALE')?.value || DEFAULT_LOCALE
-  const locale = (SUPPORTED_LOCALES as readonly string[]).includes(rawLocale) ? rawLocale : DEFAULT_LOCALE
   const dateLocale = LOCALE_TO_DATE_LOCALE[locale] ?? 'en-US'
 
   const formattedDate = new Date(post.date).toLocaleDateString(dateLocale, {
@@ -111,7 +114,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     day: 'numeric',
   })
 
-  const t = await getTranslations('blog')
+  const t = await getTranslations({ locale, namespace: 'blog' })
+  const blogBase = `/${locale}/blog`
 
   const mdxOptions = {
     mdxOptions: {
@@ -129,7 +133,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <article className='min-w-0 flex-1'>
             {/* Breadcrumb */}
             <nav className='mb-6 text-sm text-muted-foreground'>
-              <Link href='/blog' className='hover:text-foreground transition-colors'>
+              <Link href={blogBase} className='hover:text-foreground transition-colors'>
                 {t('title')}
               </Link>
               <span className='mx-2'>›</span>
@@ -143,7 +147,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   {post.categories.map((category) => (
                     <Link
                       key={category}
-                      href={`/blog/category/${encodeURIComponent(category.toLowerCase())}`}
+                      href={`${blogBase}/category/${encodeURIComponent(category.toLowerCase())}`}
                       className='rounded-full bg-[#F4F4F5] px-2.5 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-[#E4E4E7] hover:text-foreground'
                     >
                       {category}
@@ -199,7 +203,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   {post.tags.map((tag) => (
                     <Link
                       key={tag}
-                      href={`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`}
+                      href={`${blogBase}/tag/${encodeURIComponent(tag.toLowerCase())}`}
                       className='text-sm text-muted-foreground transition-colors hover:text-foreground'
                     >
                       #{tag}
@@ -209,7 +213,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
                 <div className='mt-6'>
                   <Link
-                    href='/blog'
+                    href={blogBase}
                     className='text-sm font-medium text-primary transition-colors hover:underline'
                   >
                     {t('backToBlog')}

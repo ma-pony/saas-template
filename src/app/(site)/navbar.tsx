@@ -4,15 +4,19 @@ import Link from 'next/link'
 import { X, Menu, LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 
 import { getGitHubStars } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useSession, signOut } from '@/lib/auth/auth-client'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 export default function Navbar() {
   const t = useTranslations('site.navbar')
   const tc = useTranslations('common.button')
   const { data: session } = useSession()
+  const params = useParams()
+  const locale = (params?.locale as string) || 'en'
   const [stars, setStars] = useState<number | null>(null)
   const [isLoadingStars, setIsLoadingStars] = useState(true)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -80,7 +84,7 @@ export default function Navbar() {
               <Link href='/#faq' className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'>
                 {t('faq')}
               </Link>
-              <Link href='/blog' className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'>
+              <Link href={`/${locale}/blog`} className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'>
                 {t('blog')}
               </Link>
               <Link href='/docs' className='text-sm font-medium text-muted-foreground transition-colors duration-200 ease-in-out hover:text-foreground'>
@@ -110,10 +114,13 @@ export default function Navbar() {
                 )
               )}
             </a>
+            <div className='hidden md:block'>
+              <LanguageSwitcher size='sm' />
+            </div>
             {session?.user ? (
               <div className='hidden items-center gap-3 md:flex'>
                 <Link
-                  href='/dashboard'
+                  href={`/${locale}/dashboard`}
                   className='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90'
                 >
                   {tc('dashboard')}
@@ -129,7 +136,7 @@ export default function Navbar() {
               </div>
             ) : (
               <Link
-                href='/login'
+                href={`/${locale}/login`}
                 className='hidden rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 md:inline-flex'
               >
                 {tc('signIn')}
@@ -163,7 +170,7 @@ export default function Navbar() {
               <Link href='#faq' className='block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
                 {t('faq')}
               </Link>
-              <Link href='/blog' className='block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
+              <Link href={`/${locale}/blog`} className='block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
                 {t('blog')}
               </Link>
               <a
@@ -179,9 +186,13 @@ export default function Navbar() {
                 GitHub
               </a>
               <div className='border-t border-border mx-3 my-1' />
+              <div className='px-3 py-2'>
+                <LanguageSwitcher size='sm' />
+              </div>
+              <div className='border-t border-border mx-3 my-1' />
               {session?.user ? (
                 <>
-                  <Link href='/dashboard' className='block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
+                  <Link href={`/${locale}/dashboard`} className='block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
                     {tc('dashboard')}
                   </Link>
                   <button
@@ -194,7 +205,7 @@ export default function Navbar() {
                   </button>
                 </>
               ) : (
-                <Link href='/login' className='block rounded-md px-3 py-2 text-sm font-medium text-primary transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
+                <Link href={`/${locale}/login`} className='block rounded-md px-3 py-2 text-sm font-medium text-primary transition-all duration-200 ease-in-out hover:bg-accent hover:text-accent-foreground' onClick={toggleMenu}>
                   {tc('signIn')}
                 </Link>
               )}
