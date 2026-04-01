@@ -30,7 +30,8 @@ const BlogPostCard = async ({ post, className }: BlogPostCardProps) => {
     day: 'numeric',
   })
 
-  const t = await getTranslations('blog')
+  const t = await getTranslations({ locale, namespace: 'blog' })
+  const blogBase = `/${locale}/blog`
 
   return (
     <article
@@ -40,7 +41,7 @@ const BlogPostCard = async ({ post, className }: BlogPostCardProps) => {
       )}
     >
       {post.coverImage && (
-        <Link href={`/blog/${post.slug}`} className='block overflow-hidden'>
+        <Link href={`${blogBase}/${post.slug}`} className='block overflow-hidden'>
           <div className='relative aspect-video w-full'>
             <Image
               src={post.coverImage}
@@ -58,7 +59,7 @@ const BlogPostCard = async ({ post, className }: BlogPostCardProps) => {
             {post.categories.map((category) => (
               <Link
                 key={category}
-                href={`/blog/category/${encodeURIComponent(category.toLowerCase())}`}
+                href={`${blogBase}/category/${encodeURIComponent(category.toLowerCase())}`}
                 className='rounded-full bg-[#F4F4F5] px-2.5 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-[#E4E4E7] hover:text-foreground'
               >
                 {category}
@@ -67,7 +68,7 @@ const BlogPostCard = async ({ post, className }: BlogPostCardProps) => {
           </div>
         )}
 
-        <Link href={`/blog/${post.slug}`} className='group/title'>
+        <Link href={`${blogBase}/${post.slug}`} className='group/title'>
           <h2 className='line-clamp-2 text-lg font-semibold tracking-tight transition-colors group-hover/title:text-primary'>
             {post.title}
           </h2>
@@ -82,7 +83,7 @@ const BlogPostCard = async ({ post, className }: BlogPostCardProps) => {
           </div>
 
           <Link
-            href={`/blog/${post.slug}`}
+            href={`${blogBase}/${post.slug}`}
             className='text-xs font-medium text-primary transition-colors hover:underline'
           >
             {t('readMore')}
@@ -94,7 +95,7 @@ const BlogPostCard = async ({ post, className }: BlogPostCardProps) => {
             {post.tags.map((tag) => (
               <Link
                 key={tag}
-                href={`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`}
+                href={`${blogBase}/tag/${encodeURIComponent(tag.toLowerCase())}`}
                 className='text-xs text-muted-foreground transition-colors hover:text-foreground'
               >
                 #{tag}

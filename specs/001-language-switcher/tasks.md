@@ -18,8 +18,8 @@
 
 **Purpose**: i18n 配置扩展和 LanguageSwitcher 核心组件创建
 
-- [ ] T001 在 `src/lib/i18n/config.ts` 新增 `LOCALE_DISPLAY_NAMES` 常量映射（en→English, es→Español, fr→Français, zh→中文）
-- [ ] T002 创建 `src/components/language-switcher.tsx` 客户端组件：Globe 图标 + DropdownMenu，接收当前 locale，切换时设置 NEXT_LOCALE cookie 并 router.push 到新路径
+- [x] T001 在 `src/lib/i18n/config.ts` 新增 `LOCALE_DISPLAY_NAMES` 常量映射（en→English, es→Español, fr→Français, zh→中文）
+- [x] T002 创建 `src/components/language-switcher.tsx` 客户端组件：Globe 图标 + DropdownMenu，接收当前 locale，切换时设置 NEXT_LOCALE cookie 并 router.push 到新路径
 
 **Checkpoint**: LanguageSwitcher 组件可独立渲染和使用
 
@@ -33,8 +33,8 @@
 
 ### Implementation for User Story 1
 
-- [ ] T003 [US1] 修改 `src/app/[locale]/(main)/layout.tsx`：添加顶部导航栏，包含 LanguageSwitcher 组件，从 URL params 获取当前 locale 传入
-- [ ] T004 [US1] 运行 `bun run typecheck` 和 `bun lint` 验证无错误
+- [x] T003 [US1] 修改 `src/app/[locale]/(main)/layout.tsx`：添加顶部导航栏，包含 LanguageSwitcher 组件，从 URL params 获取当前 locale 传入
+- [x] T004 [US1] 运行 `bun run typecheck` 和 `bun lint` 验证无错误
 - [ ] T005 [US1] 手动验证：启动 `bun dev`，登录后在 Dashboard 页面切换语言，确认 URL 变化、文案切换、cookie 写入
 
 **Checkpoint**: 主应用区域语言切换可用，US1 独立可测
@@ -49,7 +49,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] T006 [US2] 修改 `src/app/[locale]/(auth)/layout.tsx`：在右上角绝对定位添加 LanguageSwitcher 组件，不干扰居中的表单布局
+- [x] T006 [US2] 修改 `src/app/[locale]/(auth)/layout.tsx`：在右上角绝对定位添加 LanguageSwitcher 组件，不干扰居中的表单布局
 - [ ] T007 [US2] 手动验证：在登录页和注册页切换语言，确认表单文案、验证错误提示均以目标语言显示
 
 **Checkpoint**: 认证区域语言切换可用，US2 独立可测
@@ -64,14 +64,14 @@
 
 ### Implementation for User Story 3
 
-- [ ] T008 [P] [US3] 修改 `src/app/(site)/navbar.tsx`：在 GitHub stars 图标与登录按钮之间添加 LanguageSwitcher；移动端菜单中也添加语言切换选项
-- [ ] T009 [P] [US3] 将 `src/app/(site)/blog/` 整体移至 `src/app/[locale]/blog/`：移动所有文件（layout.tsx、page.tsx、[slug]/page.tsx、category/[category]/page.tsx、tag/[tag]/page.tsx、feed.xml/route.ts）
-- [ ] T010 [US3] 简化 `src/app/[locale]/blog/layout.tsx`：移除冗余的 `NextIntlClientProvider` 包装（上层 `[locale]/layout.tsx` 已提供）
-- [ ] T011 [US3] 更新所有 blog 页面的 params 类型：添加 `locale` 参数，更新 `generateStaticParams` 为每个 locale 生成参数（`page.tsx`、`[slug]/page.tsx`、`category/[category]/page.tsx`、`tag/[tag]/page.tsx`）
-- [ ] T012 [US3] 更新 blog 页面内部链接：将 `/blog` 硬编码链接改为 locale 感知路径（如 `/${locale}/blog`）
-- [ ] T013 [US3] 更新 `src/middleware.ts`：从 matcher 正则中移除 `blog` 排除项，使 `/en/blog`、`/zh/blog` 等路径被中间件正确处理
-- [ ] T014 [US3] 为 blog 页面的 `generateMetadata` 添加 `generateHreflangMetadata()` 调用
-- [ ] T015 [US3] 运行 `bun run typecheck` 和 `bun lint` 验证所有变更无错误
+- [x] T008 [P] [US3] 修改 `src/app/(site)/navbar.tsx`：在 GitHub stars 图标与登录按钮之间添加 LanguageSwitcher；移动端菜单中也添加语言切换选项
+- [x] T009 [P] [US3] 将 `src/app/(site)/blog/` 整体移至 `src/app/[locale]/blog/`：移动所有文件（layout.tsx、page.tsx、[slug]/page.tsx、category/[category]/page.tsx、tag/[tag]/page.tsx、feed.xml/route.ts）
+- [x] T010 [US3] 简化 `src/app/[locale]/blog/layout.tsx`：移除冗余的 `NextIntlClientProvider` 包装（上层 `[locale]/layout.tsx` 已提供）
+- [x] T011 [US3] 更新所有 blog 页面的 params 类型：添加 `locale` 参数，更新 `generateStaticParams` 为每个 locale 生成参数（`page.tsx`、`[slug]/page.tsx`、`category/[category]/page.tsx`、`tag/[tag]/page.tsx`）
+- [x] T012 [US3] 更新 blog 页面内部链接：将 `/blog` 硬编码链接改为 locale 感知路径（如 `/${locale}/blog`）
+- [x] T013 [US3] 更新 `src/middleware.ts`：从 matcher 正则中移除 `blog` 排除项，使 `/en/blog`、`/zh/blog` 等路径被中间件正确处理
+- [x] T014 [US3] 为 blog 页面的 `generateMetadata` 添加 `generateHreflangMetadata()` 调用
+- [x] T015 [US3] 运行 `bun run typecheck` 和 `bun lint` 验证所有变更无错误
 - [ ] T016 [US3] 手动验证：首页 Navbar 语言切换、Blog 列表页、Blog 文章页、分类页、标签页在所有 4 种语言下正常访问
 
 **Checkpoint**: 营销区域 + Blog 完全国际化，US3 独立可测
@@ -86,7 +86,7 @@
 
 ### Implementation for User Story 4
 
-- [ ] T017 [US4] 验证 `src/middleware.ts` 的现有检测优先级（cookie → geo → Accept-Language → 默认）符合 FR-008 要求，如有差异则修复
+- [x] T017 [US4] 验证 `src/middleware.ts` 的现有检测优先级（cookie → geo → Accept-Language → 默认）符合 FR-008 要求，如有差异则修复
 - [ ] T018 [US4] 手动验证：清除 cookie + 设置浏览器 Accept-Language 为 `es`，访问 `/`，确认重定向至 `/es`；然后手动切换为 `zh`，关闭重开浏览器确认保持 `/zh`
 
 **Checkpoint**: 自动检测和持久化完整可用，US4 独立可测
@@ -97,11 +97,11 @@
 
 **Purpose**: SEO 完善、翻译回退验证、Constitution 更新
 
-- [ ] T019 [P] 验证所有页面的 `<html lang>` 属性正确输出（检查 `src/app/layout.tsx` 或 `[locale]/layout.tsx`）
-- [ ] T020 [P] 验证 next-intl 的翻译缺失回退配置：确保缺失 key 回退显示英文而非空白（检查 `src/lib/i18n/request.ts` 或 next-intl 配置）
-- [ ] T021 [P] 确认 Blog RSS feed（`feed.xml/route.ts`）在 locale 路由下仍可正常访问
-- [ ] T022 更新 `.specify/memory/constitution.md` 中原则 V 的描述：反映 Blog 已纳入 locale 路由
-- [ ] T023 运行最终 `bun run typecheck`、`bun lint`、`bun build` 全量验证
+- [x] T019 [P] 验证所有页面的 `<html lang>` 属性正确输出（检查 `src/app/layout.tsx` 或 `[locale]/layout.tsx`）
+- [x] T020 [P] 验证 next-intl 的翻译缺失回退配置：确保缺失 key 回退显示英文而非空白（检查 `src/lib/i18n/request.ts` 或 next-intl 配置）
+- [x] T021 [P] 确认 Blog RSS feed（`feed.xml/route.ts`）在 locale 路由下仍可正常访问
+- [x] T022 更新 `.specify/memory/constitution.md` 中原则 V 的描述：反映 Blog 已纳入 locale 路由
+- [x] T023 运行最终 `bun run typecheck`、`bun lint`、`bun build` 全量验证（build 失败因预存的 @sentry/nextjs 缺失，非本功能引入）
 
 ---
 

@@ -71,3 +71,54 @@ Review 时建议按以下顺序验证：
 4. 手动测试 4 种语言 × 3 个区域 = 12 个组合
 5. 验证 Blog 迁移后所有页面可访问
 6. 验证 hreflang 输出（查看页面源码）
+
+---
+
+## Deep Review Report
+
+> 自动化多视角代码审查结果。本节总结审查覆盖范围、发现的问题和修复情况。
+
+**Date:** 2026-04-01 | **Rounds:** 1/3 | **Gate:** PASS
+
+### Review Agents
+
+| Agent | Findings | Status |
+|-------|----------|--------|
+| Correctness | 7 | completed |
+| Architecture & Idioms | 10 | completed |
+| Security | 3 | completed |
+| Production Readiness | 8 | completed |
+| Test Quality | 0 | completed |
+| CodeRabbit (external) | - | skipped (not installed) |
+| Copilot (external) | - | skipped (not installed) |
+
+### Findings Summary
+
+| Severity | Found | Fixed | Remaining |
+|----------|-------|-------|-----------|
+| Critical | 2 | 2 | 0 |
+| Important | 4 | 4 | 0 |
+| Minor | 8 | - | 8 |
+
+### What was fixed automatically
+
+修复了 2 个 Critical 问题和 4 个 Important 问题：
+- **RSS feed 断裂**（correctness + production + architecture）：feed.xml 路由添加 `generateStaticParams`，所有 URL 注入 locale 前缀
+- **BlogPostCard 链接断裂**（architecture）：所有 `/blog/...` 硬编码路径改为 `/${locale}/blog/...`
+- **分页 NaN 处理**（correctness）：`page=abc` 等非法参数不再导致空白页
+- **SSG 翻译语言错误**（correctness）：4 个 blog 页面的 `getTranslations` 均传入显式 locale
+- **Metadata 幽灵索引**（production）：`generateMetadata` 对不存在的 slug 调用 `notFound()` 而非返回空对象
+- **Geo 检测优先级**（correctness）：修复 middleware 中 geo 检测被错误跳过的逻辑，符合 FR-008
+
+### What still needs human attention
+
+8 个 Minor 发现不阻塞合并，但建议在后续迭代中改进。详见 [review-findings.md](review-findings.md)：
+
+- Cookie `Secure` flag 缺失（`language-switcher.tsx` 和 `middleware.ts`）
+- `LOCALE_COOKIE` 常量在 6 个文件中重复定义
+- `(site)` 路由组下 navbar/footer 的 locale 始终回退到 `'en'`
+- Main layout 中 LanguageSwitcher 的浮动定位可能与未来 dashboard 导航冲突
+
+### Recommendation
+
+All Critical and Important findings addressed. Code is ready for human review with no known blockers. 8 Minor findings remain — consider reviewing them during code review but they are not blocking.

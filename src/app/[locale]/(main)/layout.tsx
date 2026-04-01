@@ -1,6 +1,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth/auth'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const headersList = await headers()
@@ -15,5 +16,12 @@ export default async function MainLayout({ children }: { children: React.ReactNo
     redirect(`/login${callbackParam}`)
   }
 
-  return <>{children}</>
+  return (
+    <>
+      <div className='flex h-10 items-center justify-end px-4'>
+        <LanguageSwitcher size='sm' />
+      </div>
+      {children}
+    </>
+  )
 }

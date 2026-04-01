@@ -5,45 +5,63 @@ import { getAllPosts, getAllCategories, getAllTags } from '@/lib/blog/content-re
 import { generateBlogJsonLd } from '@/lib/blog/json-ld'
 import { generateMetadata as genSeoMetadata, siteConfig } from '@/lib/seo'
 import { getBaseUrl } from '@/lib/utils'
+import { generateHreflangMetadata } from '@/lib/i18n/hreflang'
+import { SUPPORTED_LOCALES, type LocaleParams } from '@/lib/i18n/config'
 import BlogPostCard from '@/components/blog/blog-post-card'
 import JsonLdScript from '@/components/blog/json-ld-script'
 
 const POSTS_PER_PAGE = 10
 
 interface BlogPageProps {
+  params: Promise<LocaleParams>
   searchParams: Promise<{ page?: string }>
 }
 
-export const metadata: Metadata = {
-  ...genSeoMetadata({
-    title: 'Blog',
-    description: `Insights, tutorials, and updates from the ${siteConfig.name} team.`,
-    canonical: '/blog',
-  }),
-  alternates: {
-    canonical: `${getBaseUrl()}/blog`,
-    types: {
-      'application/rss+xml': `${getBaseUrl()}/blog/feed.xml`,
+export const generateStaticParams = () =>
+  SUPPORTED_LOCALES.map((locale) => ({ locale }))
+
+export const generateMetadata = async ({ params }: BlogPageProps): Promise<Metadata> => {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'blog' })
+  const hreflang = generateHreflangMetadata('/blog')
+
+  return {
+    ...genSeoMetadata({
+      title: t('title'),
+      description: t('subtitle'),
+      canonical: `/${locale}/blog`,
+    }),
+    alternates: {
+      ...hreflang,
+      canonical: `${getBaseUrl()}/${locale}/blog`,
+      types: {
+        'application/rss+xml': `${getBaseUrl()}/${locale}/blog/feed.xml`,
+      },
     },
-  },
+  }
 }
 
-export default async function BlogPage({ searchParams }: BlogPageProps) {
-  const params = await searchParams
-  const currentPage = Math.max(1, Number(params.page ?? 1))
-  const offset = (currentPage - 1) * POSTS_PER_PAGE
+export default async function BlogPage({ params, searchParams }: BlogPageProps) {
+  const { locale } = await params
+  const sp = await searchParams
+  const rawPage = Number(sp.page)
+  const parsedPage = Number.isFinite(rawPage) ? rawPage : 1
 
   const allPosts = getAllPosts()
   const totalPosts = allPosts.length
   const totalPages = Math.max(1, Math.ceil(totalPosts / POSTS_PER_PAGE))
-  const posts = getAllPosts({ limit: POSTS_PER_PAGE, offset })
+  const currentPage = Math.max(1, Math.min(parsedPage, totalPages))
+  const offset = (currentPage - 1) * POSTS_PER_PAGE
+  const posts = allPosts.slice(offset, offset + POSTS_PER_PAGE)
 
   const categories = getAllCategories()
   const tags = getAllTags()
 
   const jsonLd = generateBlogJsonLd(getBaseUrl(), `${siteConfig.name} Blog`)
 
-  const t = await getTranslations('blog')
+  const t = await getTranslations({ locale, namespace: 'blog' })
+
+  const blogBase = `/${locale}/blog`
 
   return (
     <>
@@ -81,7 +99,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               <nav className='mt-10 flex items-center justify-center gap-2'>
                 {currentPage > 1 && (
                   <Link
-                    href={`/blog?page=${currentPage - 1}`}
+                    href={`${blogBase}?page=${currentPage - 1}`}
                     className='rounded-md border border-[#E4E4E7] px-4 py-2 text-sm transition-colors hover:bg-[#F4F4F5]'
                   >
                     {t('pagination.previous')}
@@ -92,7 +110,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 </span>
                 {currentPage < totalPages && (
                   <Link
-                    href={`/blog?page=${currentPage + 1}`}
+                    href={`${blogBase}?page=${currentPage + 1}`}
                     className='rounded-md border border-[#E4E4E7] px-4 py-2 text-sm transition-colors hover:bg-[#F4F4F5]'
                   >
                     {t('pagination.next')}
@@ -113,7 +131,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                   {categories.map((category) => (
                     <li key={category}>
                       <Link
-                        href={`/blog/category/${encodeURIComponent(category.toLowerCase())}`}
+                        href={`${blogBase}/category/${encodeURIComponent(category.toLowerCase())}`}
                         className='text-sm text-muted-foreground transition-colors hover:text-foreground'
                       >
                         {category}
@@ -133,7 +151,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                   {tags.map((tag) => (
                     <Link
                       key={tag}
-                      href={`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`}
+                      href={`${blogBase}/tag/${encodeURIComponent(tag.toLowerCase())}`}
                       className='rounded-full bg-[#F4F4F5] px-2.5 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-[#E4E4E7] hover:text-foreground'
                     >
                       #{tag}

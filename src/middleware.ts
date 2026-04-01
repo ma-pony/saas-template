@@ -68,10 +68,9 @@ export function middleware(request: NextRequest) {
   } else {
     // Priority 2: Platform geo headers (Vercel / Cloudflare)
     const countryCode = getCountryFromRequest(request)
-    const geoLocale = countryToLocale(countryCode)
 
-    if (geoLocale !== DEFAULT_LOCALE) {
-      targetLocale = geoLocale
+    if (countryCode !== null) {
+      targetLocale = countryToLocale(countryCode)
     } else {
       // Priority 3: Accept-Language header
       const acceptLanguage = request.headers.get('Accept-Language')
@@ -96,5 +95,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|monitoring|admin|blog|.*\\..*).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|monitoring|admin|.*\\..*).*)'],
 }
