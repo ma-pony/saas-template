@@ -42,10 +42,17 @@ export function middleware(request: NextRequest) {
   const isValidCookieLocale =
     cookieLocale && (SUPPORTED_LOCALES as readonly string[]).includes(cookieLocale)
 
-  // If the pathname already has a valid locale, just set the cookie and pass through
+  // If the pathname already has a valid locale, set the header so next-intl
+  // can resolve `requestLocale` in `getRequestConfig`, and pass through.
   if (pathnameHasLocale) {
     const existingLocale = pathname.split('/')[1] as SupportedLocale
-    const response = NextResponse.next()
+
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.set('X-NEXT-INTL-LOCALE', existingLocale)
+
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    })
 
     // Update cookie if different from current locale in path
     if (!isValidCookieLocale || cookieLocale !== existingLocale) {

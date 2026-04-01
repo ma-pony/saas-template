@@ -7,9 +7,18 @@ interface WindowEntry {
 }
 
 // Global in-memory store (process-level).
-// WARNING: This store is per-process. In serverless/multi-instance deployments (e.g. Vercel),
-// each instance has its own store — rate limiting is approximate, not globally enforced.
-// For strict rate limiting in production, replace with Redis/Upstash.
+//
+// ⚠️  SERVERLESS LIMITATION:
+// This store is per-process. In serverless deployments (Vercel, AWS Lambda) each
+// function invocation gets its own Map — rate limits are NOT enforced across instances.
+// This is only effective for single-process deployments (VPS, Docker, long-lived Node).
+//
+// For production serverless rate limiting, replace with one of:
+//   1. `@upstash/ratelimit` + Upstash Redis (recommended for Vercel)
+//   2. Vercel WAF / Cloudflare rate limiting rules (infrastructure-level)
+//   3. Any Redis-backed sliding window implementation
+//
+// To swap: replace `store.get/set/delete` calls below with your Redis adapter.
 const store = new Map<string, WindowEntry>()
 
 // Periodically clean up expired entries to prevent memory leaks
